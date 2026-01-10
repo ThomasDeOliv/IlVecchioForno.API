@@ -1,0 +1,6 @@
+@IlVecchioForno = http://localhost:5200
+
+GET {{IlVecchioForno}}/weatherforecast/
+Accept: application/json
+
+###
