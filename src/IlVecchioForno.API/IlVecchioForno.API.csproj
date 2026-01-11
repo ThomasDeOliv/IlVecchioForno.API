@@ -12,7 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\IlVecchioForno.Application\IlVecchioForno.Application.csproj" />
       <ProjectReference Include="..\IlVecchioForno.Infrastructure\IlVecchioForno.Infrastructure.csproj" />
     </ItemGroup>
 

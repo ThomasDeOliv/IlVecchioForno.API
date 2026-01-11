@@ -1,6 +1,6 @@
 @IlVecchioForno = http://localhost:5200
 
-GET {{IlVecchioForno}}/weatherforecast/
+GET {{IlVecchioForno}}/api/pizzas
 Accept: application/json
 
 ###
