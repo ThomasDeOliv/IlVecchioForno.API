@@ -1,0 +1,25 @@
+using IlVecchioForno.Application.Gateways.Persistence.Queries;
+using IlVecchioForno.Application.Gateways.Persistence.Queries.Sorters;
+using IlVecchioForno.Domain.Pizzas;
+
+namespace IlVecchioForno.Application.Gateways.Persistence;
+
+public interface IPizzaRepository
+{
+    Task<IReadOnlyCollection<Pizza>> ListActiveAsync(
+        QuerySpec<ActivePizzasSorter> query,
+        CancellationToken cancellationToken = default
+    );
+
+    Task<IReadOnlyCollection<Pizza>> ListArchivedAsync(
+        QuerySpec<ArchivedPizzasSorter> query,
+        CancellationToken cancellationToken = default
+    );
+
+    Task<Pizza?> FindAsync(
+        int id,
+        CancellationToken cancellationToken = default
+    );
+
+    void Add(Pizza pizza);
+}

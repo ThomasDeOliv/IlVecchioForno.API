@@ -11,7 +11,19 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="FluentValidation" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+        <PackageReference Include="Mapster" />
+        <PackageReference Include="Mapster.DependencyInjection" />
+        <PackageReference Include="MediatR" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Gateways\Persistence\" />
+      <Folder Include="UseCases\Ingredients\" />
+      <Folder Include="UseCases\Pizzas\" />
+      <Folder Include="UseCases\QuantityTypes\" />
     </ItemGroup>
 
 </Project>
