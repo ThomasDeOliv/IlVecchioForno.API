@@ -333,7 +333,8 @@ public class PizzaTests
     public void PizzaDescription_CreateInstance_ThrowsException_WhenProvidingInvalidValue(string? description)
     {
         // Arrange & Act
-        PizzaDescriptionException exception = Assert.Throws<PizzaDescriptionException>(() => new PizzaDescription(description!));
+        PizzaDescriptionException exception =
+            Assert.Throws<PizzaDescriptionException>(() => new PizzaDescription(description!));
         // Assert
         Assert.Equal(
             $"{nameof(PizzaDescription)} cannot be instantiated from null, empty or whitespace value.",
@@ -352,7 +353,8 @@ public class PizzaTests
         // Arrange
         string description = new string('a', PizzaInvariant.DescriptionMaxLength + length);
         // Act
-        PizzaDescriptionException exception = Assert.Throws<PizzaDescriptionException>(() => new PizzaDescription(description));
+        PizzaDescriptionException exception =
+            Assert.Throws<PizzaDescriptionException>(() => new PizzaDescription(description));
         // Assert
         Assert.Equal(
             $"{nameof(PizzaDescription)} exceeds maximum length of {PizzaInvariant.DescriptionMaxLength} characters.",
@@ -390,7 +392,8 @@ public class PizzaTests
             new PizzaIngredient(pizzaIngredientQuantity4, this._ingredients[3])
         };
         // Act
-        PizzaAggregateBaseException exception = Assert.Throws<PizzaAggregateBaseException>(() => pizza.UpdateIngredients(newPizzaIngredients));
+        PizzaAggregateBaseException exception =
+            Assert.Throws<PizzaAggregateBaseException>(() => pizza.UpdateIngredients(newPizzaIngredients));
         // Assert
         Assert.Equal(
             "Provided ingredients must be unique.",

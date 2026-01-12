@@ -45,7 +45,8 @@ public class QuantityTypeTests
     public void QuantityTypeName_CreateInstance_ThrowsException_WhenProvidingInvalidValue(string? name)
     {
         // Arrange & Act
-        QuantityTypeNameException exception = Assert.Throws<QuantityTypeNameException>(() => new QuantityTypeName(name!));
+        QuantityTypeNameException exception =
+            Assert.Throws<QuantityTypeNameException>(() => new QuantityTypeName(name!));
         // Assert
         Assert.Equal(
             $"{nameof(QuantityTypeName)} cannot be instantiated from null, empty or whitespace value.",
@@ -64,7 +65,8 @@ public class QuantityTypeTests
         // Arrange
         string name = new string('a', QuantityTypeInvariant.NameMaxLength + length);
         // Act
-        QuantityTypeNameException exception = Assert.Throws<QuantityTypeNameException>(() => new QuantityTypeName(name));
+        QuantityTypeNameException
+            exception = Assert.Throws<QuantityTypeNameException>(() => new QuantityTypeName(name));
         // Assert
         Assert.Equal(
             $"{nameof(QuantityTypeName)} exceeds maximum length of {QuantityTypeInvariant.NameMaxLength} characters.",
@@ -82,7 +84,8 @@ public class QuantityTypeTests
     public void QuantityTypeUnit_CreateInstance_ThrowsException_WhenProvidingInvalidValue(string? unit)
     {
         // Arrange & Act
-        QuantityTypeUnitException exception = Assert.Throws<QuantityTypeUnitException>(() => new QuantityTypeUnit(unit!));
+        QuantityTypeUnitException exception =
+            Assert.Throws<QuantityTypeUnitException>(() => new QuantityTypeUnit(unit!));
         // Assert
         Assert.Equal(
             $"{nameof(QuantityTypeUnit)} cannot be instantiated from null, empty or whitespace value.",
@@ -101,7 +104,8 @@ public class QuantityTypeTests
         // Arrange
         string unit = new string('a', QuantityTypeInvariant.UnitMaxLength + length);
         // Act
-        QuantityTypeUnitException exception = Assert.Throws<QuantityTypeUnitException>(() => new QuantityTypeUnit(unit));
+        QuantityTypeUnitException
+            exception = Assert.Throws<QuantityTypeUnitException>(() => new QuantityTypeUnit(unit));
         // Assert
         Assert.Equal(
             $"{nameof(QuantityTypeUnit)} exceeds maximum length of {QuantityTypeInvariant.UnitMaxLength} characters.",

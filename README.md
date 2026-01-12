@@ -31,7 +31,7 @@ with ASP.NET Core.
 ## Prerequisites
 
 - [.NET 10.0 SDK](https://dotnet.microsoft.com/download)
-- [PostgreSQL 18 or later](https://www.postgresql.org/download/) for production
+- [PostgreSQL 18.1 or later](https://www.postgresql.org/download/) for production
 
 ## Getting Started
 

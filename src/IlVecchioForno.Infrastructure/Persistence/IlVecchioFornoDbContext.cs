@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace IlVecchioForno.Infrastructure.Persistence;
 
-internal class IlVecchioFornoDbContext : DbContext
+public class IlVecchioFornoDbContext : DbContext
 {
     public IlVecchioFornoDbContext(DbContextOptions<IlVecchioFornoDbContext> options) : base(options)
     {

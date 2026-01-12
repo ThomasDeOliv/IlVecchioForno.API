@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace IlVecchioForno.Infrastructure.Persistence.Configurations;
 
-public abstract class EntityConfigurationBase<TEntity> : IEntityTypeConfiguration<TEntity>
+internal abstract class EntityConfigurationBase<TEntity> : IEntityTypeConfiguration<TEntity>
     where TEntity : class, IAuditable
 {
     public virtual void Configure(EntityTypeBuilder<TEntity> builder)

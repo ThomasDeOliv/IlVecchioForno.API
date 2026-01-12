@@ -60,7 +60,8 @@ public class PizzaIngredientTests
         decimal quantity)
     {
         // Arrange & Act
-        PizzaIngredientQuantityException exception = Assert.Throws<PizzaIngredientQuantityException>(() => new PizzaIngredientQuantity(quantity));
+        PizzaIngredientQuantityException exception =
+            Assert.Throws<PizzaIngredientQuantityException>(() => new PizzaIngredientQuantity(quantity));
         // Assert
         Assert.Equal(
             $"{nameof(PizzaIngredientQuantity)} is smaller than the minimum required value of {PizzaIngredientInvariant.MinQuantity}.",

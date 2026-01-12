@@ -5,11 +5,11 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-      <UserSecretsId>a8183915-1d85-4064-b342-e1f6cedf2681</UserSecretsId>
-  </PropertyGroup>
+        <UserSecretsId>a8183915-1d85-4064-b342-e1f6cedf2681</UserSecretsId>
+    </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\IlVecchioForno.Infrastructure\IlVecchioForno.Infrastructure.csproj" />
+        <ProjectReference Include="..\IlVecchioForno.Infrastructure\IlVecchioForno.Infrastructure.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
