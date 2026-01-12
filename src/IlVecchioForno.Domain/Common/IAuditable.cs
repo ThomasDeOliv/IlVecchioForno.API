@@ -1,4 +1,4 @@
-namespace IlVecchioForno.Domain.Commons;
+namespace IlVecchioForno.Domain.Common;
 
 public interface IAuditable
 {

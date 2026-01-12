@@ -1,4 +1,4 @@
-using IlVecchioForno.Domain.Commons.Exceptions;
+using IlVecchioForno.Domain.Common.Exceptions;
 
 namespace IlVecchioForno.Domain.Pizzas.Exceptions;
 

@@ -1,4 +1,4 @@
-namespace IlVecchioForno.Domain.Commons;
+namespace IlVecchioForno.Domain.Common;
 
 public abstract class EntityBase : IAuditable
 {

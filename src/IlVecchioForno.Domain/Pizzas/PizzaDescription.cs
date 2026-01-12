@@ -4,23 +4,22 @@ namespace IlVecchioForno.Domain.Pizzas;
 
 public sealed class PizzaDescription
 {
-    private readonly string _value;
-    
     public PizzaDescription(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-        {
             throw new PizzaDescriptionException("Description cannot be composed of whitespace characters only.");
-        }
 
         if (PizzaInvariant.DescriptionMaxLength < value.Length)
-        {
             throw new PizzaDescriptionException(
                 $"Description maximum length reached ({PizzaInvariant.DescriptionMaxLength} characters).");
-        }
-        
-        this._value = value;
+
+        this.Value = value;
     }
-    
-    public static implicit operator string(PizzaDescription valueObject) =>  valueObject._value;
+
+    public string Value { get; }
+
+    public static implicit operator string(PizzaDescription valueObject)
+    {
+        return valueObject.Value;
+    }
 }

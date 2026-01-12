@@ -1,4 +1,4 @@
-﻿using IlVecchioForno.Domain.Commons;
+﻿using IlVecchioForno.Domain.Common;
 using IlVecchioForno.Domain.PizzaIngredients;
 using IlVecchioForno.Domain.Pizzas.Exceptions;
 
@@ -13,14 +13,14 @@ public sealed class Pizza : EntityBase
     {
         this._pizzaIngredients = new List<PizzaIngredient>();
 
-        this.Id = -1;
+        this.Id = 0;
         this.Name = null!;
         this.Description = null!;
         this.Price = null!;
         this.Archived = null;
     }
 
-    public Pizza(PizzaName name, PizzaDescription? description, PizzaPrice price, int id = -1) : this()
+    public Pizza(PizzaName name, PizzaDescription? description, PizzaPrice price, int id = 0) : this()
     {
         this.Id = id;
         this.Name = name;
@@ -34,7 +34,7 @@ public sealed class Pizza : EntityBase
     public PizzaPrice Price { get; private set; }
     public DateTimeOffset? Archived { get; private set; }
     public IReadOnlyCollection<PizzaIngredient> PizzaIngredients => this._pizzaIngredients.AsReadOnly();
-    
+
     public void SetAsArchived()
     {
         this.Archived = DateTimeOffset.UtcNow;
@@ -52,9 +52,7 @@ public sealed class Pizza : EntityBase
             ingredientsList.DistinctBy(i => i.Ingredient).ToList();
 
         if (ingredientsList.Count != distinctIngredientsList.Count)
-        {
             throw new PizzaAggregateBaseException("Provided ingredients must be unique.");
-        }
 
         this._pizzaIngredients.Clear();
         this._pizzaIngredients.AddRange(ingredientsList);

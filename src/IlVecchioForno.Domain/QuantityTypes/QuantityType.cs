@@ -1,4 +1,4 @@
-using IlVecchioForno.Domain.Commons;
+using IlVecchioForno.Domain.Common;
 
 namespace IlVecchioForno.Domain.QuantityTypes;
 
@@ -7,12 +7,12 @@ public sealed class QuantityType : EntityBase
     // EF
     private QuantityType() : base()
     {
-        this.Id = -1;
+        this.Id = 0;
         this.Name = null!;
         this.Unit = null!;
     }
 
-    public QuantityType(QuantityTypeName name, QuantityTypeUnit? unit, short id = -1) : this()
+    public QuantityType(QuantityTypeName name, QuantityTypeUnit? unit, short id = 0) : this()
     {
         this.Id = id;
         this.Name = name;

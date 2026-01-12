@@ -4,17 +4,19 @@ namespace IlVecchioForno.Domain.PizzaIngredients;
 
 public sealed class PizzaIngredientQuantity
 {
-    private readonly decimal _value;
-    
     public PizzaIngredientQuantity(decimal value)
     {
         if (value < PizzaIngredientInvariant.MinQuantity)
-        {
-            throw new PizzaIngredientQuantityException($"Quantity is smaller than the minimum required value of {PizzaIngredientInvariant.MinQuantity}.");
-        }
-        
-        this._value = value;
+            throw new PizzaIngredientQuantityException(
+                $"Quantity is smaller than the minimum required value of {PizzaIngredientInvariant.MinQuantity}.");
+
+        this.Value = value;
     }
-    
-    public static implicit operator decimal(PizzaIngredientQuantity valueObject) =>  valueObject._value;
+
+    public decimal Value { get; }
+
+    public static implicit operator decimal(PizzaIngredientQuantity valueObject)
+    {
+        return valueObject.Value;
+    }
 }

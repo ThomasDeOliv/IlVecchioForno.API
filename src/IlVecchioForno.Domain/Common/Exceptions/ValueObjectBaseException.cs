@@ -1,4 +1,4 @@
-namespace IlVecchioForno.Domain.Commons.Exceptions;
+namespace IlVecchioForno.Domain.Common.Exceptions;
 
 public abstract class ValueObjectBaseException : ArgumentException
 {

@@ -1,4 +1,4 @@
-using IlVecchioForno.Domain.Commons;
+using IlVecchioForno.Domain.Common;
 using IlVecchioForno.Domain.Ingredients;
 
 namespace IlVecchioForno.Domain.PizzaIngredients;

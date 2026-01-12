@@ -5,11 +5,13 @@
 ### Objective
 
 Il Vecchio Forno is a RESTful backend API designed to manage pizzas and ingredients for a pizzeria.
-This is a portfolio project demonstrating the implementation of a RESTful API following Clean Architecture principles with ASP.NET Core.
+This is a portfolio project demonstrating the implementation of a RESTful API following Clean Architecture principles
+with ASP.NET Core.
 
 ### Features
 
 **Pizza Management**
+
 - List all active pizzas (available on the menu)
 - List all disabled pizzas
 - Add new pizza
@@ -17,10 +19,12 @@ This is a portfolio project demonstrating the implementation of a RESTful API fo
 - Disable pizza (remove from the menu without deleting)
 
 **Ingredient Management**
+
 - List all available ingredients
 - Add new ingredients to the inventory
 
 **Pizza-Ingredient Relationship**
+
 - Associate ingredients with pizzas
 - Manage ingredient quantities per pizza
 
@@ -57,6 +61,7 @@ Migrations are auto-applied.
 ```bash
 dotnet run --project src/IlVecchioForno.API/IlVecchioForno.API.csproj
 ```
+
 ## License
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
