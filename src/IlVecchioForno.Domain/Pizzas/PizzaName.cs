@@ -7,10 +7,14 @@ public sealed class PizzaName
     public PizzaName(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            throw new PizzaNameException("Name cannot be null, empty or composed of whitespaces.");
+            throw new PizzaNameException(
+                $"{nameof(PizzaName)} cannot be instantiated from null, empty or whitespace value."
+            );
 
         if (PizzaInvariant.NameMaxLength < value.Length)
-            throw new PizzaNameException($"Name maximum length reached ({PizzaInvariant.NameMaxLength} characters).");
+            throw new PizzaNameException(
+                $"{nameof(PizzaName)} exceeds maximum length of {PizzaInvariant.NameMaxLength} characters."
+            );
 
         this.Value = value;
     }

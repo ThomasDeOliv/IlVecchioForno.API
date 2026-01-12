@@ -7,11 +7,14 @@ public sealed class QuantityTypeName
     public QuantityTypeName(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            throw new QuantityTypeNameException("Name cannot be null, empty or composed of whitespaces.");
+            throw new QuantityTypeNameException(
+                $"{nameof(QuantityTypeName)} cannot be instantiated from null, empty or whitespace value."
+            );
 
         if (QuantityTypeInvariant.NameMaxLength < value.Length)
             throw new QuantityTypeNameException(
-                $"Name maximum length reached ({QuantityTypeInvariant.NameMaxLength} characters).");
+                $"{nameof(QuantityTypeName)} exceeds maximum length of {QuantityTypeInvariant.NameMaxLength} characters."
+            );
 
         this.Value = value;
     }

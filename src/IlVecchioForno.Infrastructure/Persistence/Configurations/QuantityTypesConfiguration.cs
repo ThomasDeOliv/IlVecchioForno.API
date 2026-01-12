@@ -24,7 +24,7 @@ internal class QuantityTypesConfiguration : EntityConfigurationBase<QuantityType
                 value => new QuantityTypeName(value)
             )
             .HasColumnName("name")
-            .HasColumnType("VARCHAR(256)")
+            .HasColumnType($"VARCHAR({QuantityTypeInvariant.NameMaxLength})")
             .IsRequired();
 
         builder.Property(e => e.Unit)
@@ -33,7 +33,7 @@ internal class QuantityTypesConfiguration : EntityConfigurationBase<QuantityType
                 value => !string.IsNullOrEmpty(value) ? new QuantityTypeUnit(value) : null
             )
             .HasColumnName("unit")
-            .HasColumnType("VARCHAR(50)")
+            .HasColumnType($"VARCHAR({QuantityTypeInvariant.UnitMaxLength})")
             .IsRequired(false);
 
         builder.HasKey(e => e.Id)

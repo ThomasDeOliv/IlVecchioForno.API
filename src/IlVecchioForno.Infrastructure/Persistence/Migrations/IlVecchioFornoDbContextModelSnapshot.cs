@@ -105,7 +105,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                         .HasColumnName("created_at");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(2000)
+                        .HasMaxLength(1024)
                         .HasColumnType("TEXT")
                         .HasColumnName("description");
 
@@ -147,7 +147,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                         .HasColumnName("name");
 
                     b.Property<string>("Unit")
-                        .HasColumnType("VARCHAR(50)")
+                        .HasColumnType("VARCHAR(4)")
                         .HasColumnName("unit");
 
                     b.Property<DateTime>("UpdatedAt")

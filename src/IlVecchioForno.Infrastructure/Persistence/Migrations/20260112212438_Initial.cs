@@ -23,7 +23,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                     id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "VARCHAR(256)", nullable: false),
-                    description = table.Column<string>(type: "TEXT", maxLength: 2000, nullable: true),
+                    description = table.Column<string>(type: "TEXT", maxLength: 1024, nullable: true),
                     price = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
                     archived = table.Column<DateTimeOffset>(type: "TIMESTAMPTZ", nullable: true),
                     created_at = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: false),
@@ -42,7 +42,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                     id = table.Column<short>(type: "SMALLINT", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "VARCHAR(256)", nullable: false),
-                    unit = table.Column<string>(type: "VARCHAR(50)", nullable: true),
+                    unit = table.Column<string>(type: "VARCHAR(4)", nullable: true),
                     created_at = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: false),
                     updated_at = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: false)
                 },

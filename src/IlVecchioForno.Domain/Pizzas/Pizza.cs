@@ -35,17 +35,29 @@ public sealed class Pizza : EntityBase
     public DateTimeOffset? Archived { get; private set; }
     public IReadOnlyCollection<PizzaIngredient> PizzaIngredients => this._pizzaIngredients.AsReadOnly();
 
-    public void SetAsArchived()
+    public void UpdateName(PizzaName value)
     {
-        this.Archived = DateTimeOffset.UtcNow;
+        this.Name = value;
     }
 
-    public void SetAsActive()
+    public void UpdateDescription(PizzaDescription? description)
     {
-        this.Archived = null;
+        this.Description = description;
     }
 
-    public void SetIngredients(IEnumerable<PizzaIngredient> ingredients)
+    public void UpdatePrice(PizzaPrice price)
+    {
+        this.Price = price;
+    }
+
+    public void UpdateArchived()
+    {
+        this.Archived = this.Archived is not null
+            ? null
+            : DateTimeOffset.UtcNow;
+    }
+
+    public void UpdateIngredients(IEnumerable<PizzaIngredient> ingredients)
     {
         List<PizzaIngredient> ingredientsList = ingredients.ToList();
         List<PizzaIngredient> distinctIngredientsList =

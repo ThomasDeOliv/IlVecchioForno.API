@@ -8,7 +8,7 @@ public sealed class PizzaIngredientQuantity
     {
         if (value < PizzaIngredientInvariant.MinQuantity)
             throw new PizzaIngredientQuantityException(
-                $"Quantity is smaller than the minimum required value of {PizzaIngredientInvariant.MinQuantity}.");
+                $"{nameof(PizzaIngredientQuantity)} is smaller than the minimum required value of {PizzaIngredientInvariant.MinQuantity}.");
 
         this.Value = value;
     }

@@ -8,7 +8,8 @@ public sealed class PizzaPrice
     {
         if (value < PizzaInvariant.MinPrice)
             throw new PizzaPriceException(
-                $"Provided price is smaller than the minimum required value of {PizzaInvariant.MinPrice}.");
+                $"{nameof(PizzaPrice)} is smaller than the minimum required value of {PizzaInvariant.MinPrice}."
+            );
 
         this.Value = value;
     }

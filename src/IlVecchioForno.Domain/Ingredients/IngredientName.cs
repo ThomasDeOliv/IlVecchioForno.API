@@ -7,11 +7,14 @@ public sealed class IngredientName
     public IngredientName(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            throw new IngredientNameException("Provided value cannot be null or whitespace.");
+            throw new IngredientNameException(
+                $"{nameof(IngredientName)} cannot be instantiated from null, empty or whitespace value."
+            );
 
         if (IngredientInvariant.NameMaxLength < value.Length)
             throw new IngredientNameException(
-                $"Name maximum length reached ({IngredientInvariant.NameMaxLength} characters).");
+                $"{nameof(IngredientName)} exceeds maximum length of {IngredientInvariant.NameMaxLength} characters."
+            );
 
         this.Value = value;
     }

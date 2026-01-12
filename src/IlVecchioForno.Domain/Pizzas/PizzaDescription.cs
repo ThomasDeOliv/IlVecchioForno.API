@@ -7,11 +7,14 @@ public sealed class PizzaDescription
     public PizzaDescription(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            throw new PizzaDescriptionException("Description cannot be composed of whitespace characters only.");
+            throw new PizzaDescriptionException(
+                $"{nameof(PizzaDescription)} cannot be instantiated from null, empty or whitespace value."
+            );
 
         if (PizzaInvariant.DescriptionMaxLength < value.Length)
             throw new PizzaDescriptionException(
-                $"Description maximum length reached ({PizzaInvariant.DescriptionMaxLength} characters).");
+                $"{nameof(PizzaDescription)} exceeds maximum length of {PizzaInvariant.DescriptionMaxLength} characters."
+            );
 
         this.Value = value;
     }

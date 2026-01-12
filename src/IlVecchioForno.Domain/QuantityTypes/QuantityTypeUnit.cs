@@ -7,11 +7,14 @@ public sealed class QuantityTypeUnit
     public QuantityTypeUnit(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            throw new QuantityTypeUnitException("Unit cannot be composed of whitespace characters only.");
+            throw new QuantityTypeUnitException(
+                $"{nameof(QuantityTypeUnit)} cannot be instantiated from null, empty or whitespace value."
+            );
 
         if (QuantityTypeInvariant.UnitMaxLength < value.Length)
             throw new QuantityTypeUnitException(
-                $"Unit maximum length reached ({QuantityTypeInvariant.UnitMaxLength} characters).");
+                $"{nameof(QuantityTypeUnit)} exceeds maximum length of {QuantityTypeInvariant.UnitMaxLength} characters."
+            );
 
         this.Value = value;
     }

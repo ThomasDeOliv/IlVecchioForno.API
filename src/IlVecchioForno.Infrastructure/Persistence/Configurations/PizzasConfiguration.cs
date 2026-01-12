@@ -24,7 +24,7 @@ internal class PizzasConfiguration : EntityConfigurationBase<Pizza>
                 value => new PizzaName(value)
             )
             .HasColumnName("name")
-            .HasColumnType("VARCHAR(256)")
+            .HasColumnType($"VARCHAR({PizzaInvariant.NameMaxLength})")
             .IsRequired();
 
         builder.Property(e => e.Description)
@@ -34,7 +34,7 @@ internal class PizzasConfiguration : EntityConfigurationBase<Pizza>
             )
             .HasColumnName("description")
             .HasColumnType("TEXT")
-            .HasMaxLength(2000)
+            .HasMaxLength(PizzaInvariant.DescriptionMaxLength)
             .IsRequired(false);
 
         builder.Property(e => e.Archived)

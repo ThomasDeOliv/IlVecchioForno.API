@@ -25,7 +25,7 @@ internal class IngredientsConfiguration : EntityConfigurationBase<Ingredient>
                 value => new IngredientName(value)
             )
             .HasColumnName("name")
-            .HasColumnType("VARCHAR(256)")
+            .HasColumnType($"VARCHAR({IngredientInvariant.NameMaxLength})")
             .IsRequired();
 
         builder.Property<short>("QuantityTypeId") // Shadow QuantityType FK
