@@ -22,7 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{61F37572
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IlVecchioForno.Domain.Tests", "src\tests\IlVecchioForno.Domain.Tests\IlVecchioForno.Domain.Tests.csproj", "{2E85EAE9-0732-42D0-BB0A-52E8EB0C6733}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IlVecchioForno.Infrastructure.Tests", "IlVecchioForno.Infrastructure.Tests\IlVecchioForno.Infrastructure.Tests.csproj", "{75A4AC04-739D-4102-8B09-68390746665F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IlVecchioForno.Infrastructure.Tests", "src\tests\IlVecchioForno.Infrastructure.Tests\IlVecchioForno.Infrastructure.Tests.csproj", "{75A4AC04-739D-4102-8B09-68390746665F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -21,6 +21,7 @@ public static class InfrastructureStartup
         string connectionString)
     {
         return services.AddDbContext<IlVecchioFornoDbContext>(options => options.UseNpgsql(connectionString))
+            .AddSingleton<TimeProvider>(TimeProvider.System)
             .AddScoped<IUnitOfWork, EfUnitOfWork>()
             .AddScoped<IPizzaRepository, EfPizzaRepository>()
             .AddScoped<IIngredientRepository, EfIngredientRepository>()
