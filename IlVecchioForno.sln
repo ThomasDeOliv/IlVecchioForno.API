@@ -6,6 +6,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Items", "Items", "{1DCBA66E
 		LICENSE = LICENSE
 		README.md = README.md
 		Directory.Packages.props = Directory.Packages.props
+		compose.yaml = compose.yaml
+		example.env = example.env
+		.env = .env
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{AE23DBF7-6295-4DFB-905B-5B787042C052}"

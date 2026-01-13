@@ -1,4 +1,4 @@
-using IlVecchioForno.Application.Gateways.Persistence.Queries.Sorters;
+using IlVecchioForno.Application.Common.Queries.Sorters;
 using IlVecchioForno.Domain.Pizzas;
 
 namespace IlVecchioForno.Infrastructure.Persistence.QueryServices.Sorters;

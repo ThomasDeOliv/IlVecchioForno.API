@@ -1,6 +1,6 @@
+using IlVecchioForno.Application.Common.Queries.Sorters;
 using IlVecchioForno.Application.Gateways.Persistence;
 using IlVecchioForno.Application.Gateways.Persistence.Queries;
-using IlVecchioForno.Application.Gateways.Persistence.Queries.Sorters;
 using IlVecchioForno.Domain.Ingredients;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Filters;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Paginations;

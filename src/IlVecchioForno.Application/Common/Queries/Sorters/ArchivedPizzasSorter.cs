@@ -1,4 +1,4 @@
-namespace IlVecchioForno.Application.Gateways.Persistence.Queries.Sorters;
+namespace IlVecchioForno.Application.Common.Queries.Sorters;
 
 public enum ArchivedPizzasSorter
 {

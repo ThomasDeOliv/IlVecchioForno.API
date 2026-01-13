@@ -1,6 +1,9 @@
 using IlVecchioForno.Application;
+using IlVecchioForno.Application.Common;
 using IlVecchioForno.Infrastructure;
 using IlVecchioForno.Infrastructure.Persistence.Setup;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 
 namespace IlVecchioForno.API;
 
@@ -16,7 +19,21 @@ public static class Program
         ArgumentNullException.ThrowIfNull(connectionString);
 
         // Add services to the container.
-        builder.Services.AddControllers();
+        builder.Services.AddControllers()
+            .ConfigureApiBehaviorOptions(options =>
+            {
+                options.InvalidModelStateResponseFactory = _ => new BadRequestObjectResult(
+                    new
+                    {
+                        success = false,
+                        errorType = ResultErrorType.ValidationError,
+                        errorMessage = "Invalid request parameters :\n" +
+                                       $"- If provided, pageNumber must be at least {QueryDefaultValues.PageNumberMin}. Defaults to {QueryDefaultValues.PageNumberMin}.\n" +
+                                       $"- If provided, pageSize must be between {QueryDefaultValues.PageSizeMin} and {QueryDefaultValues.PageSizeMax}. Defaults to {QueryDefaultValues.PageSizeDefault}.\n",
+                        content = (object?)null
+                    }
+                );
+            });
         builder.Services.AddAuthorization();
         builder.Services.AddApplicationDependencies();
         builder.Services.AddInfrastructureDependencies(connectionString);
@@ -30,7 +47,30 @@ public static class Program
         await app.SeedDatabaseAsync();
 
         // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment()) app.MapOpenApi();
+        if (app.Environment.IsDevelopment())
+            app.MapOpenApi();
+        else
+            app.UseExceptionHandler(options =>
+            {
+                options.Run(async context =>
+                {
+                    ILoggerFactory loggerFactory = context.RequestServices.GetRequiredService<ILoggerFactory>();
+                    ILogger logger = loggerFactory.CreateLogger("UnhandledException");
+
+                    Exception? exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+
+                    logger.LogError(exception, "Unhandled exception");
+
+                    context.Response.StatusCode = 500;
+                    context.Response.ContentType = "application/json";
+                    await context.Response.WriteAsJsonAsync(new
+                    {
+                        success = false,
+                        errorType = ResultErrorType.InternalError,
+                        errorMessage = "Internal server error"
+                    });
+                });
+            });
 
         app.UseHttpsRedirection();
 

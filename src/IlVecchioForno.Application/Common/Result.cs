@@ -7,9 +7,9 @@ public sealed class Result<T>
     }
 
     public bool Success { get; private init; }
-    public T? Content { get; private init; }
     public ResultErrorType ErrorType { get; private init; }
     public string? ErrorMessage { get; private init; }
+    public T? Content { get; private init; }
 
     public static Result<T> Ok(T content)
     {

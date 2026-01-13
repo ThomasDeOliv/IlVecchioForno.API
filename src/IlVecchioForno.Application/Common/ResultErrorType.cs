@@ -7,5 +7,6 @@ public enum ResultErrorType
     ValidationError,
     Conflict,
     Unauthorized,
-    Forbidden
+    Forbidden,
+    InternalError
 }

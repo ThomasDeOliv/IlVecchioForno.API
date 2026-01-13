@@ -23,7 +23,6 @@
         <Folder Include="Gateways\Persistence\"/>
         <Folder Include="UseCases\Ingredients\"/>
         <Folder Include="UseCases\Pizzas\"/>
-        <Folder Include="UseCases\QuantityTypes\"/>
     </ItemGroup>
 
 </Project>
