@@ -31,20 +31,25 @@ public sealed class DbFixture : IAsyncLifetime
         await this._container.DisposeAsync();
     }
 
-    public IlVecchioFornoDbContext CreateTestDbContext()
+    public IlVecchioFornoDbContext CreateTestDbContext(string dbName)
+    {
+        return this.CreateTestDbContext(dbName, TimeProvider.System);
+    }
+
+    public IlVecchioFornoDbContext CreateTestDbContext(string dbName, TimeProvider timeProvider)
     {
         string containerConnectionString = this._container.GetConnectionString();
 
         NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder(containerConnectionString)
         {
-            Database = $"test_{Guid.NewGuid():N}" // Same container, but different databases for each tests
+            Database = dbName // Same container, but different databases for each tests
         };
 
         DbContextOptions<IlVecchioFornoDbContext> options = new DbContextOptionsBuilder<IlVecchioFornoDbContext>()
             .UseNpgsql(builder.ConnectionString)
             .Options;
 
-        return new IlVecchioFornoDbContext(options);
+        return new IlVecchioFornoDbContext(options, timeProvider);
     }
 }
 

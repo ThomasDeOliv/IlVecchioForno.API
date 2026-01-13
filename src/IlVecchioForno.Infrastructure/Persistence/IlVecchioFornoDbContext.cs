@@ -10,8 +10,14 @@ namespace IlVecchioForno.Infrastructure.Persistence;
 
 public class IlVecchioFornoDbContext : DbContext
 {
-    public IlVecchioFornoDbContext(DbContextOptions<IlVecchioFornoDbContext> options) : base(options)
+    private readonly TimeProvider _timeProvider;
+
+    public IlVecchioFornoDbContext(
+        DbContextOptions<IlVecchioFornoDbContext> options, 
+        TimeProvider timeProvider
+    ) : base(options)
     {
+        this._timeProvider = timeProvider;
     }
 
     public virtual DbSet<Pizza> Pizzas { get; set; }
@@ -27,7 +33,7 @@ public class IlVecchioFornoDbContext : DbContext
 
     private void ApplyEntityAudit()
     {
-        DateTime now = DateTime.UtcNow;
+        DateTime now = this._timeProvider.GetUtcNow().UtcDateTime;
 
         foreach (EntityEntry<IAuditable> entry in this.ChangeTracker.Entries<IAuditable>())
             switch (entry.State)

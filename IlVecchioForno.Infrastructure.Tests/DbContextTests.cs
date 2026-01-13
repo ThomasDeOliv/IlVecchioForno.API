@@ -17,7 +17,8 @@ public class DbContextTests : IAsyncLifetime
 
     public Task InitializeAsync()
     {
-        this._context = this._fixture.CreateTestDbContext();
+        string dbName = GetRandomDbName();
+        this._context = this._fixture.CreateTestDbContext(dbName);
         return Task.CompletedTask;
     }
 
@@ -25,6 +26,11 @@ public class DbContextTests : IAsyncLifetime
     {
         await this._context.DisposeAsync();
         this._context = null!;
+    }
+
+    private static string GetRandomDbName()
+    {
+        return $"test_{Guid.NewGuid():N}";
     }
 
     [Fact]
