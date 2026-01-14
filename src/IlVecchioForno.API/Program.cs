@@ -20,18 +20,19 @@ public static class Program
 
         // Add services to the container.
         builder.Services.AddControllers()
-            .ConfigureApiBehaviorOptions(options =>
+            .ConfigureApiBehaviorOptions(options => // TODO : move in an other directory
             {
                 options.InvalidModelStateResponseFactory = _ => new BadRequestObjectResult(
                     new
                     {
-                        success = false,
-                        errorType = ResultErrorType.ValidationError,
-                        errorMessage = "Invalid request model provided.",
-                        content = (object?)null
+                        Success = false,
+                        Type = ResultType.ValidationError,
+                        ErrorMessage = "Invalid request model provided.",
+                        Content = (object?)null
                     }
                 );
             });
+        
         builder.Services.AddAuthorization();
         builder.Services.AddApplicationDependencies();
         builder.Services.AddInfrastructureDependencies(connectionString);
@@ -50,7 +51,7 @@ public static class Program
         else
             app.UseExceptionHandler(options =>
             {
-                options.Run(async context =>
+                options.Run(async context => // TODO : move in an other directory
                 {
                     ILoggerFactory loggerFactory = context.RequestServices.GetRequiredService<ILoggerFactory>();
                     ILogger logger = loggerFactory.CreateLogger("UnhandledException");
@@ -61,11 +62,13 @@ public static class Program
 
                     context.Response.StatusCode = 500;
                     context.Response.ContentType = "application/json";
+                    
                     await context.Response.WriteAsJsonAsync(new
                     {
-                        success = false,
-                        errorType = ResultErrorType.InternalError,
-                        errorMessage = "Internal server error"
+                        Success = false,
+                        Type = ResultType.InternalError,
+                        ErrorMessage = "Internal server error",
+                        Content = (object?)null
                     });
                 });
             });

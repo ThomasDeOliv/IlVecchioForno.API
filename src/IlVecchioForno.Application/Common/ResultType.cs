@@ -1,12 +1,13 @@
 namespace IlVecchioForno.Application.Common;
 
-public enum ResultErrorType
+public enum ResultType
 {
-    None,
-    NotFound,
-    ValidationError,
+    Ok,
+    Created,
     Conflict,
+    ValidationError,
     Unauthorized,
     Forbidden,
+    NotFound,
     InternalError
 }

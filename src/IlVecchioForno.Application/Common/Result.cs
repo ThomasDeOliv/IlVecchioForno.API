@@ -7,8 +7,8 @@ public sealed class Result<T>
     }
 
     public bool Success { get; private init; }
-    public ResultErrorType ErrorType { get; private init; }
     public string? ErrorMessage { get; private init; }
+    public ResultType Type { get; private init; }
     public T? Content { get; private init; }
 
     public static Result<T> Ok(T content)
@@ -17,7 +17,18 @@ public sealed class Result<T>
         {
             Success = true,
             Content = content,
-            ErrorType = ResultErrorType.None,
+            Type = ResultType.Ok,
+            ErrorMessage = null
+        };
+    }
+    
+    public static Result<T> Created(T content)
+    {
+        return new Result<T>
+        {
+            Success = true,
+            Content = content,
+            Type = ResultType.Created,
             ErrorMessage = null
         };
     }
@@ -28,7 +39,7 @@ public sealed class Result<T>
         {
             Success = false,
             Content = default,
-            ErrorType = ResultErrorType.NotFound,
+            Type = ResultType.NotFound,
             ErrorMessage = errorMessage
         };
     }
@@ -39,7 +50,7 @@ public sealed class Result<T>
         {
             Success = false,
             Content = default,
-            ErrorType = ResultErrorType.ValidationError,
+            Type = ResultType.ValidationError,
             ErrorMessage = errorMessage
         };
     }
@@ -50,7 +61,7 @@ public sealed class Result<T>
         {
             Success = false,
             Content = default,
-            ErrorType = ResultErrorType.Conflict,
+            Type = ResultType.Conflict,
             ErrorMessage = errorMessage
         };
     }
@@ -61,7 +72,7 @@ public sealed class Result<T>
         {
             Success = false,
             Content = default,
-            ErrorType = ResultErrorType.Unauthorized,
+            Type = ResultType.Unauthorized,
             ErrorMessage = errorMessage
         };
     }
@@ -72,7 +83,7 @@ public sealed class Result<T>
         {
             Success = false,
             Content = default,
-            ErrorType = ResultErrorType.Forbidden,
+            Type = ResultType.Forbidden,
             ErrorMessage = errorMessage
         };
     }
