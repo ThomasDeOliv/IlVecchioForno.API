@@ -27,9 +27,7 @@ public static class Program
                     {
                         success = false,
                         errorType = ResultErrorType.ValidationError,
-                        errorMessage = "Invalid request parameters :\n" +
-                                       $"- If provided, pageNumber must be at least {QueryDefaultValues.PageNumberMin}. Defaults to {QueryDefaultValues.PageNumberMin}.\n" +
-                                       $"- If provided, pageSize must be between {QueryDefaultValues.PageSizeMin} and {QueryDefaultValues.PageSizeMax}. Defaults to {QueryDefaultValues.PageSizeDefault}.\n",
+                        errorMessage = "Invalid request model provided.",
                         content = (object?)null
                     }
                 );
