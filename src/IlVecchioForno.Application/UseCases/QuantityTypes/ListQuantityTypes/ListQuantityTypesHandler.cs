@@ -11,8 +11,7 @@ using MediatR;
 
 namespace IlVecchioForno.Application.UseCases.QuantityTypes.ListQuantityTypes;
 
-internal sealed class
-    ListQuantityTypesHandler : IRequestHandler<ListQuantityTypesQuery, Result<IReadOnlyList<QuantityTypeDTO>>>
+internal sealed class ListQuantityTypesHandler : IRequestHandler<ListQuantityTypesQuery, Result<IReadOnlyList<QuantityTypeDTO>>>
 {
     private readonly IMapper _mapper;
     private readonly IQuantityTypeRepository _repository;

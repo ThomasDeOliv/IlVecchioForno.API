@@ -21,8 +21,6 @@
 
     <ItemGroup>
         <Folder Include="Gateways\Persistence\"/>
-        <Folder Include="UseCases\Ingredients\"/>
-        <Folder Include="UseCases\Pizzas\"/>
     </ItemGroup>
 
 </Project>
