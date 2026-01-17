@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace IlVecchioForno.Infrastructure.Persistence.Setup;
 
-public static class DbInitExtensions
+public static class DbInitExtension
 {
     extension(IApplicationBuilder app)
     {

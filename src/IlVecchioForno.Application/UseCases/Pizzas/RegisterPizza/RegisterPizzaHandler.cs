@@ -35,7 +35,7 @@ internal sealed class RegisterPizzaHandler : IRequestHandler<RegisterPizzaComman
         List<PizzaIngredient> pizzaIngredients = targetIngredients
             .Select(t => new PizzaIngredient(
                     new PizzaIngredientQuantity(request.IngredientsAndQuantities[t.Id]),
-                    targetIngredients.Single(e => e.Id.Equals(t.Id))
+                    t
                 )
             ).ToList();
 

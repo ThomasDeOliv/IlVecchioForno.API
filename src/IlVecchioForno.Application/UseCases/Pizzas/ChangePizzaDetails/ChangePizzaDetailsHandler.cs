@@ -29,7 +29,7 @@ internal sealed class ChangePizzaDetailsHandler : IRequestHandler<ChangePizzaDet
         Pizza? target = await this._pizzaRepository.FindAsync(request.Id, cancellationToken);
 
         if (target is null)
-            return Result<int>.ValidationError($"Cannot find pizza with id {request.Id}");
+            return Result<int>.NotFound("Pizza not found.");
 
         IReadOnlyCollection<Ingredient> targetIngredients =
             await this._ingredientRepository.ResolveAsync(request.IngredientsAndQuantities.Keys, cancellationToken);
@@ -41,7 +41,7 @@ internal sealed class ChangePizzaDetailsHandler : IRequestHandler<ChangePizzaDet
             .Select(t =>
                 new PizzaIngredient(
                     new PizzaIngredientQuantity(request.IngredientsAndQuantities[t.Id]),
-                    targetIngredients.Single(e => e.Id == t.Id)
+                    t
                 )
             )
             .ToList();
