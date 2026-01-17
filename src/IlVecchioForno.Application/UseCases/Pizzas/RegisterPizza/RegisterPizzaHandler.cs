@@ -29,6 +29,9 @@ internal sealed class RegisterPizzaHandler : IRequestHandler<RegisterPizzaComman
         IReadOnlyCollection<Ingredient> targetIngredients = await this._ingredientRepository
             .ResolveAsync(request.IngredientsAndQuantities.Keys, cancellationToken);
 
+        if (targetIngredients.Count != request.IngredientsAndQuantities.Count)
+            return Result<int>.ValidationError("Some ingredients were not found.");
+
         List<PizzaIngredient> pizzaIngredients = targetIngredients
             .Select(t => new PizzaIngredient(
                     new PizzaIngredientQuantity(request.IngredientsAndQuantities[t.Id]),

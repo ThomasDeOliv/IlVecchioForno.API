@@ -5,7 +5,7 @@ using MediatR;
 
 namespace IlVecchioForno.Application.UseCases.Pizzas.ArchivePizza;
 
-internal class ArchivePizzaHandler : IRequestHandler<ArchivePizzaCommand, Result<int>>
+internal sealed class ArchivePizzaHandler : IRequestHandler<ArchivePizzaCommand, Result<int>>
 {
     private readonly IPizzaRepository _pizzaRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -24,7 +24,7 @@ internal class ArchivePizzaHandler : IRequestHandler<ArchivePizzaCommand, Result
         Pizza? target = await this._pizzaRepository.FindAsync(request.Id, cancellationToken);
 
         if (target is null)
-            return Result<int>.ValidationError("Provided pizza provided.");
+            return Result<int>.NotFound("Pizza not found.");
 
         target.UpdateArchived();
         int result = await this._unitOfWork.SaveChangesAsync(cancellationToken);

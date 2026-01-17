@@ -15,7 +15,8 @@ internal sealed class QuantityTypeFilterService : IFilterService<QuantityType>
                     current.Where(qT =>
                         EF.Functions.ILike(qT.Name, $"%{searchFilter.Search}%")
                         || (
-                            !string.IsNullOrEmpty(qT.Unit)
+                            qT.Unit != null
+                            && !string.IsNullOrEmpty(qT.Unit)
                             && EF.Functions.ILike(qT.Unit, $"%{searchFilter.Search}%")
                         )
                     ),

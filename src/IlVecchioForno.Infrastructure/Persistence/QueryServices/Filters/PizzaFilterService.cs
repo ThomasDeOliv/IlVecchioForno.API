@@ -28,7 +28,8 @@ internal sealed class PizzaFilterService : IFilterService<Pizza>
                     current.Where(p =>
                         EF.Functions.ILike(p.Name, $"%{searchFilter.Search}%")
                         || (
-                            !string.IsNullOrEmpty(p.Description)
+                            p.Description != null 
+                            && !string.IsNullOrEmpty(p.Description.Value)
                             && EF.Functions.ILike(p.Description, $"%{searchFilter.Search}%")
                         )
                     ),
