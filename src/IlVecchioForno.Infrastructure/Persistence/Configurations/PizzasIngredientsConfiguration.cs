@@ -20,7 +20,7 @@ internal class PizzasIngredientsConfiguration : EntityConfigurationBase<PizzaIng
                 value => new PizzaIngredientQuantity(value)
             )
             .HasColumnName("quantity")
-            .HasColumnType("NUMERIC(18,2)")
+            .HasColumnType("NUMERIC(9, 3)")
             .IsRequired();
 
         builder.Property<int>("PizzaId") // Shadow Pizza FK

@@ -13,7 +13,7 @@ public class IlVecchioFornoDbContext : DbContext
     private readonly TimeProvider _timeProvider;
 
     public IlVecchioFornoDbContext(
-        DbContextOptions<IlVecchioFornoDbContext> options, 
+        DbContextOptions<IlVecchioFornoDbContext> options,
         TimeProvider timeProvider
     ) : base(options)
     {

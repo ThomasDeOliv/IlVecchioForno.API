@@ -32,7 +32,7 @@ public static class Program
                     }
                 );
             });
-        
+
         builder.Services.AddAuthorization();
         builder.Services.AddApplicationDependencies();
         builder.Services.AddInfrastructureDependencies(connectionString);
@@ -62,7 +62,7 @@ public static class Program
 
                     context.Response.StatusCode = 500;
                     context.Response.ContentType = "application/json";
-                    
+
                     await context.Response.WriteAsJsonAsync(new
                     {
                         Success = false,

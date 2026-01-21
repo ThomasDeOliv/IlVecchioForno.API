@@ -72,7 +72,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                         .HasColumnName("created_at");
 
                     b.Property<decimal>("Quantity")
-                        .HasColumnType("NUMERIC(18,2)")
+                        .HasColumnType("NUMERIC(9, 3)")
                         .HasColumnName("quantity");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -105,8 +105,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                         .HasColumnName("created_at");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(1024)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("VARCHAR(1024)")
                         .HasColumnName("description");
 
                     b.Property<string>("Name")
@@ -115,7 +114,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                         .HasColumnName("name");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("NUMERIC(18,2)")
+                        .HasColumnType("NUMERIC(6, 2)")
                         .HasColumnName("price");
 
                     b.Property<DateTime>("UpdatedAt")

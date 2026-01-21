@@ -33,8 +33,7 @@ internal class PizzasConfiguration : EntityConfigurationBase<Pizza>
                 value => !string.IsNullOrEmpty(value) ? new PizzaDescription(value) : null
             )
             .HasColumnName("description")
-            .HasColumnType("TEXT")
-            .HasMaxLength(PizzaInvariant.DescriptionMaxLength)
+            .HasColumnType($"VARCHAR({PizzaInvariant.DescriptionMaxLength})")
             .IsRequired(false);
 
         builder.Property(e => e.Archived)
@@ -48,7 +47,7 @@ internal class PizzasConfiguration : EntityConfigurationBase<Pizza>
                 value => new PizzaPrice(value)
             )
             .HasColumnName("price")
-            .HasColumnType("NUMERIC(18,2)")
+            .HasColumnType("NUMERIC(6, 2)")
             .IsRequired();
 
         builder.HasKey(e => e.Id)
