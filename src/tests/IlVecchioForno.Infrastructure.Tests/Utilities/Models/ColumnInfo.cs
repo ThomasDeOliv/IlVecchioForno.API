@@ -1,6 +1,6 @@
 using Xunit.Abstractions;
 
-namespace IlVecchioForno.Infrastructure.Tests.Utilities;
+namespace IlVecchioForno.Infrastructure.Tests.Utilities.Models;
 
 public record ColumnInfo : IXunitSerializable
 {

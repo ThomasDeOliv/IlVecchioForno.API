@@ -1,174 +1,14 @@
-using IlVecchioForno.Domain.Ingredients;
-using IlVecchioForno.Domain.Pizzas;
-using IlVecchioForno.Domain.QuantityTypes;
-using IlVecchioForno.Infrastructure.Tests.Utilities;
+using IlVecchioForno.Infrastructure.Tests.Utilities.Data;
+using IlVecchioForno.Infrastructure.Tests.Utilities.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace IlVecchioForno.Infrastructure.Tests;
 
 public sealed class DatabaseTests : DbTestsBase
 {
-    // Schemas
-    private const string PizzasDbSchema = "pizzas_schema";
-
-    // Tables
-    private const string PizzasTable = "pizzas";
-    private const string PizzasIngredientsTable = "pizzas_ingredients";
-    private const string IngredientsTable = "ingredients";
-    private const string QuantityTypesTable = "quantity_types";
-
     public DatabaseTests(DbFixture fixture) : base(fixture)
     {
     }
-
-    public static TheoryData<string, string, int> TablesAndRelatedVarcharColumnsLength =>
-        new TheoryData<string, string, int>
-        {
-            {
-                PizzasTable,
-                "name",
-                PizzaInvariant.NameMaxLength
-            },
-            {
-                PizzasTable,
-                "description",
-                PizzaInvariant.DescriptionMaxLength
-            },
-            {
-                IngredientsTable,
-                "name",
-                IngredientInvariant.NameMaxLength
-            },
-            {
-                QuantityTypesTable,
-                "name",
-                QuantityTypeInvariant.NameMaxLength
-            },
-            {
-                QuantityTypesTable,
-                "unit",
-                QuantityTypeInvariant.UnitMaxLength
-            }
-        };
-
-    public static TheoryData<string, string, int, int> TablesAndNumericColumnsPrecision =>
-        new TheoryData<string, string, int, int>
-        {
-            {
-                PizzasTable,
-                "price",
-                6,
-                2
-            },
-            {
-                PizzasIngredientsTable,
-                "quantity",
-                9,
-                3
-            }
-        };
-
-    // Test data
-    public static TheoryData<string, ColumnInfo[]> TablesAndRelatedColumns =>
-        new TheoryData<string, ColumnInfo[]>
-        {
-            {
-                PizzasTable,
-                [
-                    new ColumnInfo("id", "integer", false),
-                    new ColumnInfo("name", "character varying", false),
-                    new ColumnInfo("description", "character varying", true),
-                    new ColumnInfo("archived", "timestamp with time zone", true),
-                    new ColumnInfo("price", "numeric", false),
-                    new ColumnInfo("created_at", "timestamp with time zone", false),
-                    new ColumnInfo("updated_at", "timestamp with time zone", false)
-                ]
-            },
-            {
-                PizzasIngredientsTable,
-                [
-                    new ColumnInfo("quantity", "numeric", false),
-                    new ColumnInfo("pizza_id", "integer", false),
-                    new ColumnInfo("ingredient_id", "integer", false),
-                    new ColumnInfo("created_at", "timestamp with time zone", false),
-                    new ColumnInfo("updated_at", "timestamp with time zone", false)
-                ]
-            },
-            {
-                IngredientsTable,
-                [
-                    new ColumnInfo("id", "integer", false),
-                    new ColumnInfo("name", "character varying", false),
-                    new ColumnInfo("quantity_type_id", "smallint", false),
-                    new ColumnInfo("created_at", "timestamp with time zone", false),
-                    new ColumnInfo("updated_at", "timestamp with time zone", false)
-                ]
-            },
-            {
-                QuantityTypesTable,
-                [
-                    new ColumnInfo("id", "smallint", false),
-                    new ColumnInfo("name", "character varying", false),
-                    new ColumnInfo("unit", "character varying", true),
-                    new ColumnInfo("created_at", "timestamp with time zone", false),
-                    new ColumnInfo("updated_at", "timestamp with time zone", false)
-                ]
-            }
-        };
-
-    public static TheoryData<string, string, string[]> TablesAndExpectedPrimaryKeys =>
-        new TheoryData<string, string, string[]>
-        {
-            {
-                IngredientsTable,
-                "pk_ingredients",
-                ["id"]
-            },
-            {
-                PizzasTable,
-                "pk_pizzas",
-                ["id"]
-            },
-            {
-                QuantityTypesTable,
-                "pk_quantity_types",
-                ["id"]
-            },
-            {
-                PizzasIngredientsTable,
-                "pk_pizzas_ingredients",
-                ["ingredient_id", "pizza_id"]
-            }
-        };
-
-    public static TheoryData<string, string, string, string, string, string> TablesAndExpectedForeignKeys =>
-        new TheoryData<string, string, string, string, string, string>
-        {
-            {
-                IngredientsTable,
-                "quantity_type_id",
-                "fk_ingredients__quantity_types",
-                QuantityTypesTable,
-                "id",
-                "RESTRICT"
-            },
-            {
-                PizzasIngredientsTable,
-                "pizza_id",
-                "fk_pizzas_ingredients__pizzas",
-                PizzasTable,
-                "id",
-                "CASCADE"
-            },
-            {
-                PizzasIngredientsTable,
-                "ingredient_id",
-                "fk_pizzas_ingredients__ingredients",
-                IngredientsTable,
-                "id",
-                "RESTRICT"
-            }
-        };
 
     [Fact]
     public async Task Database_CanBeCreated()
@@ -208,7 +48,7 @@ public sealed class DatabaseTests : DbTestsBase
         // Assert
         Assert.NotEmpty(schemas);
         Assert.Contains(
-            PizzasDbSchema,
+            DatabaseTestsData.PizzasDbSchema,
             schemas
         );
     }
@@ -219,10 +59,10 @@ public sealed class DatabaseTests : DbTestsBase
         // Arrange
         List<string> expectedTables = new List<string>
         {
-            PizzasTable,
-            PizzasIngredientsTable,
-            IngredientsTable,
-            QuantityTypesTable
+            DatabaseTestsData.PizzasTable,
+            DatabaseTestsData.PizzasIngredientsTable,
+            DatabaseTestsData.IngredientsTable,
+            DatabaseTestsData.QuantityTypesTable
         };
         await this._context.Database.MigrateAsync();
         // Act
@@ -231,7 +71,7 @@ public sealed class DatabaseTests : DbTestsBase
                 $"""
                  SELECT table_name
                  FROM information_schema.tables
-                 WHERE table_schema = {PizzasDbSchema}
+                 WHERE table_schema = {DatabaseTestsData.PizzasDbSchema}
                  """
             )
             .ToListAsync();
@@ -244,7 +84,7 @@ public sealed class DatabaseTests : DbTestsBase
     }
 
     [Theory]
-    [MemberData(nameof(TablesAndRelatedColumns))]
+    [MemberData(nameof(DatabaseTestsData.TablesAndRelatedColumns), MemberType = typeof(DatabaseTestsData))]
     public async Task Table_ContainsExpectedFields(
         string tableName,
         ColumnInfo[] expectedColumns
@@ -261,7 +101,7 @@ public sealed class DatabaseTests : DbTestsBase
                       data_type AS "DataType",
                       is_nullable = 'YES' AS "IsNullable"
                   FROM information_schema.columns
-                  WHERE table_schema = {PizzasDbSchema}
+                  WHERE table_schema = {DatabaseTestsData.PizzasDbSchema}
                       AND table_name = {tableName}
                  """
             )
@@ -273,7 +113,7 @@ public sealed class DatabaseTests : DbTestsBase
     }
 
     [Theory]
-    [MemberData(nameof(TablesAndRelatedVarcharColumnsLength))]
+    [MemberData(nameof(DatabaseTestsData.TablesAndRelatedVarcharColumnsLength), MemberType = typeof(DatabaseTestsData))]
     public async Task Table_VarcharColumns_HaveExpectedLength(
         string tableName,
         string columnName,
@@ -289,7 +129,7 @@ public sealed class DatabaseTests : DbTestsBase
                   SELECT 
                       character_maximum_length AS "MaxLength"
                   FROM information_schema.columns
-                  WHERE table_schema = {PizzasDbSchema}
+                  WHERE table_schema = {DatabaseTestsData.PizzasDbSchema}
                       AND table_name = {tableName}
                       AND column_name = {columnName}
                  """
@@ -301,7 +141,7 @@ public sealed class DatabaseTests : DbTestsBase
     }
 
     [Theory]
-    [MemberData(nameof(TablesAndNumericColumnsPrecision))]
+    [MemberData(nameof(DatabaseTestsData.TablesAndNumericColumnsPrecision), MemberType = typeof(DatabaseTestsData))]
     public async Task Table_NumericColumns_HaveExpectedPrecisionAndScale(
         string tableName,
         string columnName,
@@ -319,7 +159,7 @@ public sealed class DatabaseTests : DbTestsBase
                       numeric_precision AS "Precision", 
                       numeric_scale AS "Scale"
                   FROM information_schema.columns
-                  WHERE table_schema = {PizzasDbSchema}
+                  WHERE table_schema = {DatabaseTestsData.PizzasDbSchema}
                       AND table_name = {tableName}
                       AND column_name = {columnName}
                  """
@@ -332,7 +172,7 @@ public sealed class DatabaseTests : DbTestsBase
     }
 
     [Theory]
-    [MemberData(nameof(TablesAndExpectedPrimaryKeys))]
+    [MemberData(nameof(DatabaseTestsData.TablesAndExpectedPrimaryKeys), MemberType = typeof(DatabaseTestsData))]
     public async Task Table_PrimaryKey_HasExpectedConstraint(
         string tableName,
         string expectedConstraintName,
@@ -352,7 +192,7 @@ public sealed class DatabaseTests : DbTestsBase
                  FROM information_schema.table_constraints tc                                                                                                                                                                                                                                                                                                                                                                                    
                  JOIN information_schema.key_column_usage kcu                                                                                                                                                                                                                                                                                                                                                                                    
                      ON tc.constraint_name = kcu.constraint_name                                                                                                                                                                                                                                                                                                                                                                                 
-                 WHERE tc.table_schema = {PizzasDbSchema}                                                                                                                                                                                                                                                                                                                                                                                        
+                 WHERE tc.table_schema = {DatabaseTestsData.PizzasDbSchema}                                                                                                                                                                                                                                                                                                                                                                                        
                      AND tc.table_name = {tableName}                                                                                                                                                                                                                                                                                                                                                                                             
                      AND tc.constraint_type = 'PRIMARY KEY'                                                                                                                                                                                                                                                                                                                                                                                      
                  GROUP BY tc.constraint_name               
@@ -366,7 +206,7 @@ public sealed class DatabaseTests : DbTestsBase
     }
 
     [Theory]
-    [MemberData(nameof(TablesAndExpectedForeignKeys))]
+    [MemberData(nameof(DatabaseTestsData.TablesAndExpectedForeignKeys), MemberType = typeof(DatabaseTestsData))]
     public async Task Table_ForeignKeyColumns_HaveExpectedConstraint(
         string tableName,
         string columnName,
@@ -394,7 +234,7 @@ public sealed class DatabaseTests : DbTestsBase
                       ON tc.constraint_name = ccu.constraint_name      
                   JOIN information_schema.referential_constraints rc                                                                                                                                                                                                                                                                                                                                                                              
                       ON tc.constraint_name = rc.constraint_name  
-                  WHERE tc.table_schema = {PizzasDbSchema}                                                                                                                                                                                                                                                                                                                                                                                        
+                  WHERE tc.table_schema = {DatabaseTestsData.PizzasDbSchema}                                                                                                                                                                                                                                                                                                                                                                                        
                       AND tc.table_name = {tableName}                                                                                                                                                                                                                                                                                                                                                                                             
                       AND kcu.column_name = {columnName}                                                                                                                                                                                                                                                                                                                                                                                          
                       AND tc.constraint_type = 'FOREIGN KEY'               
