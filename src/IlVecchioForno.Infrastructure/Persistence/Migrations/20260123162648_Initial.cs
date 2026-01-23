@@ -25,7 +25,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                     name = table.Column<string>(type: "VARCHAR(256)", nullable: false),
                     description = table.Column<string>(type: "VARCHAR(1024)", nullable: true),
                     price = table.Column<decimal>(type: "numeric(6,2)", nullable: false),
-                    archived = table.Column<DateTimeOffset>(type: "TIMESTAMPTZ", nullable: true),
+                    archived_at = table.Column<DateTimeOffset>(type: "TIMESTAMPTZ", nullable: true),
                     created_at = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: false),
                     updated_at = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: false)
                 },

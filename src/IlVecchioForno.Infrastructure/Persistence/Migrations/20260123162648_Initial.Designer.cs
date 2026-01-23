@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IlVecchioForno.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(IlVecchioFornoDbContext))]
-    [Migration("20260121110631_Initial")]
+    [Migration("20260123162648_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -99,9 +99,9 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTimeOffset?>("Archived")
+                    b.Property<DateTimeOffset?>("ArchivedAt")
                         .HasColumnType("TIMESTAMPTZ")
-                        .HasColumnName("archived");
+                        .HasColumnName("archived_at");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TIMESTAMPTZ")

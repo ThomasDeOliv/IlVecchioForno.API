@@ -98,7 +98,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTimeOffset?>("ArchivedAt")
                         .HasColumnType("TIMESTAMPTZ")
-                        .HasColumnName("archived");
+                        .HasColumnName("archived_at");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TIMESTAMPTZ")
