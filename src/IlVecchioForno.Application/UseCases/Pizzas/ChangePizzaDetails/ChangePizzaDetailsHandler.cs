@@ -1,4 +1,4 @@
-using IlVecchioForno.Application.Common;
+using IlVecchioForno.Application.Common.Exceptions;
 using IlVecchioForno.Application.Gateways.Persistence;
 using IlVecchioForno.Domain.Ingredients;
 using IlVecchioForno.Domain.PizzaIngredients;
@@ -7,7 +7,7 @@ using MediatR;
 
 namespace IlVecchioForno.Application.UseCases.Pizzas.ChangePizzaDetails;
 
-internal sealed class ChangePizzaDetailsHandler : IRequestHandler<ChangePizzaDetailsCommand, Result<int>>
+internal sealed class ChangePizzaDetailsHandler : IRequestHandler<ChangePizzaDetailsCommand, Unit>
 {
     private readonly IIngredientRepository _ingredientRepository;
     private readonly IPizzaRepository _pizzaRepository;
@@ -24,18 +24,18 @@ internal sealed class ChangePizzaDetailsHandler : IRequestHandler<ChangePizzaDet
         this._unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<int>> Handle(ChangePizzaDetailsCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(ChangePizzaDetailsCommand request, CancellationToken cancellationToken)
     {
         Pizza? target = await this._pizzaRepository.FindAsync(request.Id, cancellationToken);
 
         if (target is null)
-            return Result<int>.NotFound("Pizza not found.");
+            throw new InvalidReferenceException("Pizza not found.");
 
         IReadOnlyCollection<Ingredient> targetIngredients =
             await this._ingredientRepository.ResolveAsync(request.IngredientsAndQuantities.Keys, cancellationToken);
 
         if (targetIngredients.Count != request.IngredientsAndQuantities.Count)
-            return Result<int>.ValidationError("Some ingredients were not found.");
+            throw new InvalidReferenceException("Some ingredients were not found.");
 
         List<PizzaIngredient> pizzaIngredients = targetIngredients
             .Select(t =>
@@ -53,7 +53,7 @@ internal sealed class ChangePizzaDetailsHandler : IRequestHandler<ChangePizzaDet
                 : null
         );
         target.UpdatePrice(new PizzaPrice(request.Price));
-        int result = await this._unitOfWork.SaveChangesAsync(cancellationToken);
-        return Result<int>.Ok(result);
+        await this._unitOfWork.SaveChangesAsync(cancellationToken);
+        return Unit.Value;
     }
 }

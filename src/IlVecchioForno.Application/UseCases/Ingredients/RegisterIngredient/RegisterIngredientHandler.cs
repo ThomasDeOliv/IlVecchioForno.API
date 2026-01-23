@@ -1,6 +1,5 @@
 using FluentValidation;
-using FluentValidation.Results;
-using IlVecchioForno.Application.Common;
+using IlVecchioForno.Application.Common.Exceptions;
 using IlVecchioForno.Application.Gateways.Persistence;
 using IlVecchioForno.Domain.Ingredients;
 using IlVecchioForno.Domain.QuantityTypes;
@@ -8,7 +7,7 @@ using MediatR;
 
 namespace IlVecchioForno.Application.UseCases.Ingredients.RegisterIngredient;
 
-internal sealed class RegisterIngredientHandler : IRequestHandler<RegisterIngredientCommand, Result<int>>
+internal sealed class RegisterIngredientHandler : IRequestHandler<RegisterIngredientCommand, int>
 {
     private readonly IIngredientRepository _ingredientRepository;
     private readonly IQuantityTypeRepository _quantityTypeRepository;
@@ -28,20 +27,15 @@ internal sealed class RegisterIngredientHandler : IRequestHandler<RegisterIngred
         this._validator = validator;
     }
 
-    public async Task<Result<int>> Handle(RegisterIngredientCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(RegisterIngredientCommand request, CancellationToken cancellationToken)
     {
-        ValidationResult validation = await this._validator.ValidateAsync(request, cancellationToken);
-
-        if (!validation.IsValid)
-            return Result<int>.ValidationError(
-                string.Join("\n", validation.Errors.Select(e => e.ErrorMessage))
-            );
+        await this._validator.ValidateAndThrowAsync(request, cancellationToken);
 
         QuantityType? targetQuantityType =
             await this._quantityTypeRepository.FindAsync(request.QuantityTypeId, cancellationToken);
 
         if (targetQuantityType is null)
-            return Result<int>.ValidationError("Provided quantity type not found.");
+            throw new InvalidReferenceException("Provided quantity type not found.");
 
         Ingredient newIngredient = new Ingredient(
             new IngredientName(request.Name),
@@ -50,6 +44,6 @@ internal sealed class RegisterIngredientHandler : IRequestHandler<RegisterIngred
         this._ingredientRepository.Add(newIngredient);
         await this._unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result<int>.Ok(newIngredient.Id);
+        return newIngredient.Id;
     }
 }

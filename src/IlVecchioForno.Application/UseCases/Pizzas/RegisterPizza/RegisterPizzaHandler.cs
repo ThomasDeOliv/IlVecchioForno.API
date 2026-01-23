@@ -1,4 +1,4 @@
-using IlVecchioForno.Application.Common;
+using IlVecchioForno.Application.Common.Exceptions;
 using IlVecchioForno.Application.Gateways.Persistence;
 using IlVecchioForno.Domain.Ingredients;
 using IlVecchioForno.Domain.PizzaIngredients;
@@ -7,7 +7,7 @@ using MediatR;
 
 namespace IlVecchioForno.Application.UseCases.Pizzas.RegisterPizza;
 
-internal sealed class RegisterPizzaHandler : IRequestHandler<RegisterPizzaCommand, Result<int>>
+internal sealed class RegisterPizzaHandler : IRequestHandler<RegisterPizzaCommand, int>
 {
     private readonly IIngredientRepository _ingredientRepository;
     private readonly IPizzaRepository _pizzaRepository;
@@ -24,13 +24,13 @@ internal sealed class RegisterPizzaHandler : IRequestHandler<RegisterPizzaComman
         this._unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<int>> Handle(RegisterPizzaCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(RegisterPizzaCommand request, CancellationToken cancellationToken)
     {
         IReadOnlyCollection<Ingredient> targetIngredients = await this._ingredientRepository
             .ResolveAsync(request.IngredientsAndQuantities.Keys, cancellationToken);
 
         if (targetIngredients.Count != request.IngredientsAndQuantities.Count)
-            return Result<int>.ValidationError("Some ingredients were not found.");
+            throw new InvalidReferenceException("Some ingredients were not found.");
 
         List<PizzaIngredient> pizzaIngredients = targetIngredients
             .Select(t => new PizzaIngredient(
@@ -49,8 +49,8 @@ internal sealed class RegisterPizzaHandler : IRequestHandler<RegisterPizzaComman
         this._pizzaRepository.Add(pizza);
         int result = await this._unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return result == 0
-            ? Result<int>.Conflict("Cannot register pizza.") // TODO verify this behavior
-            : Result<int>.Ok(pizza.Id);
+        return result != 0
+            ? pizza.Id
+            : throw new EntityRegistrationException("Cannot register pizza.");
     }
 }

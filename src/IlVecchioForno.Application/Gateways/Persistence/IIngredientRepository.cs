@@ -11,6 +11,11 @@ public interface IIngredientRepository
         CancellationToken cancellationToken = default
     );
 
+    Task<Ingredient?> FindAsync(
+        int id,
+        CancellationToken cancellationToken = default
+    );
+
     Task<IReadOnlyCollection<Ingredient>> ResolveAsync(
         IEnumerable<int> ids,
         CancellationToken cancellationToken = default

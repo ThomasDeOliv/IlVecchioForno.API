@@ -26,11 +26,11 @@ internal sealed class ArchivedPizzaSorterService : ISorterService<Pizza, Archive
                     .ThenBy(p => p.Id),
 
             (ArchivedPizzasSorter.Archived, false) =>
-                q.OrderBy(p => p.Archived)
+                q.OrderBy(p => p.ArchivedAt)
                     .ThenBy(p => p.Id),
 
             (ArchivedPizzasSorter.Archived, true) =>
-                q.OrderByDescending(p => p.Archived)
+                q.OrderByDescending(p => p.ArchivedAt)
                     .ThenBy(p => p.Id),
 
             (_, true) =>

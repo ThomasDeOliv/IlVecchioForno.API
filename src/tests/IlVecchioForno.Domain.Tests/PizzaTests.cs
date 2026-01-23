@@ -144,7 +144,7 @@ public class PizzaTests
         // Assert
         Assert.Equal(name, pizza.Name);
         Assert.Equal(price, pizza.Price);
-        Assert.Null(pizza.Archived);
+        Assert.Null(pizza.ArchivedAt);
         Assert.Empty(pizza.PizzaIngredients);
         Assert.NotNull(pizza.Description);
         Assert.Equal(description, pizza.Description);
@@ -159,7 +159,7 @@ public class PizzaTests
         // Assert
         Assert.Equal(name, pizza.Name);
         Assert.Equal(price, pizza.Price);
-        Assert.Null(pizza.Archived);
+        Assert.Null(pizza.ArchivedAt);
         Assert.Empty(pizza.PizzaIngredients);
         Assert.Null(pizza.Description);
     }
@@ -182,7 +182,7 @@ public class PizzaTests
         Assert.NotNull(pizza.Description);
         Assert.Equal(pizzaDescriptionBase, pizza.Description);
         Assert.Equal(pizzaPriceBase, pizza.Price);
-        Assert.Null(pizza.Archived);
+        Assert.Null(pizza.ArchivedAt);
         Assert.Empty(pizza.PizzaIngredients);
     }
 
@@ -200,7 +200,7 @@ public class PizzaTests
         Assert.NotNull(pizza.Description);
         Assert.Equal(description, pizza.Description);
         Assert.Equal(pizzaPriceBase, pizza.Price);
-        Assert.Null(pizza.Archived);
+        Assert.Null(pizza.ArchivedAt);
         Assert.Empty(pizza.PizzaIngredients);
     }
 
@@ -218,7 +218,7 @@ public class PizzaTests
         Assert.NotNull(pizza.Description);
         Assert.Equal(pizzaDescriptionBase, pizza.Description);
         Assert.Equal(price, pizza.Price);
-        Assert.Null(pizza.Archived);
+        Assert.Null(pizza.ArchivedAt);
         Assert.Empty(pizza.PizzaIngredients);
     }
 
@@ -234,7 +234,7 @@ public class PizzaTests
         Assert.NotNull(pizza.Description);
         Assert.Equal(pizzaDescriptionBase, pizza.Description);
         Assert.Equal(pizzaPriceBase, pizza.Price);
-        Assert.NotNull(pizza.Archived);
+        Assert.NotNull(pizza.ArchivedAt);
         Assert.Empty(pizza.PizzaIngredients);
     }
 
@@ -244,7 +244,7 @@ public class PizzaTests
         // Arrange
         Pizza pizza = CreatePizza(pizzaNameBase, pizzaDescriptionBase, pizzaPriceBase);
         pizza.UpdateArchived();
-        DateTimeOffset? archivedValue = pizza.Archived;
+        DateTimeOffset? archivedValue = pizza.ArchivedAt;
         // Act
         pizza.UpdateArchived();
         // Assert
@@ -252,7 +252,7 @@ public class PizzaTests
         Assert.NotNull(pizza.Description);
         Assert.Equal(pizzaDescriptionBase, pizza.Description);
         Assert.Equal(pizzaPriceBase, pizza.Price);
-        Assert.Null(pizza.Archived);
+        Assert.Null(pizza.ArchivedAt);
         Assert.Empty(pizza.PizzaIngredients);
         Assert.NotNull(archivedValue);
     }
@@ -282,7 +282,7 @@ public class PizzaTests
         Assert.NotNull(pizza.Description);
         Assert.Equal(pizzaDescriptionBase, pizza.Description);
         Assert.Equal(pizzaPriceBase, pizza.Price);
-        Assert.Null(pizza.Archived);
+        Assert.Null(pizza.ArchivedAt);
         Assert.Equal(0, beforeInsertIngredientsCount);
         Assert.Equal(newPizzaIngredients.Count, afterInsertIngredientsCount);
         Assert.All(newPizzaIngredients, element => Assert.Contains(element, pizza.PizzaIngredients));

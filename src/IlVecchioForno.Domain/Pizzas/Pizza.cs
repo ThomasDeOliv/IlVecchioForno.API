@@ -17,7 +17,7 @@ public sealed class Pizza : EntityBase
         this.Name = null!;
         this.Description = null!;
         this.Price = null!;
-        this.Archived = null;
+        this.ArchivedAt = null;
     }
 
     public Pizza(PizzaName name, PizzaDescription? description, PizzaPrice price, int id = 0) : this()
@@ -32,7 +32,7 @@ public sealed class Pizza : EntityBase
     public PizzaName Name { get; private set; }
     public PizzaDescription? Description { get; private set; }
     public PizzaPrice Price { get; private set; }
-    public DateTimeOffset? Archived { get; private set; }
+    public DateTimeOffset? ArchivedAt { get; private set; }
     public IReadOnlyCollection<PizzaIngredient> PizzaIngredients => this._pizzaIngredients.AsReadOnly();
 
     public void UpdateName(PizzaName value)
@@ -52,7 +52,7 @@ public sealed class Pizza : EntityBase
 
     public void UpdateArchived()
     {
-        this.Archived = this.Archived is not null
+        this.ArchivedAt = this.ArchivedAt is not null
             ? null
             : DateTimeOffset.UtcNow;
     }

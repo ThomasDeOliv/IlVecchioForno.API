@@ -45,6 +45,17 @@ internal sealed class EfIngredientRepository : IIngredientRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<Ingredient?> FindAsync(
+        int id,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await this._ctx.Ingredients
+            .Include(i => i.QuantityType)
+            .Where(i => i.Id == id)
+            .SingleOrDefaultAsync(cancellationToken);
+    }
+
     public async Task<IReadOnlyCollection<Ingredient>> ResolveAsync(
         IEnumerable<int> ids,
         CancellationToken cancellationToken = default

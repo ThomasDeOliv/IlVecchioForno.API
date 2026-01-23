@@ -96,7 +96,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTimeOffset?>("Archived")
+                    b.Property<DateTimeOffset?>("ArchivedAt")
                         .HasColumnType("TIMESTAMPTZ")
                         .HasColumnName("archived");
 

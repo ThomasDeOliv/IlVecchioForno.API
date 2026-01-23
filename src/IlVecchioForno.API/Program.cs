@@ -1,9 +1,15 @@
+using IlVecchioForno.API.Filters;
+using IlVecchioForno.API.Presenters;
+using IlVecchioForno.API.Resources.ActivePizza;
+using IlVecchioForno.API.Resources.ArchivedPizza;
+using IlVecchioForno.API.Resources.Ingredient;
+using IlVecchioForno.API.Resources.QuantityType;
 using IlVecchioForno.Application;
-using IlVecchioForno.Application.Common;
+using IlVecchioForno.Application.UseCases.Ingredients.DTOs;
+using IlVecchioForno.Application.UseCases.Pizzas.DTOs;
+using IlVecchioForno.Application.UseCases.QuantityTypes.DTOs;
 using IlVecchioForno.Infrastructure;
 using IlVecchioForno.Infrastructure.Persistence.Setup;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 
 namespace IlVecchioForno.API;
 
@@ -19,23 +25,15 @@ public static class Program
         ArgumentNullException.ThrowIfNull(connectionString);
 
         // Add services to the container.
-        builder.Services.AddControllers()
-            .ConfigureApiBehaviorOptions(options => // TODO : move in an other directory
-            {
-                options.InvalidModelStateResponseFactory = _ => new BadRequestObjectResult(
-                    new
-                    {
-                        Success = false,
-                        Type = ResultType.ValidationError,
-                        ErrorMessage = "Invalid request model provided.",
-                        Content = (object?)null
-                    }
-                );
-            });
-
         builder.Services.AddAuthorization();
-        builder.Services.AddApplicationDependencies();
+        builder.Services.AddScoped<GlobalExceptionFilter>();
+        builder.Services.AddControllers(options => options.Filters.Add<GlobalExceptionFilter>());
+        builder.Services.AddScoped<IPresenter<ActivePizzaDto, ActivePizzaResource>, ActivePizzaPresenter>();
+        builder.Services.AddScoped<IPresenter<ArchivedPizzaDto, ArchivedPizzaResource>, ArchivedPizzaPresenter>();
+        builder.Services.AddScoped<IPresenter<IngredientDto, IngredientResource>, IngredientPresenter>();
+        builder.Services.AddScoped<IPresenter<QuantityTypeDto, QuantityTypeResource>, QuantityTypePresenter>();
         builder.Services.AddInfrastructureDependencies(connectionString);
+        builder.Services.AddApplicationDependencies();
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
@@ -48,30 +46,6 @@ public static class Program
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
             app.MapOpenApi();
-        else
-            app.UseExceptionHandler(options =>
-            {
-                options.Run(async context => // TODO : move in an other directory
-                {
-                    ILoggerFactory loggerFactory = context.RequestServices.GetRequiredService<ILoggerFactory>();
-                    ILogger logger = loggerFactory.CreateLogger("UnhandledException");
-
-                    Exception? exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
-
-                    logger.LogError(exception, "Unhandled exception");
-
-                    context.Response.StatusCode = 500;
-                    context.Response.ContentType = "application/json";
-
-                    await context.Response.WriteAsJsonAsync(new
-                    {
-                        Success = false,
-                        Type = ResultType.InternalError,
-                        ErrorMessage = "Internal server error",
-                        Content = (object?)null
-                    });
-                });
-            });
 
         app.UseHttpsRedirection();
 

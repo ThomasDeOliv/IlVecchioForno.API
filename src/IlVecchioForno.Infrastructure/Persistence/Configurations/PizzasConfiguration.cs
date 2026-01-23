@@ -36,8 +36,8 @@ internal class PizzasConfiguration : EntityConfigurationBase<Pizza>
             .HasColumnType($"VARCHAR({PizzaInvariant.DescriptionMaxLength})")
             .IsRequired(false);
 
-        builder.Property(e => e.Archived)
-            .HasColumnName("archived")
+        builder.Property(e => e.ArchivedAt)
+            .HasColumnName("archived_at")
             .HasColumnType("TIMESTAMPTZ")
             .IsRequired(false);
 

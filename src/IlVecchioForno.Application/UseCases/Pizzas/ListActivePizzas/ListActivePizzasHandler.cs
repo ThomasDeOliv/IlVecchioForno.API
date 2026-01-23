@@ -1,10 +1,9 @@
 using FluentValidation;
-using FluentValidation.Results;
-using IlVecchioForno.Application.Common;
 using IlVecchioForno.Application.Common.Queries.Sorters;
 using IlVecchioForno.Application.Gateways.Persistence;
 using IlVecchioForno.Application.Gateways.Persistence.Queries;
 using IlVecchioForno.Application.Gateways.Persistence.Queries.FilterTypes;
+using IlVecchioForno.Application.UseCases.Pizzas.DTOs;
 using IlVecchioForno.Domain.Pizzas;
 using MapsterMapper;
 using MediatR;
@@ -12,7 +11,7 @@ using MediatR;
 namespace IlVecchioForno.Application.UseCases.Pizzas.ListActivePizzas;
 
 internal sealed class
-    ListActivePizzasHandler : IRequestHandler<ListActivePizzasQuery, Result<IReadOnlyList<ActivePizzaDTO>>>
+    ListActivePizzasHandler : IRequestHandler<ListActivePizzasQuery, IReadOnlyList<ActivePizzaDto>>
 {
     private readonly IMapper _mapper;
     private readonly IPizzaRepository _pizzaRepository;
@@ -29,17 +28,12 @@ internal sealed class
         this._validator = validator;
     }
 
-    public async Task<Result<IReadOnlyList<ActivePizzaDTO>>> Handle(
+    public async Task<IReadOnlyList<ActivePizzaDto>> Handle(
         ListActivePizzasQuery request,
         CancellationToken cancellationToken = default
     )
     {
-        ValidationResult validation = await this._validator.ValidateAsync(request, cancellationToken);
-
-        if (!validation.IsValid)
-            return Result<IReadOnlyList<ActivePizzaDTO>>.ValidationError(
-                string.Join("\n", validation.Errors.Select(e => e.ErrorMessage))
-            );
+        await this._validator.ValidateAndThrowAsync(request, cancellationToken);
 
         QuerySpec<ActivePizzasSorter> query = new QuerySpec<ActivePizzasSorter>(
             request.Page,
@@ -58,7 +52,8 @@ internal sealed class
             cancellationToken
         );
 
-        IReadOnlyList<ActivePizzaDTO> result = this._mapper.Map<IReadOnlyList<ActivePizzaDTO>>(items);
-        return Result<IReadOnlyList<ActivePizzaDTO>>.Ok(result);
+        IReadOnlyList<ActivePizzaDto> result = this._mapper.Map<IReadOnlyList<ActivePizzaDto>>(items);
+
+        return this._mapper.Map<IReadOnlyList<ActivePizzaDto>>(result);
     }
 }
