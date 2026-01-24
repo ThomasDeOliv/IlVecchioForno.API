@@ -1,4 +1,4 @@
-namespace IlVecchioForno.API.Requests.Pizza;
+namespace IlVecchioForno.API.Requests.Pizzas;
 
 public sealed record RegisterPizzaRequest(
     string Name,

@@ -1,4 +1,4 @@
-namespace IlVecchioForno.API.Requests.Ingredient;
+namespace IlVecchioForno.API.Requests.Ingredients;
 
 public sealed record RegisterIngredientRequest(
     string Name,

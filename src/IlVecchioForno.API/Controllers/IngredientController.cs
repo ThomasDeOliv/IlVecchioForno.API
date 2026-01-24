@@ -1,6 +1,4 @@
-using IlVecchioForno.API.Presenters;
-using IlVecchioForno.API.Requests.Ingredient;
-using IlVecchioForno.API.Resources.Ingredient;
+using IlVecchioForno.API.Requests.Ingredients;
 using IlVecchioForno.API.Utilities;
 using IlVecchioForno.Application.Common;
 using IlVecchioForno.Application.Common.Queries.Sorters;
@@ -18,19 +16,14 @@ namespace IlVecchioForno.API.Controllers;
 public sealed class IngredientController : ApiControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly IPresenter<IngredientDto, IngredientResource> _presenter;
 
-    public IngredientController(
-        IMediator mediator,
-        IPresenter<IngredientDto, IngredientResource> presenter
-    ) : base()
+    public IngredientController(IMediator mediator) : base()
     {
         this._mediator = mediator;
-        this._presenter = presenter;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<IngredientResource>>> GetAllAsync(
+    public async Task<ActionResult<IReadOnlyList<IngredientDto>>> GetAllAsync(
         [FromQuery] int page = QueryDefaultValues.PageNumberMin,
         [FromQuery] int pageSize = QueryDefaultValues.PageSizeDefault,
         [FromQuery] IngredientsSorter sorter = IngredientsSorter.Id,
@@ -40,24 +33,18 @@ public sealed class IngredientController : ApiControllerBase
     )
     {
         ListIngredientsQuery query = new ListIngredientsQuery(page, pageSize, sorter, descending, search);
-        IReadOnlyList<IngredientDto> items = await this._mediator.Send(query, cancellationToken);
-        IReadOnlyList<IngredientResource> viewModel = items
-            .Select(i =>
-                this._presenter.Present(i)
-            )
-            .ToList();
-        return this.Ok(viewModel);
+        IReadOnlyList<IngredientDto> resources = await this._mediator.Send(query, cancellationToken);
+        return this.Ok(resources);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<IngredientResource>> GetByIdAsync(
+    public async Task<ActionResult<IngredientDto>> GetByIdAsync(
         [FromRoute] int id,
         CancellationToken cancellationToken = default
     )
     {
         GetIngredientQuery query = new GetIngredientQuery(id);
-        IngredientDto item = await this._mediator.Send(query, cancellationToken);
-        IngredientResource resource = this._presenter.Present(item);
+        IngredientDto resource = await this._mediator.Send(query, cancellationToken);
         return this.Ok(resource);
     }
 

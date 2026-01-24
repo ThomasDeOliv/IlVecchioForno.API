@@ -3,7 +3,7 @@ using Mapster;
 
 namespace IlVecchioForno.Application.UseCases.Ingredients.DTOs;
 
-internal sealed class IngredientDtoMapping : IRegister
+internal sealed class DtoMapping : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {

@@ -11,11 +11,12 @@ public static class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddApiDependencies();
-        builder.Services.AddApplicationDependencies();
-        builder.Services.AddInfrastructureDependencies(
-            builder.Configuration.GetConnectionString(InfrastructureStartup.ConnectionStringName)
-        );
+        builder.Services
+            .AddApiDependencies()
+            .AddApplicationDependencies()
+            .AddInfrastructureDependencies(
+                builder.Configuration.GetConnectionString(InfrastructureStartup.ConnectionStringName)
+            );
 
         WebApplication app = builder.Build();
 

@@ -62,6 +62,10 @@ Migrations are auto-applied.
 dotnet run --project src/IlVecchioForno.API/IlVecchioForno.API.csproj
 ```
 
+## API Documentation
+
+The API documentation is available via [Scalar](https://scalar.com/) at `/scalar/v1` when the application is running.
+
 ## License
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.

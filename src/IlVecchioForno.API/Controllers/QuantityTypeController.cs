@@ -1,5 +1,3 @@
-using IlVecchioForno.API.Presenters;
-using IlVecchioForno.API.Resources.QuantityType;
 using IlVecchioForno.Application.Common;
 using IlVecchioForno.Application.Common.Queries.Sorters;
 using IlVecchioForno.Application.UseCases.QuantityTypes.DTOs;
@@ -15,19 +13,14 @@ namespace IlVecchioForno.API.Controllers;
 public sealed class QuantityTypeController : ApiControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly IPresenter<QuantityTypeDto, QuantityTypeResource> _presenter;
 
-    public QuantityTypeController(
-        IMediator mediator,
-        IPresenter<QuantityTypeDto, QuantityTypeResource> presenter
-    ) : base()
+    public QuantityTypeController(IMediator mediator) : base()
     {
         this._mediator = mediator;
-        this._presenter = presenter;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<QuantityTypeResource>>> GetAsync(
+    public async Task<ActionResult<IReadOnlyList<QuantityTypeDto>>> GetAsync(
         [FromQuery] int page = QueryDefaultValues.PageNumberMin,
         [FromQuery] int pageSize = QueryDefaultValues.PageSizeDefault,
         [FromQuery] QuantityTypesSorter sorter = QuantityTypesSorter.Id,
@@ -37,22 +30,18 @@ public sealed class QuantityTypeController : ApiControllerBase
     )
     {
         ListQuantityTypesQuery query = new ListQuantityTypesQuery(page, pageSize, sorter, descending, search);
-        IReadOnlyList<QuantityTypeDto> result = await this._mediator.Send(query, cancellationToken);
-        IReadOnlyList<QuantityTypeResource> resources = result
-            .Select(q => this._presenter.Present(q))
-            .ToList();
+        IReadOnlyList<QuantityTypeDto> resources = await this._mediator.Send(query, cancellationToken);
         return this.Ok(resources);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<QuantityTypeResource>> GetByIdAsync(
+    public async Task<ActionResult<QuantityTypeDto>> GetByIdAsync(
         [FromRoute] short id,
         CancellationToken cancellationToken = default
     )
     {
         GetQuantityTypeQuery query = new GetQuantityTypeQuery(id);
-        QuantityTypeDto item = await this._mediator.Send(query, cancellationToken);
-        QuantityTypeResource resource = this._presenter.Present(item);
+        QuantityTypeDto resource = await this._mediator.Send(query, cancellationToken);
         return this.Ok(resource);
     }
 }

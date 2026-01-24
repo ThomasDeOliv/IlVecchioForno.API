@@ -1,7 +1,4 @@
-using IlVecchioForno.API.Presenters;
-using IlVecchioForno.API.Requests.Pizza;
-using IlVecchioForno.API.Resources.ActivePizza;
-using IlVecchioForno.API.Resources.ArchivedPizza;
+using IlVecchioForno.API.Requests.Pizzas;
 using IlVecchioForno.API.Utilities;
 using IlVecchioForno.Application.Common;
 using IlVecchioForno.Application.Common.Queries.Sorters;
@@ -23,23 +20,15 @@ namespace IlVecchioForno.API.Controllers;
 [AllowAnonymous]
 public sealed class PizzaController : ApiControllerBase
 {
-    private readonly IPresenter<ActivePizzaDto, ActivePizzaResource> _activePizzaPresenter;
-    private readonly IPresenter<ArchivedPizzaDto, ArchivedPizzaResource> _archivedPizzaPresenter;
     private readonly IMediator _mediator;
 
-    public PizzaController(
-        IPresenter<ActivePizzaDto, ActivePizzaResource> activePizzaPresenter,
-        IPresenter<ArchivedPizzaDto, ArchivedPizzaResource> archivedPizzaPresenter,
-        IMediator mediator
-    ) : base()
+    public PizzaController(IMediator mediator) : base()
     {
-        this._activePizzaPresenter = activePizzaPresenter;
-        this._archivedPizzaPresenter = archivedPizzaPresenter;
         this._mediator = mediator;
     }
 
     [HttpGet("active")]
-    public async Task<ActionResult<IReadOnlyList<ActivePizzaResource>>> GetActivePizzasAsync(
+    public async Task<ActionResult<IReadOnlyList<ActivePizzaDto>>> GetActivePizzasAsync(
         [FromQuery] int page = QueryDefaultValues.PageNumberMin,
         [FromQuery] int pageSize = QueryDefaultValues.PageSizeDefault,
         [FromQuery] ActivePizzasSorter sorter = ActivePizzasSorter.Id,
@@ -52,27 +41,23 @@ public sealed class PizzaController : ApiControllerBase
     {
         ListActivePizzasQuery query =
             new ListActivePizzasQuery(page, pageSize, sorter, descending, search, minPrice, maxPrice);
-        IReadOnlyList<ActivePizzaDto> result = await this._mediator.Send(query, cancellationToken);
-        IReadOnlyList<ActivePizzaResource> resources = result
-            .Select(a => this._activePizzaPresenter.Present(a))
-            .ToList();
+        IReadOnlyList<ActivePizzaDto> resources = await this._mediator.Send(query, cancellationToken);
         return this.Ok(resources);
     }
 
     [HttpGet("active/{id:int}")]
-    public async Task<ActionResult<ActivePizzaResource>> GetActiveByIdAsync(
+    public async Task<ActionResult<ActivePizzaDto>> GetActiveByIdAsync(
         [FromRoute] int id,
         CancellationToken cancellationToken = default
     )
     {
         GetActivePizzaQuery query = new GetActivePizzaQuery(id);
-        ActivePizzaDto item = await this._mediator.Send(query, cancellationToken);
-        ActivePizzaResource resource = this._activePizzaPresenter.Present(item);
+        ActivePizzaDto resource = await this._mediator.Send(query, cancellationToken);
         return this.Ok(resource);
     }
 
     [HttpGet("archived")]
-    public async Task<ActionResult<IReadOnlyList<ArchivedPizzaResource>>> GetArchivedPizzasAsync(
+    public async Task<ActionResult<IReadOnlyList<ArchivedPizzaDto>>> GetArchivedPizzasAsync(
         [FromQuery] int page = QueryDefaultValues.PageNumberMin,
         [FromQuery] int pageSize = QueryDefaultValues.PageSizeDefault,
         [FromQuery] ArchivedPizzasSorter sorter = ArchivedPizzasSorter.Id,
@@ -85,22 +70,18 @@ public sealed class PizzaController : ApiControllerBase
     {
         ListArchivedPizzasQuery query =
             new ListArchivedPizzasQuery(page, pageSize, sorter, descending, search, minPrice, maxPrice);
-        IReadOnlyList<ArchivedPizzaDto> result = await this._mediator.Send(query, cancellationToken);
-        IReadOnlyList<ArchivedPizzaResource> resources = result
-            .Select(a => this._archivedPizzaPresenter.Present(a))
-            .ToList();
+        IReadOnlyList<ArchivedPizzaDto> resources = await this._mediator.Send(query, cancellationToken);
         return this.Ok(resources);
     }
 
     [HttpGet("archived/{id:int}")]
-    public async Task<ActionResult<ArchivedPizzaResource>> GetArchivedByIdAsync(
+    public async Task<ActionResult<ArchivedPizzaDto>> GetArchivedByIdAsync(
         [FromRoute] int id,
         CancellationToken cancellationToken = default
     )
     {
         GetArchivedPizzaQuery query = new GetArchivedPizzaQuery(id);
-        ArchivedPizzaDto item = await this._mediator.Send(query, cancellationToken);
-        ArchivedPizzaResource resource = this._archivedPizzaPresenter.Present(item);
+        ArchivedPizzaDto resource = await this._mediator.Send(query, cancellationToken);
         return this.Ok(resource);
     }
 
