@@ -71,8 +71,8 @@ public static class DatabaseTestsData
                     new ColumnInfo("id", "integer", false),
                     new ColumnInfo("name", "character varying", false),
                     new ColumnInfo("description", "character varying", true),
-                    new ColumnInfo("archived", "timestamp with time zone", true),
                     new ColumnInfo("price", "numeric", false),
+                    new ColumnInfo("archived_at", "timestamp with time zone", true),
                     new ColumnInfo("created_at", "timestamp with time zone", false),
                     new ColumnInfo("updated_at", "timestamp with time zone", false)
                 ]
