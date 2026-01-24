@@ -51,11 +51,7 @@ public sealed class QuantityTypeController : ApiControllerBase
     )
     {
         GetQuantityTypeQuery query = new GetQuantityTypeQuery(id);
-        QuantityTypeDto? item = await this._mediator.Send(query, cancellationToken);
-
-        if (item is null)
-            return this.NotFound();
-
+        QuantityTypeDto item = await this._mediator.Send(query, cancellationToken);
         QuantityTypeResource resource = this._presenter.Present(item);
         return this.Ok(resource);
     }

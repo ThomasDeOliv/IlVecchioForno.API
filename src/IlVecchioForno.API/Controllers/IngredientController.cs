@@ -56,11 +56,7 @@ public sealed class IngredientController : ApiControllerBase
     )
     {
         GetIngredientQuery query = new GetIngredientQuery(id);
-        IngredientDto? item = await this._mediator.Send(query, cancellationToken);
-
-        if (item is null)
-            return this.NotFound();
-
+        IngredientDto item = await this._mediator.Send(query, cancellationToken);
         IngredientResource resource = this._presenter.Present(item);
         return this.Ok(resource);
     }

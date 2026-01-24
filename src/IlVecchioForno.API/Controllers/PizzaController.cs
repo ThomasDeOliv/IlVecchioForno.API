@@ -66,11 +66,7 @@ public sealed class PizzaController : ApiControllerBase
     )
     {
         GetActivePizzaQuery query = new GetActivePizzaQuery(id);
-        ActivePizzaDto? item = await this._mediator.Send(query, cancellationToken);
-
-        if (item is null)
-            return this.NotFound();
-
+        ActivePizzaDto item = await this._mediator.Send(query, cancellationToken);
         ActivePizzaResource resource = this._activePizzaPresenter.Present(item);
         return this.Ok(resource);
     }
@@ -103,11 +99,7 @@ public sealed class PizzaController : ApiControllerBase
     )
     {
         GetArchivedPizzaQuery query = new GetArchivedPizzaQuery(id);
-        ArchivedPizzaDto? item = await this._mediator.Send(query, cancellationToken);
-
-        if (item is null)
-            return this.NotFound();
-
+        ArchivedPizzaDto item = await this._mediator.Send(query, cancellationToken);
         ArchivedPizzaResource resource = this._archivedPizzaPresenter.Present(item);
         return this.Ok(resource);
     }

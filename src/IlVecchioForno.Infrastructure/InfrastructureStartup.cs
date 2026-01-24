@@ -17,10 +17,14 @@ public static class InfrastructureStartup
 {
     public const string ConnectionStringName = "IlVecchioFornoContext";
 
-    public static IServiceCollection AddInfrastructureDependencies(this IServiceCollection services,
-        string connectionString)
+    public static IServiceCollection AddInfrastructureDependencies(
+        this IServiceCollection services,
+        string? connectionString
+    )
     {
-        return services.AddDbContext<IlVecchioFornoDbContext>(options => options.UseNpgsql(connectionString))
+        ArgumentNullException.ThrowIfNull(connectionString);
+
+        services.AddDbContext<IlVecchioFornoDbContext>(options => options.UseNpgsql(connectionString))
             .AddSingleton(TimeProvider.System)
             .AddScoped<IUnitOfWork, EfUnitOfWork>()
             .AddScoped<IPizzaRepository, EfPizzaRepository>()
@@ -34,5 +38,7 @@ public static class InfrastructureStartup
             .AddScoped<ISorterService<Pizza, ArchivedPizzasSorter>, ArchivedPizzaSorterService>()
             .AddScoped<ISorterService<QuantityType, QuantityTypesSorter>, QuantityTypeSorterService>()
             .AddScoped(typeof(IPaginationService<>), typeof(PaginationService<>));
+
+        return services;
     }
 }
