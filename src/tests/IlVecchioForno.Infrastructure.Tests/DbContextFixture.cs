@@ -10,11 +10,11 @@ namespace IlVecchioForno.Infrastructure.Tests;
 /// </summary>
 /// <seealso href="https://dotnet.testcontainers.org/modules/postgres" />
 /// <seealso href="https://xunit.net/docs/shared-context" />
-public sealed class DbFixture : IAsyncLifetime
+public sealed class DbContextFixture : IAsyncLifetime
 {
     private readonly PostgreSqlContainer _container;
 
-    public DbFixture()
+    public DbContextFixture()
     {
         this._container =
             new PostgreSqlBuilder($"{DbTestsConfig.ContainerImageName}:{DbTestsConfig.ContainerImageVersion}")
@@ -54,4 +54,4 @@ public sealed class DbFixture : IAsyncLifetime
 }
 
 [CollectionDefinition("Database")]
-public class DatabaseCollection : ICollectionFixture<DbFixture>;
+public class DatabaseCollection : ICollectionFixture<DbContextFixture>;

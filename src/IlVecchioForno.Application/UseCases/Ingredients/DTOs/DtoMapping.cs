@@ -8,8 +8,15 @@ internal sealed class DtoMapping : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<Ingredient, IngredientDto>()
-            .Map(dest => dest.Id, src => src.Id)
-            .Map(dest => dest.Name, src => src.Name.Value)
-            .Map(dest => dest.QuantityTypeId, src => src.QuantityType.Id);
+            .MapWith(src => ToIngredientDto(src));
+    }
+
+    private static IngredientDto ToIngredientDto(Ingredient src)
+    {
+        return new IngredientDto(
+            src.Id,
+            src.Name.Value,
+            src.QuantityType?.Id
+        );
     }
 }

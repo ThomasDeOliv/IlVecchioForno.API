@@ -10,10 +10,10 @@ public sealed class Ingredient : EntityBase
     {
         this.Id = 0;
         this.Name = null!;
-        this.QuantityType = null!;
+        this.QuantityType = null;
     }
 
-    public Ingredient(IngredientName name, QuantityType quantityType, int id = 0) : this()
+    public Ingredient(IngredientName name, QuantityType? quantityType, int id = 0) : this()
     {
         this.Id = id;
         this.Name = name;
@@ -22,5 +22,5 @@ public sealed class Ingredient : EntityBase
 
     public int Id { get; private set; }
     public IngredientName Name { get; private set; }
-    public QuantityType QuantityType { get; private set; }
+    public QuantityType? QuantityType { get; private set; }
 }

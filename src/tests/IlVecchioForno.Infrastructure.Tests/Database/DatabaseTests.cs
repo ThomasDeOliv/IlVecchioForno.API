@@ -2,11 +2,11 @@ using IlVecchioForno.Infrastructure.Tests.Utilities.Data;
 using IlVecchioForno.Infrastructure.Tests.Utilities.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace IlVecchioForno.Infrastructure.Tests;
+namespace IlVecchioForno.Infrastructure.Tests.Database;
 
-public sealed class DatabaseTests : DbTestsBase
+public sealed class DatabaseTests : InfrastructureTestsBase
 {
-    public DatabaseTests(DbFixture fixture) : base(fixture)
+    public DatabaseTests(DbContextFixture dbCtxFixture) : base(dbCtxFixture)
     {
     }
 
@@ -14,7 +14,7 @@ public sealed class DatabaseTests : DbTestsBase
     public async Task Database_CanBeCreated()
     {
         // Arrange & Act
-        bool created = await this._context.Database.EnsureCreatedAsync();
+        bool created = await this._ctx.Database.EnsureCreatedAsync();
         // Assert
         Assert.True(created);
     }
@@ -23,9 +23,9 @@ public sealed class DatabaseTests : DbTestsBase
     public async Task Migrations_ApplySuccessfully()
     {
         // Arrange & Act
-        await this._context.Database.MigrateAsync();
-        IEnumerable<string> pendingMigrations = await this._context.Database.GetPendingMigrationsAsync();
-        IEnumerable<string> appliedMigrations = await this._context.Database.GetAppliedMigrationsAsync();
+        await this._ctx.Database.MigrateAsync();
+        IEnumerable<string> pendingMigrations = await this._ctx.Database.GetPendingMigrationsAsync();
+        IEnumerable<string> appliedMigrations = await this._ctx.Database.GetAppliedMigrationsAsync();
         // Assert
         Assert.Empty(pendingMigrations);
         Assert.NotEmpty(appliedMigrations);
@@ -35,9 +35,9 @@ public sealed class DatabaseTests : DbTestsBase
     public async Task Schema_ExistsAfterMigration()
     {
         // Arrange
-        await this._context.Database.MigrateAsync();
+        await this._ctx.Database.MigrateAsync();
         // Act
-        List<string> schemas = await this._context.Database
+        List<string> schemas = await this._ctx.Database
             .SqlQuery<string>(
                 $"""
                   SELECT schema_name
@@ -64,9 +64,9 @@ public sealed class DatabaseTests : DbTestsBase
             DatabaseTestsData.IngredientsTable,
             DatabaseTestsData.QuantityTypesTable
         };
-        await this._context.Database.MigrateAsync();
+        await this._ctx.Database.MigrateAsync();
         // Act
-        List<string> tables = await this._context.Database
+        List<string> tables = await this._ctx.Database
             .SqlQuery<string>(
                 $"""
                  SELECT table_name
@@ -91,9 +91,9 @@ public sealed class DatabaseTests : DbTestsBase
     )
     {
         // Arrange
-        await this._context.Database.MigrateAsync();
+        await this._ctx.Database.MigrateAsync();
         // Act
-        List<ColumnInfo> columns = await this._context.Database
+        List<ColumnInfo> columns = await this._ctx.Database
             .SqlQuery<ColumnInfo>(
                 $"""
                   SELECT 
@@ -121,9 +121,9 @@ public sealed class DatabaseTests : DbTestsBase
     )
     {
         // Arrange
-        await this._context.Database.MigrateAsync();
+        await this._ctx.Database.MigrateAsync();
         // Act
-        VarcharColumnInfo? info = await this._context.Database
+        VarcharColumnInfo? info = await this._ctx.Database
             .SqlQuery<VarcharColumnInfo>(
                 $"""
                   SELECT 
@@ -150,9 +150,9 @@ public sealed class DatabaseTests : DbTestsBase
     )
     {
         // Arrange
-        await this._context.Database.MigrateAsync();
+        await this._ctx.Database.MigrateAsync();
         // Act
-        NumericColumnInfo? info = await this._context.Database
+        NumericColumnInfo? info = await this._ctx.Database
             .SqlQuery<NumericColumnInfo>(
                 $"""
                   SELECT 
@@ -181,9 +181,9 @@ public sealed class DatabaseTests : DbTestsBase
     {
         // Arrange
         string expectedColumnNamesString = string.Join(", ", expectedColumnNames);
-        await this._context.Database.MigrateAsync();
+        await this._ctx.Database.MigrateAsync();
         // Act
-        PrimaryKeyConstraintColumnsInfo? info = await this._context.Database
+        PrimaryKeyConstraintColumnsInfo? info = await this._ctx.Database
             .SqlQuery<PrimaryKeyConstraintColumnsInfo>(
                 $"""
                  SELECT                                                                                                                                                                                                                                                                                                                                                                                                                          
@@ -217,9 +217,9 @@ public sealed class DatabaseTests : DbTestsBase
     )
     {
         // Arrange
-        await this._context.Database.MigrateAsync();
+        await this._ctx.Database.MigrateAsync();
         // Act
-        ForeignKeyConstraintColumnInfo? info = await this._context.Database
+        ForeignKeyConstraintColumnInfo? info = await this._ctx.Database
             .SqlQuery<ForeignKeyConstraintColumnInfo>(
                 $"""
                  SELECT                                                                                                                                                                                                                                                                                                                                                                                                                          

@@ -12,7 +12,7 @@ public sealed class QuantityType : EntityBase
         this.Unit = null!;
     }
 
-    public QuantityType(QuantityTypeName name, QuantityTypeUnit? unit, short id = 0) : this()
+    public QuantityType(QuantityTypeName name, QuantityTypeUnit unit, short id = 0) : this()
     {
         this.Id = id;
         this.Name = name;
@@ -21,5 +21,5 @@ public sealed class QuantityType : EntityBase
 
     public short Id { get; private set; }
     public QuantityTypeName Name { get; private set; }
-    public QuantityTypeUnit? Unit { get; private set; }
+    public QuantityTypeUnit Unit { get; private set; }
 }

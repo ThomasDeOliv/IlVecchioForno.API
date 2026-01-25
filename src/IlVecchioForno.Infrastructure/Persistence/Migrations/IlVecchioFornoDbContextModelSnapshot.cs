@@ -18,7 +18,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("pizzas_schema")
-                .HasAnnotation("ProductVersion", "10.0.1")
+                .HasAnnotation("ProductVersion", "10.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -41,7 +41,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                         .HasColumnType("VARCHAR(256)")
                         .HasColumnName("name");
 
-                    b.Property<short>("QuantityTypeId")
+                    b.Property<short?>("QuantityTypeId")
                         .HasColumnType("SMALLINT")
                         .HasColumnName("quantity_type_id");
 
@@ -146,6 +146,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                         .HasColumnName("name");
 
                     b.Property<string>("Unit")
+                        .IsRequired()
                         .HasColumnType("VARCHAR(4)")
                         .HasColumnName("unit");
 
@@ -165,7 +166,6 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("QuantityTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
                         .HasConstraintName("fk_ingredients__quantity_types");
 
                     b.Navigation("QuantityType");

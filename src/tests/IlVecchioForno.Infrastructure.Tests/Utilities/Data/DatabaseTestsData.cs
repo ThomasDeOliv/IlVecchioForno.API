@@ -92,7 +92,7 @@ public static class DatabaseTestsData
                 [
                     new ColumnInfo("id", "integer", false),
                     new ColumnInfo("name", "character varying", false),
-                    new ColumnInfo("quantity_type_id", "smallint", false),
+                    new ColumnInfo("quantity_type_id", "smallint", true),
                     new ColumnInfo("created_at", "timestamp with time zone", false),
                     new ColumnInfo("updated_at", "timestamp with time zone", false)
                 ]
@@ -102,7 +102,7 @@ public static class DatabaseTestsData
                 [
                     new ColumnInfo("id", "smallint", false),
                     new ColumnInfo("name", "character varying", false),
-                    new ColumnInfo("unit", "character varying", true),
+                    new ColumnInfo("unit", "character varying", false),
                     new ColumnInfo("created_at", "timestamp with time zone", false),
                     new ColumnInfo("updated_at", "timestamp with time zone", false)
                 ]

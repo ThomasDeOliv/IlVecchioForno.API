@@ -7,6 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <InternalsVisibleTo Include="IlVecchioForno.Application.Tests"/>
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\IlVecchioForno.Domain\IlVecchioForno.Domain.csproj"/>
     </ItemGroup>
 

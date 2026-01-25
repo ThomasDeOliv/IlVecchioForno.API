@@ -27,7 +27,6 @@ public static class DbInitExtension
 
             List<QuantityType> quantityTypes = new List<QuantityType>
             {
-                new QuantityType(new QuantityTypeName("Unit"), null),
                 new QuantityType(new QuantityTypeName("Milligrams"), new QuantityTypeUnit("mg")),
                 new QuantityType(new QuantityTypeName("Grams"), new QuantityTypeUnit("g")),
                 new QuantityType(new QuantityTypeName("Kilograms"), new QuantityTypeUnit("kg")),
@@ -38,29 +37,29 @@ public static class DbInitExtension
 
             List<Ingredient> ingredients = new List<Ingredient>
             {
-                new Ingredient(new IngredientName("Flour (00)"), quantityTypes[2]),
-                new Ingredient(new IngredientName("Water"), quantityTypes[4]),
-                new Ingredient(new IngredientName("Fresh yeast"), quantityTypes[2]),
-                new Ingredient(new IngredientName("Salt"), quantityTypes[2]),
-                new Ingredient(new IngredientName("Extra virgin olive oil"), quantityTypes[4]),
-                new Ingredient(new IngredientName("San Marzano tomato sauce"), quantityTypes[2]),
-                new Ingredient(new IngredientName("Fresh basil leaves"), quantityTypes[0]),
-                new Ingredient(new IngredientName("Garlic clove"), quantityTypes[0]),
-                new Ingredient(new IngredientName("Oregano"), quantityTypes[2]),
-                new Ingredient(new IngredientName("Mozzarella fior di latte"), quantityTypes[2]),
-                new Ingredient(new IngredientName("Parmigiano Reggiano"), quantityTypes[2]),
-                new Ingredient(new IngredientName("Pecorino Romano"), quantityTypes[2]),
-                new Ingredient(new IngredientName("Prosciutto crudo"), quantityTypes[2]),
-                new Ingredient(new IngredientName("Spianata calabra"), quantityTypes[2]),
-                new Ingredient(new IngredientName("Pancetta"), quantityTypes[2]),
-                new Ingredient(new IngredientName("'Nduja"), quantityTypes[2]),
-                new Ingredient(new IngredientName("Black olives"), quantityTypes[0]),
-                new Ingredient(new IngredientName("Mushrooms"), quantityTypes[2]),
-                new Ingredient(new IngredientName("Artichoke hearts"), quantityTypes[0]),
-                new Ingredient(new IngredientName("Capers"), quantityTypes[2]),
-                new Ingredient(new IngredientName("Arugula"), quantityTypes[2]),
-                new Ingredient(new IngredientName("Cherry tomatoes"), quantityTypes[2]),
-                new Ingredient(new IngredientName("Buffalo mozzarella"), quantityTypes[2])
+                new Ingredient(new IngredientName("Flour (00)"), quantityTypes[1]),
+                new Ingredient(new IngredientName("Water"), quantityTypes[3]),
+                new Ingredient(new IngredientName("Fresh yeast"), quantityTypes[1]),
+                new Ingredient(new IngredientName("Salt"), quantityTypes[1]),
+                new Ingredient(new IngredientName("Extra virgin olive oil"), quantityTypes[3]),
+                new Ingredient(new IngredientName("San Marzano tomato sauce"), quantityTypes[1]),
+                new Ingredient(new IngredientName("Fresh basil leaves"), null),
+                new Ingredient(new IngredientName("Garlic clove"), null),
+                new Ingredient(new IngredientName("Oregano"), quantityTypes[1]),
+                new Ingredient(new IngredientName("Mozzarella fior di latte"), quantityTypes[1]),
+                new Ingredient(new IngredientName("Parmigiano Reggiano"), quantityTypes[1]),
+                new Ingredient(new IngredientName("Pecorino Romano"), quantityTypes[1]),
+                new Ingredient(new IngredientName("Prosciutto crudo"), quantityTypes[1]),
+                new Ingredient(new IngredientName("Spianata calabra"), quantityTypes[1]),
+                new Ingredient(new IngredientName("Pancetta"), quantityTypes[1]),
+                new Ingredient(new IngredientName("'Nduja"), quantityTypes[1]),
+                new Ingredient(new IngredientName("Black olives"), null),
+                new Ingredient(new IngredientName("Mushrooms"), quantityTypes[1]),
+                new Ingredient(new IngredientName("Artichoke hearts"), null),
+                new Ingredient(new IngredientName("Capers"), quantityTypes[1]),
+                new Ingredient(new IngredientName("Arugula"), quantityTypes[1]),
+                new Ingredient(new IngredientName("Cherry tomatoes"), quantityTypes[1]),
+                new Ingredient(new IngredientName("Buffalo mozzarella"), quantityTypes[1])
             };
 
             ctx.QuantityTypes.AddRange(quantityTypes);

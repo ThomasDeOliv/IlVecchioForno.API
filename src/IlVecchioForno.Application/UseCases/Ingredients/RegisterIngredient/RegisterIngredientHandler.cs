@@ -31,11 +31,16 @@ internal sealed class RegisterIngredientHandler : IRequestHandler<RegisterIngred
     {
         await this._validator.ValidateAndThrowAsync(request, cancellationToken);
 
-        QuantityType? targetQuantityType =
-            await this._quantityTypeRepository.FindAsync(request.QuantityTypeId, cancellationToken);
+        QuantityType? targetQuantityType = null;
 
-        if (targetQuantityType is null)
-            throw new InvalidReferenceException("Provided quantity type not found.");
+        if (request.QuantityTypeId.HasValue)
+        {
+            targetQuantityType =
+                await this._quantityTypeRepository.FindAsync(request.QuantityTypeId.Value, cancellationToken);
+
+            if (targetQuantityType is null)
+                throw new InvalidReferenceException("Provided quantity type not found.");
+        }
 
         Ingredient newIngredient = new Ingredient(
             new IngredientName(request.Name),

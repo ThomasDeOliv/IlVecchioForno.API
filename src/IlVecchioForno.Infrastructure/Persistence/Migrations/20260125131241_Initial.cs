@@ -42,7 +42,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                     id = table.Column<short>(type: "SMALLINT", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "VARCHAR(256)", nullable: false),
-                    unit = table.Column<string>(type: "VARCHAR(4)", nullable: true),
+                    unit = table.Column<string>(type: "VARCHAR(4)", nullable: false),
                     created_at = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: false),
                     updated_at = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: false)
                 },
@@ -59,7 +59,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                     id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "VARCHAR(256)", nullable: false),
-                    quantity_type_id = table.Column<short>(type: "SMALLINT", nullable: false),
+                    quantity_type_id = table.Column<short>(type: "SMALLINT", nullable: true),
                     created_at = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: false),
                     updated_at = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: false)
                 },

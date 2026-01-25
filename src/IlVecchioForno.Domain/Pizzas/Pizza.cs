@@ -15,7 +15,7 @@ public sealed class Pizza : EntityBase
 
         this.Id = 0;
         this.Name = null!;
-        this.Description = null!;
+        this.Description = null;
         this.Price = null!;
         this.ArchivedAt = null;
     }

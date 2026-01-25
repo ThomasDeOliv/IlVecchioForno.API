@@ -27,6 +27,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IlVecchioForno.Domain.Tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IlVecchioForno.Infrastructure.Tests", "src\tests\IlVecchioForno.Infrastructure.Tests\IlVecchioForno.Infrastructure.Tests.csproj", "{75A4AC04-739D-4102-8B09-68390746665F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IlVecchioForno.Application.Tests", "src\tests\IlVecchioForno.Application.Tests\IlVecchioForno.Application.Tests.csproj", "{26258EDB-101A-4162-A9C6-582DCFA94701}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IlVecchioForno.API.Tests", "src\tests\IlVecchioForno.API.Tests\IlVecchioForno.API.Tests.csproj", "{430D0DFE-A0EF-48C2-AADE-6E688706C105}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +61,14 @@ Global
 		{75A4AC04-739D-4102-8B09-68390746665F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75A4AC04-739D-4102-8B09-68390746665F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75A4AC04-739D-4102-8B09-68390746665F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26258EDB-101A-4162-A9C6-582DCFA94701}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26258EDB-101A-4162-A9C6-582DCFA94701}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26258EDB-101A-4162-A9C6-582DCFA94701}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26258EDB-101A-4162-A9C6-582DCFA94701}.Release|Any CPU.Build.0 = Release|Any CPU
+		{430D0DFE-A0EF-48C2-AADE-6E688706C105}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{430D0DFE-A0EF-48C2-AADE-6E688706C105}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{430D0DFE-A0EF-48C2-AADE-6E688706C105}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{430D0DFE-A0EF-48C2-AADE-6E688706C105}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0113553B-1127-4C70-8515-73D2629533DF} = {AE23DBF7-6295-4DFB-905B-5B787042C052}
@@ -66,5 +78,7 @@ Global
 		{61F37572-ACAD-443E-82E7-2785878C2634} = {AE23DBF7-6295-4DFB-905B-5B787042C052}
 		{2E85EAE9-0732-42D0-BB0A-52E8EB0C6733} = {61F37572-ACAD-443E-82E7-2785878C2634}
 		{75A4AC04-739D-4102-8B09-68390746665F} = {61F37572-ACAD-443E-82E7-2785878C2634}
+		{26258EDB-101A-4162-A9C6-582DCFA94701} = {61F37572-ACAD-443E-82E7-2785878C2634}
+		{430D0DFE-A0EF-48C2-AADE-6E688706C105} = {61F37572-ACAD-443E-82E7-2785878C2634}
 	EndGlobalSection
 EndGlobal

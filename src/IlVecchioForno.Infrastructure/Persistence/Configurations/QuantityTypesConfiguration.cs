@@ -29,12 +29,12 @@ internal class QuantityTypesConfiguration : EntityConfigurationBase<QuantityType
 
         builder.Property(e => e.Unit)
             .HasConversion(
-                valueObject => valueObject != null ? valueObject.Value : null,
-                value => !string.IsNullOrEmpty(value) ? new QuantityTypeUnit(value) : null
+                valueObject => valueObject.Value,
+                value => new QuantityTypeUnit(value)
             )
             .HasColumnName("unit")
             .HasColumnType($"VARCHAR({QuantityTypeInvariant.UnitMaxLength})")
-            .IsRequired(false);
+            .IsRequired();
 
         builder.HasKey(e => e.Id)
             .HasName("pk_quantity_types");

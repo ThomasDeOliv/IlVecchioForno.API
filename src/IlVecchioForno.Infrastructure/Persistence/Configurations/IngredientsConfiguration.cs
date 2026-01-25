@@ -28,10 +28,10 @@ internal class IngredientsConfiguration : EntityConfigurationBase<Ingredient>
             .HasColumnType($"VARCHAR({IngredientInvariant.NameMaxLength})")
             .IsRequired();
 
-        builder.Property<short>("QuantityTypeId") // Shadow QuantityType FK
+        builder.Property<short?>("QuantityTypeId") // Shadow QuantityType FK
             .HasColumnName("quantity_type_id")
             .HasColumnType("SMALLINT")
-            .IsRequired();
+            .IsRequired(false);
 
         builder.HasKey(e => e.Id)
             .HasName("pk_ingredients");
