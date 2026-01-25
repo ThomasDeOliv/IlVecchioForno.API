@@ -52,8 +52,6 @@ internal sealed class
             cancellationToken
         );
 
-        IReadOnlyList<ArchivedPizzaDto> result = this._mapper.Map<IReadOnlyList<ArchivedPizzaDto>>(items);
-
-        return this._mapper.Map<IReadOnlyList<ArchivedPizzaDto>>(result);
+        return this._mapper.Map<IReadOnlyList<ArchivedPizzaDto>>(items);
     }
 }

@@ -1,3 +1,4 @@
+using IlVecchioForno.Application.Common.Exceptions;
 using IlVecchioForno.Domain.Pizzas;
 using Mapster;
 
@@ -35,7 +36,7 @@ internal sealed class DtoMapping : IRegister
     private static ArchivedPizzaDto ToArchivedPizzaDto(Pizza src)
     {
         if (!src.ArchivedAt.HasValue)
-            throw new InvalidOperationException("Cannot map a non-archived pizza to ArchivedPizzaDto.");
+            throw new MappingException("Cannot map a non-archived pizza to ArchivedPizzaDto.");
 
         return new ArchivedPizzaDto(
             src.Id,

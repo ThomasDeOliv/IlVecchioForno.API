@@ -51,8 +51,6 @@ internal sealed class ListQuantityTypesHandler : IRequestHandler<ListQuantityTyp
             cancellationToken
         );
 
-        IReadOnlyList<QuantityTypeDto> result = this._mapper.Map<IReadOnlyList<QuantityTypeDto>>(items);
-
-        return this._mapper.Map<IReadOnlyList<QuantityTypeDto>>(result);
+        return this._mapper.Map<IReadOnlyList<QuantityTypeDto>>(items);
     }
 }
