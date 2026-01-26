@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IlVecchioForno.API.Controllers;
@@ -6,7 +7,10 @@ namespace IlVecchioForno.API.Controllers;
 [Route("api/[controller]")]
 public abstract class ApiControllerBase : ControllerBase
 {
-    protected ApiControllerBase()
+    protected readonly IMediator _mediator;
+
+    protected ApiControllerBase(IMediator mediator)
     {
+        this._mediator = mediator;
     }
 }

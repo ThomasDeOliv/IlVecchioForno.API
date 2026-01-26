@@ -13,13 +13,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace IlVecchioForno.API.Controllers;
 
 [AllowAnonymous]
-public sealed class IngredientController : ApiControllerBase
+public sealed class IngredientsController : ApiControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public IngredientController(IMediator mediator) : base()
+    public IngredientsController(IMediator mediator) : base(mediator)
     {
-        this._mediator = mediator;
     }
 
     [HttpGet]

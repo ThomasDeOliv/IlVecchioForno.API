@@ -10,13 +10,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace IlVecchioForno.API.Controllers;
 
 [AllowAnonymous]
-public sealed class QuantityTypeController : ApiControllerBase
+public sealed class QuantityTypesController : ApiControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public QuantityTypeController(IMediator mediator) : base()
+    public QuantityTypesController(IMediator mediator) : base(mediator)
     {
-        this._mediator = mediator;
     }
 
     [HttpGet]

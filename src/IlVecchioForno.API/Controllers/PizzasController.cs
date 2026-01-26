@@ -18,13 +18,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace IlVecchioForno.API.Controllers;
 
 [AllowAnonymous]
-public sealed class PizzaController : ApiControllerBase
+public sealed class PizzasController : ApiControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public PizzaController(IMediator mediator) : base()
+    public PizzasController(IMediator mediator) : base(mediator)
     {
-        this._mediator = mediator;
     }
 
     [HttpGet("active")]
