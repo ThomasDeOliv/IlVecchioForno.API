@@ -37,108 +37,221 @@ public sealed class InfrastructureContextTests : InfrastructureTestsBase
         await this._ctx.Database.MigrateAsync();
         QuantityType quantityType = GetTestQuantityType("Gram", "g");
 
-        int idBefore = quantityType.Id;
-        string nameBefore = quantityType.Name.Value;
-        string unitBefore = quantityType.Unit.Value;
-        DateTime? createdAtBefore = quantityType.CreatedAt;
-        DateTime? updatedAtBefore = quantityType.UpdatedAt;
+        EntityState stateBeforeInsert = this._ctx.Entry(quantityType).State;
+        int idBeforeInsert = quantityType.Id;
+        DateTime createdAtBeforeInsert = quantityType.CreatedAt;
+        DateTime updatedAtBeforeInsert = quantityType.UpdatedAt;
 
         // Act
         this._ctx.QuantityTypes.Add(quantityType);
+
+        EntityState stateAfterInsert = this._ctx.Entry(quantityType).State;
+        int idAfterInsert = quantityType.Id;
+        DateTime createdAtAfterInsert = quantityType.CreatedAt;
+        DateTime updatedAtAfterInsert = quantityType.UpdatedAt;
+
         await this._ctx.SaveChangesAsync();
 
-        int idAfter = quantityType.Id;
-        string nameAfter = quantityType.Name.Value;
-        string unitAfter = quantityType.Unit.Value;
-        DateTime? createdAtAfter = quantityType.CreatedAt;
-        DateTime? updatedAtAfter = quantityType.UpdatedAt;
+        EntityState stateAfterSaveChanges = this._ctx.Entry(quantityType).State;
+        int idAfterSaveChanges = quantityType.Id;
+        DateTime createdAtAfterSaveChanges = quantityType.CreatedAt;
+        DateTime updatedAtAfterSaveChanges = quantityType.UpdatedAt;
 
-        // Assert => Before: ID not set, timestamps at MinValue
-        Assert.Equal(0, idBefore);
-        Assert.Equal(DateTime.MinValue, createdAtBefore);
-        Assert.Equal(DateTime.MinValue, updatedAtBefore);
+        // Assert
+        Assert.Equal(EntityState.Detached, stateBeforeInsert);
+        Assert.Equal(0, idBeforeInsert);
+        Assert.Equal(DateTime.MinValue, createdAtBeforeInsert);
+        Assert.Equal(DateTime.MinValue, updatedAtBeforeInsert);
 
-        // Assert => After: ID generated, timestamps set
-        Assert.Equal(1, idAfter);
-        Assert.NotEqual(DateTime.MinValue, createdAtAfter);
-        Assert.NotEqual(DateTime.MinValue, updatedAtAfter);
+        Assert.Equal(EntityState.Added, stateAfterInsert);
+        Assert.Equal(0, idAfterInsert);
+        Assert.Equal(DateTime.MinValue, createdAtAfterInsert);
+        Assert.Equal(DateTime.MinValue, updatedAtAfterInsert);
 
-        // Assert => Business data unchanged
-        Assert.Equal(nameBefore, nameAfter);
-        Assert.Equal(unitBefore, unitAfter);
+        Assert.Equal(EntityState.Unchanged, stateAfterSaveChanges);
+        Assert.Equal(1, idAfterSaveChanges);
+        Assert.NotEqual(DateTime.MinValue, createdAtAfterSaveChanges);
+        Assert.NotEqual(DateTime.MinValue, updatedAtAfterSaveChanges);
     }
 
     [Fact]
     public async Task SaveChangesAsync_OnUpdate_SetsUpdatedAtTimestamp()
     {
-        // // Arrange
-        // await this._ctx.Database.MigrateAsync();
-        // QuantityType quantityType = GetTestQuantityType("Gram", "g");
-        //
-        // int idBefore = quantityType.Id;
-        // string nameBefore = quantityType.Name.Value;
-        // string? unitBefore = quantityType.Unit?.Value;
-        // DateTime? createdAtBefore = quantityType.CreatedAt;
-        // DateTime? updatedAtBefore = quantityType.UpdatedAt;
-        //
-        // // Act
-        // this._ctx.QuantityTypes.Add(quantityType);
-        // await this._ctx.SaveChangesAsync();
-        //
-        // quan
-        //
-        // int idAfter = quantityType.Id;
-        // string nameAfter = quantityType.Name.Value;
-        // string? unitAfter = quantityType.Unit?.Value;
-        // DateTime? createdAtAfter = quantityType.CreatedAt;
-        // DateTime? updatedAtAfter = quantityType.UpdatedAt;
-        //
-        // // Assert => Before: ID not set, timestamps at MinValue
-        // Assert.Equal(0, idBefore);
-        // Assert.Equal(DateTime.MinValue, createdAtBefore);
-        // Assert.Equal(DateTime.MinValue, updatedAtBefore);
-        //
-        // // Assert => After: ID generated, timestamps set
-        // Assert.Equal(1, idAfter);
-        // Assert.NotEqual(DateTime.MinValue, createdAtAfter);
-        // Assert.NotEqual(DateTime.MinValue, updatedAtAfter);
-        //
-        // // Assert => Business data unchanged
-        // Assert.Equal(nameBefore, nameAfter);
-        // Assert.Equal(unitBefore, unitAfter);
+        // Arrange
+        await this._ctx.Database.MigrateAsync();
+        Pizza pizza = GetTestPizza("Gorgonzola", null, 12.50m);
+        this._ctx.Pizzas.Add(pizza);
+        await this._ctx.SaveChangesAsync();
 
-        await Task.CompletedTask;
+        EntityState stateBeforeUpdate = this._ctx.Entry(pizza).State;
+        int idBeforeUpdate = pizza.Id;
+        DateTime createdAtBeforeUpdate = pizza.CreatedAt;
+        DateTime updatedAtBeforeUpdate = pizza.UpdatedAt;
+
+        // Act
+        pizza.UpdateDescription(new PizzaDescription("A pizza description."));
+
+        EntityState stateAfterUpdate = this._ctx.Entry(pizza).State;
+        int idAfterUpdate = pizza.Id;
+        DateTime createdAtAfterUpdate = pizza.CreatedAt;
+        DateTime updatedAtAfterUpdate = pizza.UpdatedAt;
+
+        await this._ctx.SaveChangesAsync();
+
+        EntityState stateAfterSaveChanges = this._ctx.Entry(pizza).State;
+        int idAfterSaveChanges = pizza.Id;
+        DateTime createdAtAfterSaveChanges = pizza.CreatedAt;
+        DateTime updatedAtAfterSaveChanges = pizza.UpdatedAt;
+
+        // Assert
+        Assert.Equal(EntityState.Unchanged, stateBeforeUpdate);
+        Assert.Equal(1, idBeforeUpdate);
+        Assert.NotEqual(DateTime.MinValue, createdAtBeforeUpdate);
+        Assert.NotEqual(DateTime.MinValue, updatedAtBeforeUpdate);
+
+        Assert.Equal(EntityState.Modified, stateAfterUpdate);
+        Assert.Equal(idBeforeUpdate, idAfterUpdate);
+        Assert.Equal(createdAtBeforeUpdate, createdAtAfterUpdate);
+        Assert.Equal(updatedAtBeforeUpdate, updatedAtAfterUpdate);
+
+        Assert.Equal(EntityState.Unchanged, stateAfterSaveChanges);
+        Assert.Equal(idAfterUpdate, idAfterSaveChanges);
+        Assert.Equal(createdAtAfterUpdate, createdAtAfterSaveChanges);
+        Assert.NotEqual(updatedAtAfterUpdate, updatedAtAfterSaveChanges);
     }
 
     [Fact]
-    public async Task SaveChangesAsync_WithTrue_SetsEntityStateToUnchanged()
+    public async Task SaveChangesAsync_WithTrue_OnInsert_SetsEntityStateToUnchanged()
     {
         // Arrange                                                                                                                                                                                                                                                                                                                                                                                                                  
         await this._ctx.Database.MigrateAsync();
         QuantityType quantityType = GetTestQuantityType("Gram", "g");
+
+        EntityState stateBeforeInsert = this._ctx.Entry(quantityType).State;
+        int idBeforeInsert = quantityType.Id;
+        DateTime createdAtBeforeInsert = quantityType.CreatedAt;
+        DateTime updatedAtBeforeInsert = quantityType.UpdatedAt;
 
         // Act                            
         this._ctx.QuantityTypes.Add(quantityType);
-        await this._ctx.SaveChangesAsync(true);
 
-        // Assert                                                                                                                                                                                                                                                                                                                                                                                                                   
-        EntityState state = this._ctx.Entry(quantityType).State;
-        Assert.Equal(EntityState.Unchanged, state);
+        EntityState stateAfterInsert = this._ctx.Entry(quantityType).State;
+        int idAfterInsert = quantityType.Id;
+        DateTime createdAtAfterInsert = quantityType.CreatedAt;
+        DateTime updatedAtAfterInsert = quantityType.UpdatedAt;
+
+        await this._ctx.SaveChangesAsync();
+
+        EntityState stateAfterSaveChanges = this._ctx.Entry(quantityType).State;
+        int idAfterSaveChanges = quantityType.Id;
+        DateTime createdAtAfterSaveChanges = quantityType.CreatedAt;
+        DateTime updatedAtAfterSaveChanges = quantityType.UpdatedAt;
+
+        // Assert              
+        Assert.Equal(EntityState.Detached, stateBeforeInsert);
+        Assert.Equal(0, idBeforeInsert);
+        Assert.Equal(DateTime.MinValue, createdAtBeforeInsert);
+        Assert.Equal(DateTime.MinValue, updatedAtBeforeInsert);
+
+        Assert.Equal(EntityState.Added, stateAfterInsert);
+        Assert.Equal(0, idAfterInsert);
+        Assert.Equal(DateTime.MinValue, createdAtAfterInsert);
+        Assert.Equal(DateTime.MinValue, updatedAtAfterInsert);
+
+        Assert.Equal(EntityState.Unchanged, stateAfterSaveChanges);
+        Assert.Equal(1, idAfterSaveChanges);
+        Assert.NotEqual(DateTime.MinValue, createdAtAfterSaveChanges);
+        Assert.NotEqual(DateTime.MinValue, updatedAtAfterSaveChanges);
     }
 
     [Fact]
-    public async Task SaveChangesAsync_WithFalse_KeepsEntityStateAsAdded()
+    public async Task SaveChangesAsync_WithFalse_OnInsert_KeepsEntityStateAsAdded()
     {
         // Arrange                                                                                                                                                                                                                                                                                                                                                                                                                  
         await this._ctx.Database.MigrateAsync();
         QuantityType quantityType = GetTestQuantityType("Gram", "g");
 
+        EntityState stateBeforeInsert = this._ctx.Entry(quantityType).State;
+
+        int idBeforeInsert = quantityType.Id;
+        DateTime createdAtBeforeInsert = quantityType.CreatedAt;
+        DateTime updatedAtBeforeInsert = quantityType.UpdatedAt;
+
         // Act                                   
         this._ctx.QuantityTypes.Add(quantityType);
+
+        EntityState stateAfterInsert = this._ctx.Entry(quantityType).State;
+        int idAfterInsert = quantityType.Id;
+        DateTime createdAtAfterInsert = quantityType.CreatedAt;
+        DateTime updatedAtAfterInsert = quantityType.UpdatedAt;
+
         await this._ctx.SaveChangesAsync(false);
 
-        // Assert                                                                                                                                                                                                                                                                                                                                                                                                                   
-        EntityState state = this._ctx.Entry(quantityType).State;
-        Assert.Equal(EntityState.Added, state);
+        EntityState stateAfterSaveChanges = this._ctx.Entry(quantityType).State;
+        int idAfterSaveChanges = quantityType.Id;
+        DateTime createdAtAfterSaveChanges = quantityType.CreatedAt;
+        DateTime updatedAtAfterSaveChanges = quantityType.UpdatedAt;
+
+        // Assert                      
+        Assert.Equal(EntityState.Detached, stateBeforeInsert);
+        Assert.Equal(0, idBeforeInsert);
+        Assert.Equal(DateTime.MinValue, createdAtBeforeInsert);
+        Assert.Equal(DateTime.MinValue, updatedAtBeforeInsert);
+
+        Assert.Equal(EntityState.Added, stateAfterInsert);
+        Assert.Equal(0, idAfterInsert);
+        Assert.Equal(DateTime.MinValue, createdAtAfterInsert);
+        Assert.Equal(DateTime.MinValue, updatedAtAfterInsert);
+
+        Assert.Equal(EntityState.Added, stateAfterSaveChanges);
+        Assert.Equal(0, idAfterSaveChanges);
+        Assert.NotEqual(DateTime.MinValue, createdAtAfterSaveChanges);
+        Assert.NotEqual(DateTime.MinValue, updatedAtAfterSaveChanges);
+    }
+
+    [Fact]
+    public async Task SaveChangesAsync_WithFalse_OnUpdate_KeepsEntityStateAsModified()
+    {
+        // Arrange                                                                                                                                                         
+        await this._ctx.Database.MigrateAsync();
+        Pizza pizza = GetTestPizza("Gorgonzola", null, 12.50m);
+        this._ctx.Pizzas.Add(pizza);
+        await this._ctx.SaveChangesAsync();
+
+        EntityState stateBeforeUpdate = this._ctx.Entry(pizza).State;
+        int idBeforeUpdate = pizza.Id;
+        DateTime createdAtBeforeUpdate = pizza.CreatedAt;
+        DateTime updatedAtBeforeUpdate = pizza.UpdatedAt;
+
+        // Act                                                
+        pizza.UpdateDescription(new PizzaDescription("A pizza description."));
+
+        EntityState stateAfterUpdate = this._ctx.Entry(pizza).State;
+        int idAfterUpdate = pizza.Id;
+        DateTime createdAtAfterUpdate = pizza.CreatedAt;
+        DateTime updatedAtAfterUpdate = pizza.UpdatedAt;
+
+        await this._ctx.SaveChangesAsync(false);
+
+        EntityState stateAfterSaveChanges = this._ctx.Entry(pizza).State;
+        int idAfterSaveChanges = pizza.Id;
+        DateTime createdAtAfterSaveChanges = pizza.CreatedAt;
+        DateTime updatedAtAfterSaveChanges = pizza.UpdatedAt;
+
+        // Assert
+        Assert.Equal(EntityState.Unchanged, stateBeforeUpdate);
+        Assert.Equal(1, idBeforeUpdate);
+        Assert.NotEqual(DateTime.MinValue, createdAtBeforeUpdate);
+        Assert.NotEqual(DateTime.MinValue, updatedAtBeforeUpdate);
+
+        Assert.Equal(EntityState.Modified, stateAfterUpdate);
+        Assert.Equal(idBeforeUpdate, idAfterUpdate);
+        Assert.Equal(createdAtBeforeUpdate, createdAtAfterUpdate);
+        Assert.Equal(updatedAtBeforeUpdate, updatedAtAfterUpdate);
+
+        Assert.Equal(EntityState.Modified, stateAfterSaveChanges);
+        Assert.Equal(idAfterUpdate, idAfterSaveChanges);
+        Assert.Equal(createdAtAfterUpdate, createdAtAfterSaveChanges);
+        Assert.NotEqual(updatedAtAfterUpdate, updatedAtAfterSaveChanges);
     }
 }
