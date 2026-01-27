@@ -25,7 +25,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\src\IlVecchioForno.Infrastructure\IlVecchioForno.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\..\src\IlVecchioForno.Infrastructure\IlVecchioForno.Infrastructure.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="QueryServices\Filters\"/>
+        <Folder Include="QueryServices\Sorters\"/>
     </ItemGroup>
 
 </Project>

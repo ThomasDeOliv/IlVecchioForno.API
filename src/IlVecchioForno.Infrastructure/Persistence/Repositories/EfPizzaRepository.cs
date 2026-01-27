@@ -57,7 +57,8 @@ internal sealed class EfPizzaRepository : IPizzaRepository
     {
         IQueryable<Pizza> queryable = this._ctx.Pizzas
             .Include(p => p.PizzaIngredients)
-            .ThenInclude(pi => pi.Ingredient);
+            .ThenInclude(pi => pi.Ingredient)
+            .Where(p => p.ArchivedAt == null);
 
         queryable = this._filterService.Filter(queryable, query.Filters);
         queryable = this._activeSorterService.OrderBy(queryable, query.Sorter, query.Descending);
@@ -74,7 +75,8 @@ internal sealed class EfPizzaRepository : IPizzaRepository
     {
         IQueryable<Pizza> queryable = this._ctx.Pizzas
             .Include(p => p.PizzaIngredients)
-            .ThenInclude(pi => pi.Ingredient);
+            .ThenInclude(pi => pi.Ingredient)
+            .Where(p => p.ArchivedAt != null);
 
         queryable = this._filterService.Filter(queryable, query.Filters);
         queryable = this._archivedSorterService.OrderBy(queryable, query.Sorter, query.Descending);
