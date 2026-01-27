@@ -1,3 +1,4 @@
+using IlVecchioForno.API.Cors;
 using IlVecchioForno.API.Logger;
 using IlVecchioForno.Application;
 using IlVecchioForno.Infrastructure;
@@ -40,6 +41,7 @@ public static class Program
             }
 
             app.UseHttpsRedirection();
+            app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
