@@ -28,7 +28,7 @@ internal sealed class GetActivePizzaHandler : IRequestHandler<GetActivePizzaQuer
     public async Task<ActivePizzaDto> Handle(GetActivePizzaQuery query, CancellationToken cancellationToken)
     {
         await this._validator.ValidateAndThrowAsync(query, cancellationToken);
-        
+
         Pizza? item = await this._repository.FindAsync(
             query.Id,
             cancellationToken

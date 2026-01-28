@@ -47,6 +47,6 @@ internal sealed class EfQuantityTypeRepository : IQuantityTypeRepository
     public async Task<QuantityType?> FindAsync(short id, CancellationToken cancellationToken = default)
     {
         return await this._ctx.QuantityTypes
-            .SingleOrDefaultAsync(q => q.Id.Equals(id), cancellationToken);
+            .FindAsync([id], cancellationToken);
     }
 }

@@ -4,6 +4,5 @@ public sealed class MappingException : InvalidOperationException
 {
     public MappingException(string message) : base(message)
     {
-        
     }
 }
