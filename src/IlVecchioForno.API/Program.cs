@@ -1,4 +1,3 @@
-using IlVecchioForno.API.Cors;
 using IlVecchioForno.API.Logger;
 using IlVecchioForno.Application;
 using IlVecchioForno.Infrastructure;
@@ -54,7 +53,7 @@ public static class Program
         }
         finally
         {
-            Log.Information("Application shutting down."); 
+            Log.Information("Application shutting down.");
             await Log.CloseAndFlushAsync();
         }
     }
