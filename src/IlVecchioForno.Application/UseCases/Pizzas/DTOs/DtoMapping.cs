@@ -17,6 +17,9 @@ internal sealed class DtoMapping : IRegister
 
     private static ActivePizzaDto ToActivePizzaDto(Pizza src)
     {
+        if (src.ArchivedAt.HasValue)
+            throw new MappingException("Cannot map an archived pizza to ActivePizzaDto.");
+        
         return new ActivePizzaDto(
             src.Id,
             src.Name.Value,
