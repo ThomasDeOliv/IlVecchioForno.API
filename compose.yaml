@@ -1,11 +1,18 @@
-﻿name: postgres
+﻿name: ilvecchioforno
 
 services:
-  ilvecchioforno.api:
+  ilvecchioforno_api:
+    container_name: ilvecchioforno_api
     image: ilvecchioforno.api
     build:
       context: .
       dockerfile: src/IlVecchioForno.API/Dockerfile
+    restart: always
+    env_file: ".env"
+    environment:
+      ConnectionStrings__IlVecchioFornoContext: "Host=postgres_db;Port=5432;Username=${DB_USER};Password=${DB_PASSWORD};Database=${DB_NAME}"
+    depends_on:
+      - postgres_db
   postgres_db:
     container_name: postgres_db
     image: postgres:18.1
@@ -14,8 +21,9 @@ services:
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     volumes:
-      - postgres_vol:/var/lib/postgresql
+      - postgres_vol:/var/lib/postgresql:Z
     ports:
       - target: 5432
         published: 5432
