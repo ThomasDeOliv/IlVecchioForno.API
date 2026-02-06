@@ -10,7 +10,11 @@ services:
     restart: always
     env_file: ".env"
     environment:
-      ConnectionStrings__IlVecchioFornoContext: "Host=ilvecchioforno_db;Port=5432;Username=${DB_USER};Password=${DB_PASSWORD};Database=${DB_NAME}"
+      - ASPNETCORE_ENVIRONMENT=Staging
+      - ConnectionStrings__IlVecchioFornoContext=Host=ilvecchioforno_db;Port=5432;Username=${DB_USER};Password=${DB_PASSWORD};Database=${DB_NAME}
+    ports:
+      - "8080:8080"
+      - "8081:8081"
     depends_on:
       - ilvecchioforno_db
   ilvecchioforno_db:
@@ -19,9 +23,9 @@ services:
     restart: always
     env_file: ".env"
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     volumes:
       - ilvecchioforno_db_vol:/var/lib/postgresql:Z
     ports:
