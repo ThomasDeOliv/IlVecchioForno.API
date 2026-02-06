@@ -10,19 +10,19 @@ internal sealed class ArchivedPizzaSorterService : ISorterService<Pizza, Archive
         return (sorter, descending) switch
         {
             (ArchivedPizzasSorter.Name, false) =>
-                q.OrderBy(p => p.Name)
+                q.OrderBy(p => p.Name.Value)
                     .ThenBy(p => p.Id),
 
             (ArchivedPizzasSorter.Name, true) =>
-                q.OrderByDescending(p => p.Name)
+                q.OrderByDescending(p => p.Name.Value)
                     .ThenBy(p => p.Id),
 
             (ArchivedPizzasSorter.Price, false) =>
-                q.OrderBy(p => p.Price)
+                q.OrderBy(p => p.Price.Value)
                     .ThenBy(p => p.Id),
 
             (ArchivedPizzasSorter.Price, true) =>
-                q.OrderByDescending(p => p.Price)
+                q.OrderByDescending(p => p.Price.Value)
                     .ThenBy(p => p.Id),
 
             (ArchivedPizzasSorter.Archived, false) =>

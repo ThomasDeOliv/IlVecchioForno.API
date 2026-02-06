@@ -13,7 +13,7 @@ internal sealed class IngredientFilterService : IFilterService<Ingredient>
             {
                 SearchFilterType searchFilter when !string.IsNullOrEmpty(searchFilter.Search) =>
                     current.Where(i =>
-                        EF.Functions.ILike(i.Name, $"%{searchFilter.Search}%")
+                        EF.Functions.ILike(i.Name.Value, $"%{searchFilter.Search}%")
                     ),
 
                 SearchFilterType searchFilter when string.IsNullOrEmpty(searchFilter.Search) => current,

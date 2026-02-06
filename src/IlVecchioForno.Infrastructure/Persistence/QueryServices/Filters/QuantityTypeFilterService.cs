@@ -13,12 +13,8 @@ internal sealed class QuantityTypeFilterService : IFilterService<QuantityType>
             {
                 SearchFilterType searchFilter when !string.IsNullOrWhiteSpace(searchFilter.Search) =>
                     current.Where(qT =>
-                        EF.Functions.ILike(qT.Name, $"%{searchFilter.Search}%")
-                        || (
-                            qT.Unit != null
-                            && !string.IsNullOrEmpty(qT.Unit)
-                            && EF.Functions.ILike(qT.Unit, $"%{searchFilter.Search}%")
-                        )
+                        EF.Functions.ILike(qT.Name.Value, $"%{searchFilter.Search}%")
+                        || EF.Functions.ILike(qT.Unit.Value, $"%{searchFilter.Search}%")
                     ),
 
                 SearchFilterType searchFilter when string.IsNullOrEmpty(searchFilter.Search) => current,
