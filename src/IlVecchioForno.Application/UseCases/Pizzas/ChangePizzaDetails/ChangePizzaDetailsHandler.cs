@@ -1,4 +1,4 @@
-using IlVecchioForno.Application.Common.Exceptions;
+using IlVecchioForno.Application.Common.Responses;
 using IlVecchioForno.Application.Gateways.Persistence;
 using IlVecchioForno.Domain.Ingredients;
 using IlVecchioForno.Domain.PizzaIngredients;
@@ -7,7 +7,7 @@ using MediatR;
 
 namespace IlVecchioForno.Application.UseCases.Pizzas.ChangePizzaDetails;
 
-internal sealed class ChangePizzaDetailsHandler : IRequestHandler<ChangePizzaDetailsCommand, Unit>
+internal sealed class ChangePizzaDetailsHandler : IRequestHandler<ChangePizzaDetailsCommand, IResponse>
 {
     private readonly IIngredientRepository _ingredientRepository;
     private readonly IPizzaRepository _pizzaRepository;
@@ -24,18 +24,24 @@ internal sealed class ChangePizzaDetailsHandler : IRequestHandler<ChangePizzaDet
         this._unitOfWork = unitOfWork;
     }
 
-    public async Task<Unit> Handle(ChangePizzaDetailsCommand request, CancellationToken cancellationToken)
+    public async Task<IResponse> Handle(ChangePizzaDetailsCommand request, CancellationToken cancellationToken)
     {
         Pizza? target = await this._pizzaRepository.FindAsync(request.Id, cancellationToken);
 
         if (target is null)
-            throw new InvalidReferenceException("Pizza not found.");
+            return new ResponseWithErrorMessage(
+                ErrorMessageType.InvalidReferenceError,
+                "Pizza not found."
+            );
 
         IReadOnlyCollection<Ingredient> targetIngredients =
             await this._ingredientRepository.ResolveAsync(request.IngredientsAndQuantities.Keys, cancellationToken);
 
         if (targetIngredients.Count != request.IngredientsAndQuantities.Count)
-            throw new InvalidReferenceException("Some ingredients were not found.");
+            return new ResponseWithErrorMessage(
+                ErrorMessageType.InvalidReferenceError,
+                "Some ingredients were not found."
+            );
 
         List<PizzaIngredient> pizzaIngredients = targetIngredients
             .Select(t =>
@@ -54,6 +60,6 @@ internal sealed class ChangePizzaDetailsHandler : IRequestHandler<ChangePizzaDet
         );
         target.UpdatePrice(new PizzaPrice(request.Price));
         await this._unitOfWork.SaveChangesAsync(cancellationToken);
-        return Unit.Value;
+        return new ResponseForCommand<Unit>(Unit.Value);
     }
 }

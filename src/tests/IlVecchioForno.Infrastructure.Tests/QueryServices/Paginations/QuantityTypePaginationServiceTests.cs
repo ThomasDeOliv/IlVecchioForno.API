@@ -27,6 +27,7 @@ public sealed class QuantityTypePaginationServiceTests
     public static TheoryData<int, int, List<QuantityType>> PaginatedQuantityTypes =>
         new TheoryData<int, int, List<QuantityType>>
         {
+            // Positive cases
             { 1, 1, new List<QuantityType>([_testsQuantityTypes[0]]) },
             { 1, 2, new List<QuantityType>([_testsQuantityTypes[0], _testsQuantityTypes[1]]) },
             { 1, 3, new List<QuantityType>([_testsQuantityTypes[0], _testsQuantityTypes[1], _testsQuantityTypes[2]]) },
@@ -41,7 +42,16 @@ public sealed class QuantityTypePaginationServiceTests
             { 5, 1, new List<QuantityType>([_testsQuantityTypes[4]]) },
             { 5, 1000, new List<QuantityType>() },
             { 6, 1, new List<QuantityType>([_testsQuantityTypes[5]]) },
-            { 10, 1, new List<QuantityType>() }
+            { 10, 1, new List<QuantityType>() },
+
+            // Negative/zero cases
+            { 0, 3, new List<QuantityType>([_testsQuantityTypes[0], _testsQuantityTypes[1], _testsQuantityTypes[2]]) },
+            { -1, 2, new List<QuantityType>([_testsQuantityTypes[0], _testsQuantityTypes[1]]) },
+            { 1, 0, new List<QuantityType>() },
+            { 1, -5, new List<QuantityType>() },
+            { 0, 0, new List<QuantityType>() },
+            { -1, -1, new List<QuantityType>() },
+            { -2, -3, new List<QuantityType>() }
         };
 
     [Theory]
@@ -54,31 +64,9 @@ public sealed class QuantityTypePaginationServiceTests
     {
         // Arrange
         IQueryable<QuantityType> queryable = _testsQuantityTypes.AsQueryable();
-
         // Act
         IQueryable<QuantityType> queryResult = this._paginationService.Paginate(queryable, page, pageSize);
         List<QuantityType> collection = queryResult.ToList();
-
-        // Assert
-        Assert.Equal(expected.Count, collection.Count);
-        Assert.Equivalent(expected, collection);
-    }
-
-    [Theory]
-    [MemberData(nameof(PaginatedQuantityTypes))]
-    public void Paginate_ForIngredients_Return_ExpectedIngredients(
-        int page,
-        int pageSize,
-        List<QuantityType> expected
-    )
-    {
-        // Arrange
-        IQueryable<QuantityType> queryable = _testsQuantityTypes.AsQueryable();
-
-        // Act
-        IQueryable<QuantityType> queryResult = this._paginationService.Paginate(queryable, page, pageSize);
-        List<QuantityType> collection = queryResult.ToList();
-
         // Assert
         Assert.Equal(expected.Count, collection.Count);
         Assert.Equivalent(expected, collection);

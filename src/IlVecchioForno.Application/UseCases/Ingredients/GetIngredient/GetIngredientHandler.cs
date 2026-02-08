@@ -1,4 +1,4 @@
-using IlVecchioForno.Application.Common.Exceptions;
+using IlVecchioForno.Application.Common.Responses;
 using IlVecchioForno.Application.Gateways.Persistence;
 using IlVecchioForno.Application.UseCases.Ingredients.DTOs;
 using IlVecchioForno.Domain.Ingredients;
@@ -7,7 +7,7 @@ using MediatR;
 
 namespace IlVecchioForno.Application.UseCases.Ingredients.GetIngredient;
 
-internal sealed class GetIngredientHandler : IRequestHandler<GetIngredientQuery, IngredientDto>
+internal sealed class GetIngredientHandler : IRequestHandler<GetIngredientQuery, IResponse>
 {
     private readonly IMapper _mapper;
     private readonly IIngredientRepository _repository;
@@ -18,15 +18,21 @@ internal sealed class GetIngredientHandler : IRequestHandler<GetIngredientQuery,
         this._repository = repository;
     }
 
-    public async Task<IngredientDto> Handle(GetIngredientQuery query, CancellationToken cancellationToken)
+    public async Task<IResponse> Handle(GetIngredientQuery query, CancellationToken cancellationToken)
     {
         Ingredient? item = await this._repository.FindAsync(
             query.Id,
             cancellationToken
         );
 
-        return item is null
-            ? throw new EntityNotFoundException($"Ingredient with id {query.Id} was not found.")
-            : this._mapper.Map<IngredientDto>(item);
+        if (item is null)
+            return new ResponseWithErrorMessage(
+                ErrorMessageType.EntityNotFoundError,
+                $"Ingredient with id {query.Id} was not found."
+            );
+
+        return new ResponseForQuery<IngredientDto>(
+            this._mapper.Map<IngredientDto>(item)
+        );
     }
 }

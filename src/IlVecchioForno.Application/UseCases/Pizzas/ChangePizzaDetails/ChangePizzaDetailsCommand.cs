@@ -1,3 +1,4 @@
+using IlVecchioForno.Application.Common.Responses;
 using MediatR;
 
 namespace IlVecchioForno.Application.UseCases.Pizzas.ChangePizzaDetails;
@@ -7,4 +8,4 @@ public sealed record ChangePizzaDetailsCommand(
     string? Description,
     decimal Price,
     IReadOnlyDictionary<int, int> IngredientsAndQuantities
-) : IRequest<Unit>;
+) : IRequest<IResponse>;

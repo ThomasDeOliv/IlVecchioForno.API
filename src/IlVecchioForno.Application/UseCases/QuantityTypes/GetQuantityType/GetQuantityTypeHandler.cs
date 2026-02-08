@@ -1,4 +1,4 @@
-using IlVecchioForno.Application.Common.Exceptions;
+using IlVecchioForno.Application.Common.Responses;
 using IlVecchioForno.Application.Gateways.Persistence;
 using IlVecchioForno.Application.UseCases.QuantityTypes.DTOs;
 using IlVecchioForno.Domain.QuantityTypes;
@@ -7,7 +7,8 @@ using MediatR;
 
 namespace IlVecchioForno.Application.UseCases.QuantityTypes.GetQuantityType;
 
-internal sealed class GetQuantityTypeHandler : IRequestHandler<GetQuantityTypeQuery, QuantityTypeDto>
+internal sealed class
+    GetQuantityTypeHandler : IRequestHandler<GetQuantityTypeQuery, IResponse>
 {
     private readonly IMapper _mapper;
     private readonly IQuantityTypeRepository _repository;
@@ -18,15 +19,22 @@ internal sealed class GetQuantityTypeHandler : IRequestHandler<GetQuantityTypeQu
         this._repository = repository;
     }
 
-    public async Task<QuantityTypeDto> Handle(GetQuantityTypeQuery query, CancellationToken cancellationToken)
+    public async Task<IResponse> Handle(GetQuantityTypeQuery query,
+        CancellationToken cancellationToken)
     {
         QuantityType? item = await this._repository.FindAsync(
             query.Id,
             cancellationToken
         );
 
-        return item is null
-            ? throw new EntityNotFoundException($"Quantity type with id {query.Id} was not found.")
-            : this._mapper.Map<QuantityTypeDto>(item);
+        if (item is null)
+            return new ResponseWithErrorMessage(
+                ErrorMessageType.EntityNotFoundError,
+                $"Quantity type with id {query.Id} was not found."
+            );
+
+        return new ResponseForQuery<QuantityTypeDto>(
+            this._mapper.Map<QuantityTypeDto>(item)
+        );
     }
 }

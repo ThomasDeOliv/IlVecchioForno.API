@@ -1,5 +1,7 @@
 using FluentValidation;
+using FluentValidation.Results;
 using IlVecchioForno.Application.Common.Queries.Sorters;
+using IlVecchioForno.Application.Common.Responses;
 using IlVecchioForno.Application.Gateways.Persistence;
 using IlVecchioForno.Application.Gateways.Persistence.Queries;
 using IlVecchioForno.Application.Gateways.Persistence.Queries.FilterTypes;
@@ -11,11 +13,11 @@ using MediatR;
 namespace IlVecchioForno.Application.UseCases.Pizzas.ListArchivedPizzas;
 
 internal sealed class
-    ListArchivedPizzasHandler : IRequestHandler<ListArchivedPizzasQuery, IReadOnlyList<ArchivedPizzaDto>>
+    ListArchivedPizzasHandler : IRequestHandler<ListArchivedPizzasQuery, IResponse>
 {
     private readonly IMapper _mapper;
     private readonly IPizzaRepository _pizzaRepository;
-    private IValidator<ListArchivedPizzasQuery> _validator;
+    private readonly IValidator<ListArchivedPizzasQuery> _validator;
 
     public ListArchivedPizzasHandler(
         IMapper mapper,
@@ -28,12 +30,22 @@ internal sealed class
         this._validator = validator;
     }
 
-    public async Task<IReadOnlyList<ArchivedPizzaDto>> Handle(
+    public async Task<IResponse> Handle(
         ListArchivedPizzasQuery request,
         CancellationToken cancellationToken = default
     )
     {
-        await this._validator.ValidateAndThrowAsync(request, cancellationToken);
+        ValidationResult validationResult = await this._validator.ValidateAsync(request, cancellationToken);
+
+        if (!validationResult.IsValid)
+            return new ResponseWithErrorMessages(
+                validationResult.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    )
+            );
 
         QuerySpec<ArchivedPizzasSorter> query = new QuerySpec<ArchivedPizzasSorter>(
             request.Page,
@@ -52,6 +64,8 @@ internal sealed class
             cancellationToken
         );
 
-        return this._mapper.Map<IReadOnlyList<ArchivedPizzaDto>>(items);
+        return new ResponseForQuery<IReadOnlyList<ArchivedPizzaDto>>(
+            this._mapper.Map<IReadOnlyList<ArchivedPizzaDto>>(items)
+        );
     }
 }

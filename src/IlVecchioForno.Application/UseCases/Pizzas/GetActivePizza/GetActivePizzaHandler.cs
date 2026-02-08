@@ -1,5 +1,6 @@
 using FluentValidation;
-using IlVecchioForno.Application.Common.Exceptions;
+using FluentValidation.Results;
+using IlVecchioForno.Application.Common.Responses;
 using IlVecchioForno.Application.Gateways.Persistence;
 using IlVecchioForno.Application.UseCases.Pizzas.DTOs;
 using IlVecchioForno.Domain.Pizzas;
@@ -8,7 +9,7 @@ using MediatR;
 
 namespace IlVecchioForno.Application.UseCases.Pizzas.GetActivePizza;
 
-internal sealed class GetActivePizzaHandler : IRequestHandler<GetActivePizzaQuery, ActivePizzaDto>
+internal sealed class GetActivePizzaHandler : IRequestHandler<GetActivePizzaQuery, IResponse>
 {
     private readonly IMapper _mapper;
     private readonly IPizzaRepository _repository;
@@ -25,9 +26,19 @@ internal sealed class GetActivePizzaHandler : IRequestHandler<GetActivePizzaQuer
         this._validator = validator;
     }
 
-    public async Task<ActivePizzaDto> Handle(GetActivePizzaQuery query, CancellationToken cancellationToken)
+    public async Task<IResponse> Handle(GetActivePizzaQuery query, CancellationToken cancellationToken)
     {
-        await this._validator.ValidateAndThrowAsync(query, cancellationToken);
+        ValidationResult validationResult = await this._validator.ValidateAsync(query, cancellationToken);
+
+        if (!validationResult.IsValid)
+            return new ResponseWithErrorMessages(
+                validationResult.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    )
+            );
 
         Pizza? item = await this._repository.FindAsync(
             query.Id,
@@ -35,8 +46,13 @@ internal sealed class GetActivePizzaHandler : IRequestHandler<GetActivePizzaQuer
         );
 
         if (item is null || item.ArchivedAt is not null)
-            throw new EntityNotFoundException($"Active pizza with id {query.Id} was not found.");
+            return new ResponseWithErrorMessage(
+                ErrorMessageType.EntityNotFoundError,
+                $"Active pizza with id {query.Id} was not found."
+            );
 
-        return this._mapper.Map<ActivePizzaDto>(item);
+        return new ResponseForQuery<ActivePizzaDto>(
+            this._mapper.Map<ActivePizzaDto>(item)
+        );
     }
 }

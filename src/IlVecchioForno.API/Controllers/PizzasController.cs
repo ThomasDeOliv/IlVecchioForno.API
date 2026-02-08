@@ -1,7 +1,9 @@
+using IlVecchioForno.API.Attributes;
+using IlVecchioForno.API.Presenters;
 using IlVecchioForno.API.Requests.Pizzas;
-using IlVecchioForno.API.Utilities;
 using IlVecchioForno.Application.Common;
 using IlVecchioForno.Application.Common.Queries.Sorters;
+using IlVecchioForno.Application.Common.Responses;
 using IlVecchioForno.Application.UseCases.Pizzas.ArchivePizza;
 using IlVecchioForno.Application.UseCases.Pizzas.ChangePizzaDetails;
 using IlVecchioForno.Application.UseCases.Pizzas.DTOs;
@@ -20,7 +22,7 @@ namespace IlVecchioForno.API.Controllers;
 [AllowAnonymous]
 public sealed class PizzasController : ApiControllerBase
 {
-    public PizzasController(IMediator mediator) : base(mediator)
+    public PizzasController(IMediator mediator, IPresenter presenter) : base(mediator, presenter)
     {
     }
 
@@ -38,8 +40,8 @@ public sealed class PizzasController : ApiControllerBase
     {
         ListActivePizzasQuery query =
             new ListActivePizzasQuery(page, pageSize, sorter, descending, search, minPrice, maxPrice);
-        IReadOnlyList<ActivePizzaDto> resources = await this._mediator.Send(query, cancellationToken);
-        return this.Ok(resources);
+        IResponse response = await this._mediator.Send(query, cancellationToken);
+        return this._presenter.Present<IReadOnlyList<ActivePizzaDto>>(response);
     }
 
     [HttpGet("active/{id:int}")]
@@ -49,8 +51,8 @@ public sealed class PizzasController : ApiControllerBase
     )
     {
         GetActivePizzaQuery query = new GetActivePizzaQuery(id);
-        ActivePizzaDto resource = await this._mediator.Send(query, cancellationToken);
-        return this.Ok(resource);
+        IResponse response = await this._mediator.Send(query, cancellationToken);
+        return this._presenter.Present<ActivePizzaDto>(response);
     }
 
     [HttpGet("archived")]
@@ -67,8 +69,8 @@ public sealed class PizzasController : ApiControllerBase
     {
         ListArchivedPizzasQuery query =
             new ListArchivedPizzasQuery(page, pageSize, sorter, descending, search, minPrice, maxPrice);
-        IReadOnlyList<ArchivedPizzaDto> resources = await this._mediator.Send(query, cancellationToken);
-        return this.Ok(resources);
+        IResponse response = await this._mediator.Send(query, cancellationToken);
+        return this._presenter.Present<IReadOnlyList<ArchivedPizzaDto>>(response);
     }
 
     [HttpGet("archived/{id:int}")]
@@ -78,12 +80,13 @@ public sealed class PizzasController : ApiControllerBase
     )
     {
         GetArchivedPizzaQuery query = new GetArchivedPizzaQuery(id);
-        ArchivedPizzaDto resource = await this._mediator.Send(query, cancellationToken);
-        return this.Ok(resource);
+        IResponse response = await this._mediator.Send(query, cancellationToken);
+        return this._presenter.Present<ArchivedPizzaDto>(response);
     }
 
     [HttpPost]
-    public async Task<CreatedAtActionResult> PostAsync(
+    [CreatedAtAction(nameof(this.GetActiveByIdAsync))]
+    public async Task<ActionResult<ActivePizzaDto>> PostAsync(
         [FromBody] RegisterPizzaRequest request,
         CancellationToken cancellationToken = default
     )
@@ -94,16 +97,12 @@ public sealed class PizzasController : ApiControllerBase
             request.Price,
             request.IngredientsAndQuantities
         );
-        int result = await this._mediator.Send(command, cancellationToken);
-        return this.CreatedAtAction(
-            ActionUtility.ActionName(nameof(this.GetActiveByIdAsync)),
-            new { id = result },
-            result
-        );
+        IResponse response = await this._mediator.Send(command, cancellationToken);
+        return this._presenter.Present<ActivePizzaDto>(response);
     }
 
     [HttpPatch("{id:int}")]
-    public async Task<NoContentResult> PatchDetailsAsync(
+    public async Task<ActionResult<Unit>> PatchDetailsAsync(
         [FromRoute] int id,
         [FromBody] ChangePizzaDetailsRequest request,
         CancellationToken cancellationToken = default
@@ -115,29 +114,29 @@ public sealed class PizzasController : ApiControllerBase
             request.Price,
             request.IngredientsAndQuantities
         );
-        await this._mediator.Send(command, cancellationToken);
-        return this.NoContent();
+        IResponse response = await this._mediator.Send(command, cancellationToken);
+        return this._presenter.Present<Unit>(response);
     }
 
     [HttpPatch("{id:int}/archive")]
-    public async Task<NoContentResult> PatchArchiveAsync(
+    public async Task<ActionResult<Unit>> PatchArchiveAsync(
         [FromRoute] int id,
         CancellationToken cancellationToken = default
     )
     {
         ArchivePizzaCommand command = new ArchivePizzaCommand(id);
-        await this._mediator.Send(command, cancellationToken);
-        return this.NoContent();
+        IResponse response = await this._mediator.Send(command, cancellationToken);
+        return this._presenter.Present<Unit>(response);
     }
 
     [HttpPatch("{id:int}/unarchive")]
-    public async Task<NoContentResult> PatchUnarchiveAsync(
+    public async Task<ActionResult<Unit>> PatchUnarchiveAsync(
         [FromRoute] int id,
         CancellationToken cancellationToken = default
     )
     {
         UnarchivePizzaCommand command = new UnarchivePizzaCommand(id);
-        await this._mediator.Send(command, cancellationToken);
-        return this.NoContent();
+        IResponse response = await this._mediator.Send(command, cancellationToken);
+        return this._presenter.Present<Unit>(response);
     }
 }

@@ -1,11 +1,11 @@
-using IlVecchioForno.Application.Common.Exceptions;
+using IlVecchioForno.Application.Common.Responses;
 using IlVecchioForno.Application.Gateways.Persistence;
 using IlVecchioForno.Domain.Pizzas;
 using MediatR;
 
 namespace IlVecchioForno.Application.UseCases.Pizzas.UnarchivePizza;
 
-internal sealed class UnarchivePizzaHandler : IRequestHandler<UnarchivePizzaCommand, Unit>
+internal sealed class UnarchivePizzaHandler : IRequestHandler<UnarchivePizzaCommand, IResponse>
 {
     private readonly IPizzaRepository _pizzaRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -19,15 +19,18 @@ internal sealed class UnarchivePizzaHandler : IRequestHandler<UnarchivePizzaComm
         this._unitOfWork = unitOfWork;
     }
 
-    public async Task<Unit> Handle(UnarchivePizzaCommand request, CancellationToken cancellationToken)
+    public async Task<IResponse> Handle(UnarchivePizzaCommand request, CancellationToken cancellationToken)
     {
         Pizza? target = await this._pizzaRepository.FindAsync(request.Id, cancellationToken);
 
         if (target is null)
-            throw new InvalidReferenceException("Pizza not found.");
+            return new ResponseWithErrorMessage(
+                ErrorMessageType.InvalidReferenceError,
+                "Pizza not found."
+            );
 
         target.UpdateArchived();
         await this._unitOfWork.SaveChangesAsync(cancellationToken);
-        return Unit.Value;
+        return new ResponseForCommand<Unit>(Unit.Value);
     }
 }

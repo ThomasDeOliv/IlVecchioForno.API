@@ -1,5 +1,5 @@
 using IlVecchioForno.Application.Common.Queries.Sorters;
-using IlVecchioForno.Application.UseCases.Pizzas.DTOs;
+using IlVecchioForno.Application.Common.Responses;
 using MediatR;
 
 namespace IlVecchioForno.Application.UseCases.Pizzas.ListArchivedPizzas;
@@ -12,4 +12,4 @@ public sealed record ListArchivedPizzasQuery(
     string? Search,
     decimal? MinPrice,
     decimal? MaxPrice
-) : IRequest<IReadOnlyList<ArchivedPizzaDto>>;
+) : IRequest<IResponse>;

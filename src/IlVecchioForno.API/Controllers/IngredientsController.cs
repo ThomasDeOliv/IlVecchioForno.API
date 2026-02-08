@@ -1,7 +1,9 @@
+using IlVecchioForno.API.Attributes;
+using IlVecchioForno.API.Presenters;
 using IlVecchioForno.API.Requests.Ingredients;
-using IlVecchioForno.API.Utilities;
 using IlVecchioForno.Application.Common;
 using IlVecchioForno.Application.Common.Queries.Sorters;
+using IlVecchioForno.Application.Common.Responses;
 using IlVecchioForno.Application.UseCases.Ingredients.DTOs;
 using IlVecchioForno.Application.UseCases.Ingredients.GetIngredient;
 using IlVecchioForno.Application.UseCases.Ingredients.ListIngredients;
@@ -15,7 +17,7 @@ namespace IlVecchioForno.API.Controllers;
 [AllowAnonymous]
 public sealed class IngredientsController : ApiControllerBase
 {
-    public IngredientsController(IMediator mediator) : base(mediator)
+    public IngredientsController(IMediator mediator, IPresenter presenter) : base(mediator, presenter)
     {
     }
 
@@ -30,8 +32,8 @@ public sealed class IngredientsController : ApiControllerBase
     )
     {
         ListIngredientsQuery query = new ListIngredientsQuery(page, pageSize, sorter, descending, search);
-        IReadOnlyList<IngredientDto> resources = await this._mediator.Send(query, cancellationToken);
-        return this.Ok(resources);
+        IResponse response = await this._mediator.Send(query, cancellationToken);
+        return this._presenter.Present<IReadOnlyList<IngredientDto>>(response);
     }
 
     [HttpGet("{id:int}")]
@@ -41,22 +43,19 @@ public sealed class IngredientsController : ApiControllerBase
     )
     {
         GetIngredientQuery query = new GetIngredientQuery(id);
-        IngredientDto resource = await this._mediator.Send(query, cancellationToken);
-        return this.Ok(resource);
+        IResponse response = await this._mediator.Send(query, cancellationToken);
+        return this._presenter.Present<IngredientDto>(response);
     }
 
     [HttpPost]
-    public async Task<CreatedAtActionResult> PostAsync(
+    [CreatedAtAction(nameof(this.GetByIdAsync))]
+    public async Task<ActionResult<IngredientDto>> PostAsync(
         [FromBody] RegisterIngredientRequest request,
         CancellationToken cancellationToken = default
     )
     {
         RegisterIngredientCommand command = new RegisterIngredientCommand(request.Name, request.QuantityTypeId);
-        int result = await this._mediator.Send(command, cancellationToken);
-        return this.CreatedAtAction(
-            ActionUtility.ActionName(nameof(this.GetByIdAsync)),
-            new { id = result },
-            result
-        );
+        IResponse response = await this._mediator.Send(command, cancellationToken);
+        return this._presenter.Present<IngredientDto>(response);
     }
 }

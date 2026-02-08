@@ -1,5 +1,7 @@
 using FluentValidation;
+using FluentValidation.Results;
 using IlVecchioForno.Application.Common.Queries.Sorters;
+using IlVecchioForno.Application.Common.Responses;
 using IlVecchioForno.Application.Gateways.Persistence;
 using IlVecchioForno.Application.Gateways.Persistence.Queries;
 using IlVecchioForno.Application.Gateways.Persistence.Queries.FilterTypes;
@@ -11,7 +13,7 @@ using MediatR;
 namespace IlVecchioForno.Application.UseCases.Ingredients.ListIngredients;
 
 internal sealed class ListIngredientsHandler
-    : IRequestHandler<ListIngredientsQuery, IReadOnlyList<IngredientDto>>
+    : IRequestHandler<ListIngredientsQuery, IResponse>
 {
     private readonly IMapper _mapper;
     private readonly IIngredientRepository _repository;
@@ -28,12 +30,22 @@ internal sealed class ListIngredientsHandler
         this._mapper = mapper;
     }
 
-    public async Task<IReadOnlyList<IngredientDto>> Handle(
+    public async Task<IResponse> Handle(
         ListIngredientsQuery request,
         CancellationToken cancellationToken = default
     )
     {
-        await this._validator.ValidateAndThrowAsync(request, cancellationToken);
+        ValidationResult validationResult = await this._validator.ValidateAsync(request, cancellationToken);
+
+        if (!validationResult.IsValid)
+            return new ResponseWithErrorMessages(
+                validationResult.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    )
+            );
 
         QuerySpec<IngredientsSorter> query = new QuerySpec<IngredientsSorter>(
             request.Page,
@@ -51,6 +63,8 @@ internal sealed class ListIngredientsHandler
             cancellationToken
         );
 
-        return this._mapper.Map<IReadOnlyList<IngredientDto>>(items);
+        return new ResponseForQuery<IReadOnlyList<IngredientDto>>(
+            this._mapper.Map<IReadOnlyList<IngredientDto>>(items)
+        );
     }
 }

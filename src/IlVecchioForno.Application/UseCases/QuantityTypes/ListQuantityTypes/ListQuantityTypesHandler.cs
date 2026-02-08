@@ -1,5 +1,7 @@
 using FluentValidation;
+using FluentValidation.Results;
 using IlVecchioForno.Application.Common.Queries.Sorters;
+using IlVecchioForno.Application.Common.Responses;
 using IlVecchioForno.Application.Gateways.Persistence;
 using IlVecchioForno.Application.Gateways.Persistence.Queries;
 using IlVecchioForno.Application.Gateways.Persistence.Queries.FilterTypes;
@@ -10,7 +12,8 @@ using MediatR;
 
 namespace IlVecchioForno.Application.UseCases.QuantityTypes.ListQuantityTypes;
 
-internal sealed class ListQuantityTypesHandler : IRequestHandler<ListQuantityTypesQuery, IReadOnlyList<QuantityTypeDto>>
+internal sealed class
+    ListQuantityTypesHandler : IRequestHandler<ListQuantityTypesQuery, IResponse>
 {
     private readonly IMapper _mapper;
     private readonly IQuantityTypeRepository _repository;
@@ -27,12 +30,22 @@ internal sealed class ListQuantityTypesHandler : IRequestHandler<ListQuantityTyp
         this._validator = validator;
     }
 
-    public async Task<IReadOnlyList<QuantityTypeDto>> Handle(
+    public async Task<IResponse> Handle(
         ListQuantityTypesQuery request,
         CancellationToken cancellationToken = default
     )
     {
-        await this._validator.ValidateAndThrowAsync(request, cancellationToken);
+        ValidationResult validationResult = await this._validator.ValidateAsync(request, cancellationToken);
+
+        if (!validationResult.IsValid)
+            return new ResponseWithErrorMessages(
+                validationResult.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    )
+            );
 
         QuerySpec<QuantityTypesSorter> querySpec =
             new QuerySpec<QuantityTypesSorter>(
@@ -51,6 +64,8 @@ internal sealed class ListQuantityTypesHandler : IRequestHandler<ListQuantityTyp
             cancellationToken
         );
 
-        return this._mapper.Map<IReadOnlyList<QuantityTypeDto>>(items);
+        return new ResponseForQuery<IReadOnlyList<QuantityTypeDto>>(
+            this._mapper.Map<IReadOnlyList<QuantityTypeDto>>(items)
+        );
     }
 }
