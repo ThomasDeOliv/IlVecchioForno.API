@@ -1,6 +1,7 @@
 using FluentValidation;
-using IlVecchioForno.Application.Common.Exceptions;
+using FluentValidation.Results;
 using IlVecchioForno.Application.Gateways.Persistence;
+using IlVecchioForno.Application.Gateways.Presentation;
 using IlVecchioForno.Application.UseCases.Pizzas.DTOs;
 using IlVecchioForno.Domain.Pizzas;
 using MapsterMapper;
@@ -8,26 +9,45 @@ using MediatR;
 
 namespace IlVecchioForno.Application.UseCases.Pizzas.GetActivePizza;
 
-internal sealed class GetActivePizzaHandler : IRequestHandler<GetActivePizzaQuery, ActivePizzaDto>
+internal sealed class GetActivePizzaHandler : IRequestHandler<GetActivePizzaQuery>
 {
     private readonly IMapper _mapper;
+    private readonly IPizzaPresenter _presenter;
     private readonly IPizzaRepository _repository;
     private readonly IValidator<GetActivePizzaQuery> _validator;
 
     public GetActivePizzaHandler(
         IMapper mapper,
+        IPizzaPresenter presenter,
         IPizzaRepository repository,
         IValidator<GetActivePizzaQuery> validator
     )
     {
         this._mapper = mapper;
+        this._presenter = presenter;
         this._repository = repository;
         this._validator = validator;
     }
 
-    public async Task<ActivePizzaDto> Handle(GetActivePizzaQuery query, CancellationToken cancellationToken)
+    public async Task Handle(
+        GetActivePizzaQuery query,
+        CancellationToken cancellationToken
+    )
     {
-        await this._validator.ValidateAndThrowAsync(query, cancellationToken);
+        ValidationResult validationResult = await this._validator.ValidateAsync(query, cancellationToken);
+
+        if (!validationResult.IsValid)
+        {
+            this._presenter.ValidationErrors(
+                validationResult.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    )
+            );
+            return;
+        }
 
         Pizza? item = await this._repository.FindAsync(
             query.Id,
@@ -35,8 +55,15 @@ internal sealed class GetActivePizzaHandler : IRequestHandler<GetActivePizzaQuer
         );
 
         if (item is null || item.ArchivedAt is not null)
-            throw new EntityNotFoundException($"Active pizza with id {query.Id} was not found.");
+        {
+            this._presenter.EntityNotFound(
+                $"Active pizza with id {query.Id} was not found."
+            );
+            return;
+        }
 
-        return this._mapper.Map<ActivePizzaDto>(item);
+        this._presenter.EntityFound(
+            this._mapper.Map<ActivePizzaDto>(item)
+        );
     }
 }

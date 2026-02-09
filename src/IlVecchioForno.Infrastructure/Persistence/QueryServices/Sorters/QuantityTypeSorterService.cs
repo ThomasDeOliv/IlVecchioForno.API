@@ -11,19 +11,19 @@ internal sealed class QuantityTypeSorterService : ISorterService<QuantityType, Q
         return (sorter, descending) switch
         {
             (QuantityTypesSorter.Unit, true) =>
-                q.OrderByDescending(p => p.Unit)
+                q.OrderByDescending(p => p.Unit.Value)
                     .ThenBy(p => p.Id),
 
             (QuantityTypesSorter.Unit, false) =>
-                q.OrderBy(p => p.Unit)
+                q.OrderBy(p => p.Unit.Value)
                     .ThenBy(p => p.Id),
 
             (QuantityTypesSorter.Name, true) =>
-                q.OrderByDescending(p => p.Name)
+                q.OrderByDescending(p => p.Name.Value)
                     .ThenBy(p => p.Id),
 
             (QuantityTypesSorter.Name, false) =>
-                q.OrderBy(p => p.Name)
+                q.OrderBy(p => p.Name.Value)
                     .ThenBy(p => p.Id),
 
             (QuantityTypesSorter.Id, true) =>

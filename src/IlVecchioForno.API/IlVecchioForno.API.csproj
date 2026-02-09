@@ -23,6 +23,7 @@
         <PackageReference Include="Serilog.Enrichers.AssemblyName"/>
         <PackageReference Include="Serilog.Enrichers.Environment"/>
         <PackageReference Include="Serilog.Enrichers.Thread"/>
+        <PackageReference Include="Serilog.Sinks.ApplicationInsights"/>
     </ItemGroup>
 
     <ItemGroup>

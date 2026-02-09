@@ -1,5 +1,5 @@
-using IlVecchioForno.Application.Common.Exceptions;
 using IlVecchioForno.Application.Gateways.Persistence;
+using IlVecchioForno.Application.Gateways.Presentation;
 using IlVecchioForno.Application.UseCases.Pizzas.DTOs;
 using IlVecchioForno.Domain.Pizzas;
 using MapsterMapper;
@@ -7,26 +7,43 @@ using MediatR;
 
 namespace IlVecchioForno.Application.UseCases.Pizzas.GetArchivedPizza;
 
-internal sealed class GetArchivedPizzaHandler : IRequestHandler<GetArchivedPizzaQuery, ArchivedPizzaDto>
+internal sealed class GetArchivedPizzaHandler : IRequestHandler<GetArchivedPizzaQuery>
 {
     private readonly IMapper _mapper;
+    private readonly IPizzaPresenter _presenter;
     private readonly IPizzaRepository _repository;
 
-    public GetArchivedPizzaHandler(IMapper mapper, IPizzaRepository repository)
+    public GetArchivedPizzaHandler(
+        IMapper mapper,
+        IPizzaPresenter presenter,
+        IPizzaRepository repository
+    )
     {
         this._mapper = mapper;
+        this._presenter = presenter;
         this._repository = repository;
     }
 
-    public async Task<ArchivedPizzaDto> Handle(GetArchivedPizzaQuery query, CancellationToken cancellationToken)
+    public async Task Handle(
+        GetArchivedPizzaQuery query,
+        CancellationToken cancellationToken
+    )
     {
         Pizza? item = await this._repository.FindAsync(
             query.Id,
             cancellationToken
         );
 
-        return item?.ArchivedAt is null
-            ? throw new EntityNotFoundException($"Archived pizza with id {query.Id} was not found.")
-            : this._mapper.Map<ArchivedPizzaDto>(item);
+        if (item?.ArchivedAt is null)
+        {
+            this._presenter.EntityNotFound(
+                $"Archived pizza with id {query.Id} was not found."
+            );
+            return;
+        }
+
+        this._presenter.EntityFound(
+            this._mapper.Map<ArchivedPizzaDto>(item)
+        );
     }
 }

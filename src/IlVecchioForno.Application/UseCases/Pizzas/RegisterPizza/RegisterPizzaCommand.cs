@@ -7,4 +7,4 @@ public sealed record RegisterPizzaCommand(
     string? Description,
     decimal Price,
     IReadOnlyDictionary<int, int> IngredientsAndQuantities
-) : IRequest<int>;
+) : IRequest;

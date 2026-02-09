@@ -10,19 +10,19 @@ internal sealed class ActivePizzaSorterService : ISorterService<Pizza, ActivePiz
         return (sorter, descending) switch
         {
             (ActivePizzasSorter.Name, false) =>
-                q.OrderBy(p => p.Name)
+                q.OrderBy(p => p.Name.Value)
                     .ThenBy(p => p.Id),
 
             (ActivePizzasSorter.Name, true) =>
-                q.OrderByDescending(p => p.Name)
+                q.OrderByDescending(p => p.Name.Value)
                     .ThenBy(p => p.Id),
 
             (ActivePizzasSorter.Price, false) =>
-                q.OrderBy(p => p.Price)
+                q.OrderBy(p => p.Price.Value)
                     .ThenBy(p => p.Id),
 
             (ActivePizzasSorter.Price, true) =>
-                q.OrderByDescending(p => p.Price)
+                q.OrderByDescending(p => p.Price.Value)
                     .ThenBy(p => p.Id),
 
             (_, true) =>
