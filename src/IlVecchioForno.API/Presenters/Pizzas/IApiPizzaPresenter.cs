@@ -7,5 +7,5 @@ namespace IlVecchioForno.API.Presenters.Pizzas;
 public interface IApiPizzaPresenter : IPizzaPresenter
 {
     ActionResult Result { get; }
-    void Initialize(ApiControllerBase controller);
+    void Initialize(PizzasController controller);
 }
