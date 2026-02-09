@@ -1,7 +1,7 @@
 using FluentValidation;
 using FluentValidation.Results;
-using IlVecchioForno.Application.Common.Responses;
 using IlVecchioForno.Application.Gateways.Persistence;
+using IlVecchioForno.Application.Gateways.Presentation;
 using IlVecchioForno.Application.UseCases.Ingredients.DTOs;
 using IlVecchioForno.Domain.Ingredients;
 using IlVecchioForno.Domain.QuantityTypes;
@@ -10,15 +10,17 @@ using MediatR;
 
 namespace IlVecchioForno.Application.UseCases.Ingredients.RegisterIngredient;
 
-internal sealed class RegisterIngredientHandler : IRequestHandler<RegisterIngredientCommand, IResponse>
+internal sealed class RegisterIngredientHandler : IRequestHandler<RegisterIngredientCommand>
 {
     private readonly IIngredientRepository _ingredientRepository;
     private readonly IMapper _mapper;
+    private readonly IIngredientPresenter _presenter;
     private readonly IQuantityTypeRepository _quantityTypeRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IValidator<RegisterIngredientCommand> _validator;
 
     public RegisterIngredientHandler(
+        IIngredientPresenter presenter,
         IIngredientRepository ingredientRepository,
         IMapper mapper,
         IQuantityTypeRepository quantityTypeRepository,
@@ -26,6 +28,7 @@ internal sealed class RegisterIngredientHandler : IRequestHandler<RegisterIngred
         IValidator<RegisterIngredientCommand> validator
     )
     {
+        this._presenter = presenter;
         this._ingredientRepository = ingredientRepository;
         this._mapper = mapper;
         this._quantityTypeRepository = quantityTypeRepository;
@@ -33,12 +36,16 @@ internal sealed class RegisterIngredientHandler : IRequestHandler<RegisterIngred
         this._validator = validator;
     }
 
-    public async Task<IResponse> Handle(RegisterIngredientCommand request, CancellationToken cancellationToken)
+    public async Task Handle(
+        RegisterIngredientCommand command,
+        CancellationToken cancellationToken
+    )
     {
-        ValidationResult validationResult = await this._validator.ValidateAsync(request, cancellationToken);
+        ValidationResult validationResult = await this._validator.ValidateAsync(command, cancellationToken);
 
         if (!validationResult.IsValid)
-            return new ErrorResponseWithMessages(
+        {
+            this._presenter.ValidationErrors(
                 validationResult.Errors
                     .GroupBy(e => e.PropertyName)
                     .ToDictionary(
@@ -46,30 +53,40 @@ internal sealed class RegisterIngredientHandler : IRequestHandler<RegisterIngred
                         g => g.Select(e => e.ErrorMessage).ToArray()
                     )
             );
+            return;
+        }
 
         QuantityType? targetQuantityType = null;
 
-        if (request.QuantityTypeId.HasValue)
+        if (command.QuantityTypeId.HasValue)
         {
             targetQuantityType =
-                await this._quantityTypeRepository.FindAsync(request.QuantityTypeId.Value, cancellationToken);
+                await this._quantityTypeRepository.FindAsync(command.QuantityTypeId.Value, cancellationToken);
 
             if (targetQuantityType is null)
-                return new ErrorResponseWithMessage(
-                    ErrorResponseType.InvalidReferenceError,
+            {
+                this._presenter.InvalidReferenceError(
                     "Provided quantity type not found."
                 );
+
+                return;
+            }
         }
 
         Ingredient newIngredient = new Ingredient(
-            new IngredientName(request.Name),
+            new IngredientName(command.Name),
             targetQuantityType
         );
-        this._ingredientRepository.Add(newIngredient);
-        await this._unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new Response<IngredientDto>(
-            ResponseType.Command,
+        this._ingredientRepository.Add(newIngredient);
+
+        if (await this._unitOfWork.SaveChangesAsync(cancellationToken) == 0)
+        {
+            this._presenter.RegistrationError("Cannot register ingredient.");
+            return;
+        }
+
+        this._presenter.EntityRegistered(
             this._mapper.Map<IngredientDto>(newIngredient)
         );
     }

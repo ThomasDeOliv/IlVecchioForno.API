@@ -1,6 +1,9 @@
 using IlVecchioForno.API.Cors;
 using IlVecchioForno.API.Filters;
-using IlVecchioForno.API.Presenters;
+using IlVecchioForno.API.Presenters.Ingredients;
+using IlVecchioForno.API.Presenters.Pizzas;
+using IlVecchioForno.API.Presenters.QuantityTypes;
+using IlVecchioForno.Application.Gateways.Presentation;
 
 namespace IlVecchioForno.API;
 
@@ -12,15 +15,15 @@ public static class ApiStartup
 
         services
             .AddDefaultCorsConfiguration()
-            .AddScoped<IPresenter, Presenter>()
+            .AddScoped<IApiPizzaPresenter, PizzaPresenter>()
+            .AddScoped<IPizzaPresenter>(sp => sp.GetRequiredService<IApiPizzaPresenter>())
+            .AddScoped<IApiIngredientPresenter, IngredientPresenter>()
+            .AddScoped<IIngredientPresenter>(sp => sp.GetRequiredService<IApiIngredientPresenter>())
+            .AddScoped<IApiQuantityTypePresenter, QuantityTypePresenter>()
+            .AddScoped<IQuantityTypePresenter>(sp => sp.GetRequiredService<IApiQuantityTypePresenter>())
             .AddScoped<GlobalExceptionFilter>()
-            .AddScoped<CreatedAtLocationFilter>()
             .AddOpenApi()
-            .AddControllers(options =>
-                {
-                    options.Filters.Add<GlobalExceptionFilter>(); // TODO reevaluate and remove in future
-                    options.Filters.Add<CreatedAtLocationFilter>();
-                }
+            .AddControllers(options => { options.Filters.Add<GlobalExceptionFilter>(); }
             );
 
         services.AddAuthentication();

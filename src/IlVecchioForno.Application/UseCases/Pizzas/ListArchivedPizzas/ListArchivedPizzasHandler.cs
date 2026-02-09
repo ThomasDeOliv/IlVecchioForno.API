@@ -1,10 +1,10 @@
 using FluentValidation;
 using FluentValidation.Results;
 using IlVecchioForno.Application.Common.Queries.Sorters;
-using IlVecchioForno.Application.Common.Responses;
 using IlVecchioForno.Application.Gateways.Persistence;
 using IlVecchioForno.Application.Gateways.Persistence.Queries;
 using IlVecchioForno.Application.Gateways.Persistence.Queries.FilterTypes;
+using IlVecchioForno.Application.Gateways.Presentation;
 using IlVecchioForno.Application.UseCases.Pizzas.DTOs;
 using IlVecchioForno.Domain.Pizzas;
 using MapsterMapper;
@@ -13,32 +13,36 @@ using MediatR;
 namespace IlVecchioForno.Application.UseCases.Pizzas.ListArchivedPizzas;
 
 internal sealed class
-    ListArchivedPizzasHandler : IRequestHandler<ListArchivedPizzasQuery, IResponse>
+    ListArchivedPizzasHandler : IRequestHandler<ListArchivedPizzasQuery>
 {
     private readonly IMapper _mapper;
     private readonly IPizzaRepository _pizzaRepository;
+    private readonly IPizzaPresenter _presenter;
     private readonly IValidator<ListArchivedPizzasQuery> _validator;
 
     public ListArchivedPizzasHandler(
         IMapper mapper,
+        IPizzaPresenter presenter,
         IPizzaRepository pizzaRepository,
         IValidator<ListArchivedPizzasQuery> validator
     )
     {
         this._mapper = mapper;
+        this._presenter = presenter;
         this._pizzaRepository = pizzaRepository;
         this._validator = validator;
     }
 
-    public async Task<IResponse> Handle(
-        ListArchivedPizzasQuery request,
+    public async Task Handle(
+        ListArchivedPizzasQuery query,
         CancellationToken cancellationToken = default
     )
     {
-        ValidationResult validationResult = await this._validator.ValidateAsync(request, cancellationToken);
+        ValidationResult validationResult = await this._validator.ValidateAsync(query, cancellationToken);
 
         if (!validationResult.IsValid)
-            return new ErrorResponseWithMessages(
+        {
+            this._presenter.ValidationErrors(
                 validationResult.Errors
                     .GroupBy(e => e.PropertyName)
                     .ToDictionary(
@@ -46,26 +50,27 @@ internal sealed class
                         g => g.Select(e => e.ErrorMessage).ToArray()
                     )
             );
+            return;
+        }
 
-        QuerySpec<ArchivedPizzasSorter> query = new QuerySpec<ArchivedPizzasSorter>(
-            request.Page,
-            request.PageSize,
-            request.Sorter,
-            request.Descending,
+        QuerySpec<ArchivedPizzasSorter> querySpec = new QuerySpec<ArchivedPizzasSorter>(
+            query.Page,
+            query.PageSize,
+            query.Sorter,
+            query.Descending,
             new List<IFilterType>
             {
-                new RangeFilterType<decimal>(request.MinPrice, request.MaxPrice),
-                new SearchFilterType(request.Search)
+                new RangeFilterType<decimal>(query.MinPrice, query.MaxPrice),
+                new SearchFilterType(query.Search)
             }
         );
 
         IReadOnlyCollection<Pizza> items = await this._pizzaRepository.ListArchivedAsync(
-            query,
+            querySpec,
             cancellationToken
         );
 
-        return new Response<IReadOnlyList<ArchivedPizzaDto>>(
-            ResponseType.Query,
+        this._presenter.EntitiesListed(
             this._mapper.Map<IReadOnlyList<ArchivedPizzaDto>>(items)
         );
     }

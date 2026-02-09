@@ -14,6 +14,14 @@ public sealed class GlobalExceptionFilter : IExceptionFilter
 
     public void OnException(ExceptionContext context)
     {
+        if (this._logger.IsEnabled(LogLevel.Error))
+            this._logger.LogError(
+                context.Exception,
+                "Unhandled exception on {Method} {Path}",
+                context.HttpContext.Request.Method,
+                context.HttpContext.Request.Path
+            );
+
         ProblemDetails problemDetails = new ProblemDetails
         {
             Type = "https://tools.ietf.org/html/rfc9110#section-15.6.1",
@@ -21,8 +29,6 @@ public sealed class GlobalExceptionFilter : IExceptionFilter
             Status = StatusCodes.Status500InternalServerError,
             Detail = "An unexpected error occurred."
         };
-
-        this._logger.LogError(context.Exception, "Unhandled exception.");
 
         context.Result = new ObjectResult(problemDetails)
         {

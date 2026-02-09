@@ -1,8 +1,6 @@
-using IlVecchioForno.API.Presenters;
+using IlVecchioForno.API.Presenters.QuantityTypes;
 using IlVecchioForno.Application.Common;
 using IlVecchioForno.Application.Common.Queries.Sorters;
-using IlVecchioForno.Application.Common.Responses;
-using IlVecchioForno.Application.UseCases.QuantityTypes.DTOs;
 using IlVecchioForno.Application.UseCases.QuantityTypes.GetQuantityType;
 using IlVecchioForno.Application.UseCases.QuantityTypes.ListQuantityTypes;
 using MediatR;
@@ -14,12 +12,22 @@ namespace IlVecchioForno.API.Controllers;
 [AllowAnonymous]
 public sealed class QuantityTypesController : ApiControllerBase
 {
-    public QuantityTypesController(IMediator mediator, IPresenter presenter) : base(mediator, presenter)
+    private readonly IApiQuantityTypePresenter _presenter;
+
+    public QuantityTypesController(
+        IMediator mediator,
+        IApiQuantityTypePresenter presenter
+    ) : base(mediator)
     {
+        this._presenter = presenter;
+        this._presenter.Initialize(
+            nameof(this.GetByIdAsync).Replace("Async", string.Empty),
+            nameof(QuantityTypesController)
+        );
     }
 
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<QuantityTypeDto>>> GetAsync(
+    public async Task<ActionResult> GetAsync(
         [FromQuery] int page = QueryDefaultValues.PageNumberMin,
         [FromQuery] int pageSize = QueryDefaultValues.PageSizeDefault,
         [FromQuery] QuantityTypesSorter sorter = QuantityTypesSorter.Id,
@@ -28,19 +36,25 @@ public sealed class QuantityTypesController : ApiControllerBase
         CancellationToken cancellationToken = default
     )
     {
-        ListQuantityTypesQuery query = new ListQuantityTypesQuery(page, pageSize, sorter, descending, search);
-        IResponse response = await this._mediator.Send(query, cancellationToken);
-        return this._presenter.Present<IReadOnlyList<QuantityTypeDto>>(response);
+        ListQuantityTypesQuery query = new ListQuantityTypesQuery(
+            page,
+            pageSize,
+            sorter,
+            descending,
+            search
+        );
+        await this._mediator.Send(query, cancellationToken);
+        return this._presenter.Result;
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<QuantityTypeDto>> GetByIdAsync(
+    public async Task<ActionResult> GetByIdAsync(
         [FromRoute] short id,
         CancellationToken cancellationToken = default
     )
     {
         GetQuantityTypeQuery query = new GetQuantityTypeQuery(id);
-        IResponse response = await this._mediator.Send(query, cancellationToken);
-        return this._presenter.Present<QuantityTypeDto>(response);
+        await this._mediator.Send(query, cancellationToken);
+        return this._presenter.Result;
     }
 }

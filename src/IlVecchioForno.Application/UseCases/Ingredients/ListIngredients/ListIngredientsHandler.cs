@@ -1,10 +1,10 @@
 using FluentValidation;
 using FluentValidation.Results;
 using IlVecchioForno.Application.Common.Queries.Sorters;
-using IlVecchioForno.Application.Common.Responses;
 using IlVecchioForno.Application.Gateways.Persistence;
 using IlVecchioForno.Application.Gateways.Persistence.Queries;
 using IlVecchioForno.Application.Gateways.Persistence.Queries.FilterTypes;
+using IlVecchioForno.Application.Gateways.Presentation;
 using IlVecchioForno.Application.UseCases.Ingredients.DTOs;
 using IlVecchioForno.Domain.Ingredients;
 using MapsterMapper;
@@ -12,33 +12,36 @@ using MediatR;
 
 namespace IlVecchioForno.Application.UseCases.Ingredients.ListIngredients;
 
-internal sealed class ListIngredientsHandler
-    : IRequestHandler<ListIngredientsQuery, IResponse>
+internal sealed class ListIngredientsHandler : IRequestHandler<ListIngredientsQuery>
 {
     private readonly IMapper _mapper;
+    private readonly IIngredientPresenter _presenter;
     private readonly IIngredientRepository _repository;
     private readonly IValidator<ListIngredientsQuery> _validator;
 
     public ListIngredientsHandler(
+        IIngredientPresenter presenter,
         IIngredientRepository repository,
         IValidator<ListIngredientsQuery> validator,
         IMapper mapper
     )
     {
+        this._presenter = presenter;
         this._repository = repository;
         this._validator = validator;
         this._mapper = mapper;
     }
 
-    public async Task<IResponse> Handle(
-        ListIngredientsQuery request,
+    public async Task Handle(
+        ListIngredientsQuery query,
         CancellationToken cancellationToken = default
     )
     {
-        ValidationResult validationResult = await this._validator.ValidateAsync(request, cancellationToken);
+        ValidationResult validationResult = await this._validator.ValidateAsync(query, cancellationToken);
 
         if (!validationResult.IsValid)
-            return new ErrorResponseWithMessages(
+        {
+            this._presenter.ValidationErrors(
                 validationResult.Errors
                     .GroupBy(e => e.PropertyName)
                     .ToDictionary(
@@ -46,25 +49,26 @@ internal sealed class ListIngredientsHandler
                         g => g.Select(e => e.ErrorMessage).ToArray()
                     )
             );
+            return;
+        }
 
-        QuerySpec<IngredientsSorter> query = new QuerySpec<IngredientsSorter>(
-            request.Page,
-            request.PageSize,
-            request.Sorter,
-            request.Descending,
+        QuerySpec<IngredientsSorter> querySpec = new QuerySpec<IngredientsSorter>(
+            query.Page,
+            query.PageSize,
+            query.Sorter,
+            query.Descending,
             new List<IFilterType>
             {
-                new SearchFilterType(request.Search)
+                new SearchFilterType(query.Search)
             }
         );
 
         IReadOnlyCollection<Ingredient> items = await this._repository.ListAsync(
-            query,
+            querySpec,
             cancellationToken
         );
 
-        return new Response<IReadOnlyList<IngredientDto>>(
-            ResponseType.Query,
+        this._presenter.EntitiesListed(
             this._mapper.Map<IReadOnlyList<IngredientDto>>(items)
         );
     }
