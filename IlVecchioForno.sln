@@ -7,11 +7,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "items", "items", "{1DCBA66E
 		README.md = README.md
 		Directory.Packages.props = Directory.Packages.props
 		compose.yaml = compose.yaml
-		.env.example = .env.example
 		compose.override.yaml = compose.override.yaml
 		compose.staging.yaml = compose.staging.yaml
-		.env.dev = .env.dev
-		.env.staging = .env.staging
+		development.env = development.env
+		staging.env = staging.env
+		example.env = example.env
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AE23DBF7-6295-4DFB-905B-5B787042C052}"

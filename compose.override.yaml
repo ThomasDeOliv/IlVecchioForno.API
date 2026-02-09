@@ -1,6 +1,7 @@
 services:
   ilvecchioforno_api:
-    env_file: ".env.dev"
+    env_file:
+      - development.env
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__IlVecchioFornoContext=Host=ilvecchioforno_db;Port=5432;Username=${DB_USER};Password=${DB_PASSWORD};Database=${DB_NAME}
@@ -9,7 +10,8 @@ services:
       - "8081:8081"
 
   ilvecchioforno_db:
-    env_file: ".env.dev"
+    env_file:
+      - development.env
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -19,7 +21,8 @@ services:
     container_name: ilvecchioforno_pgadmin
     image: dpage/pgadmin4:latest
     restart: always
-    env_file: ".env.dev"
+    env_file:
+      - development.env
     environment:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
