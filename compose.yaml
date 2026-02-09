@@ -1,4 +1,4 @@
-﻿name: ilvecchioforno
+name: ilvecchioforno
 
 services:
   ilvecchioforno_api:
@@ -8,13 +8,6 @@ services:
       context: .
       dockerfile: src/IlVecchioForno.API/Dockerfile
     restart: always
-    env_file: ".env"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Staging
-      - ConnectionStrings__IlVecchioFornoContext=Host=ilvecchioforno_db;Port=5432;Username=${DB_USER};Password=${DB_PASSWORD};Database=${DB_NAME}
-    ports:
-      - "8080:8080"
-      - "8081:8081"
     depends_on:
       - ilvecchioforno_db
     networks:
@@ -24,28 +17,8 @@ services:
     container_name: ilvecchioforno_db
     image: postgres:18.1
     restart: always
-    env_file: ".env"
-    environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
     volumes:
       - ilvecchioforno_db_vol:/var/lib/postgresql:Z
-    networks:
-      - ilvecchioforno_net
-
-  ilvecchioforno_pgadmin:
-    container_name: ilvecchioforno_pgadmin
-    image: dpage/pgadmin4:latest
-    restart: always
-    env_file: ".env"
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
-      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
-    ports:
-      - "5431:80"
-    depends_on:
-      - ilvecchioforno_db
     networks:
       - ilvecchioforno_net
 
