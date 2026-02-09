@@ -7,29 +7,26 @@ namespace IlVecchioForno.API.Presenters.Ingredients;
 
 public sealed class IngredientPresenter : IApiIngredientPresenter
 {
-    private IngredientsController? _ingredientsController;
+    private IngredientsController? _controller;
     private ActionResult? _result;
 
     public IngredientPresenter()
     {
-        this._ingredientsController = null;
+        this._controller = null;
         this._result = null;
     }
 
-    public IngredientsController IngredientsController =>
-        this._ingredientsController
+    private IngredientsController Controller =>
+        this._controller
         ?? throw new PresenterControllerNotSetException();
 
     public ActionResult Result =>
         this._result
         ?? throw new PresenterResultNotSetException();
 
-    public void Initialize(ApiControllerBase controller)
+    public void Initialize(IngredientsController controller)
     {
-        if (controller is not IngredientsController ingredientsController)
-            throw new PresenterInvalidControllerProvidedException(typeof(IngredientsController), controller.GetType());
-
-        this._ingredientsController = ingredientsController;
+        this._controller = controller;
     }
 
     public void EntityFound(IngredientDto entity)
@@ -45,8 +42,8 @@ public sealed class IngredientPresenter : IApiIngredientPresenter
     public void EntityRegistered(IngredientDto entity)
     {
         this._result = new CreatedAtActionResult(
-            nameof(this.IngredientsController.GetByIdAsync).Replace("Async", string.Empty),
-            this.IngredientsController.GetType().Name.Replace("Controller", string.Empty),
+            nameof(this.Controller.GetByIdAsync).Replace("Async", string.Empty),
+            this.Controller.GetType().Name.Replace("Controller", string.Empty),
             new { id = entity.Id },
             entity
         );

@@ -7,29 +7,26 @@ namespace IlVecchioForno.API.Presenters.Pizzas;
 
 public sealed class PizzaPresenter : IApiPizzaPresenter
 {
-    private PizzasController? _pizzasController;
+    private PizzasController? _controller;
     private ActionResult? _result;
 
     public PizzaPresenter()
     {
-        this._pizzasController = null;
+        this._controller = null;
         this._result = null;
     }
 
-    public PizzasController PizzasController =>
-        this._pizzasController
+    private PizzasController Controller =>
+        this._controller
         ?? throw new PresenterControllerNotSetException();
 
     public ActionResult Result =>
         this._result
         ?? throw new PresenterResultNotSetException();
 
-    public void Initialize(ApiControllerBase controller)
+    public void Initialize(PizzasController controller)
     {
-        if (controller is not PizzasController pizzasController)
-            throw new PresenterInvalidControllerProvidedException(typeof(PizzasController), controller.GetType());
-
-        this._pizzasController = pizzasController;
+        this._controller = controller;
     }
 
     public void EntityFound(ActivePizzaDto entity)
@@ -55,8 +52,8 @@ public sealed class PizzaPresenter : IApiPizzaPresenter
     public void EntityRegistered(ActivePizzaDto entity)
     {
         this._result = new CreatedAtActionResult(
-            nameof(this.PizzasController.GetActiveByIdAsync).Replace("Async", string.Empty),
-            this.PizzasController.GetType().Name.Replace("Controller", string.Empty),
+            nameof(this.Controller.GetActiveByIdAsync).Replace("Async", string.Empty),
+            this.Controller.GetType().Name.Replace("Controller", string.Empty),
             new { id = entity.Id },
             entity
         );
