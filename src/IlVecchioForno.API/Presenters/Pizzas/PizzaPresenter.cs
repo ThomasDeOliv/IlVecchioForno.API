@@ -1,10 +1,37 @@
+using IlVecchioForno.API.Controllers;
+using IlVecchioForno.API.Exceptions;
 using IlVecchioForno.Application.UseCases.Pizzas.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IlVecchioForno.API.Presenters.Pizzas;
 
-public sealed class PizzaPresenter : PresenterBase, IApiPizzaPresenter
+public sealed class PizzaPresenter : IApiPizzaPresenter
 {
+    private PizzasController? _pizzasController;
+    private ActionResult? _result;
+
+    public PizzaPresenter()
+    {
+        this._pizzasController = null;
+        this._result = null;
+    }
+
+    public PizzasController PizzasController =>
+        this._pizzasController
+        ?? throw new PresenterControllerNotSetException();
+
+    public ActionResult Result =>
+        this._result
+        ?? throw new PresenterResultNotSetException();
+
+    public void Initialize(ApiControllerBase controller)
+    {
+        if (controller is not PizzasController pizzasController)
+            throw new PresenterInvalidControllerProvidedException(typeof(PizzasController), controller.GetType());
+
+        this._pizzasController = pizzasController;
+    }
+
     public void EntityFound(ActivePizzaDto entity)
     {
         this._result = new OkObjectResult(entity);
@@ -28,8 +55,8 @@ public sealed class PizzaPresenter : PresenterBase, IApiPizzaPresenter
     public void EntityRegistered(ActivePizzaDto entity)
     {
         this._result = new CreatedAtActionResult(
-            this.ActionName,
-            this.ControllerName,
+            nameof(this.PizzasController.GetActiveByIdAsync).Replace("Async", string.Empty),
+            this.PizzasController.GetType().Name.Replace("Controller", string.Empty),
             new { id = entity.Id },
             entity
         );
