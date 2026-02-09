@@ -1,10 +1,22 @@
+using IlVecchioForno.API.Exceptions;
 using IlVecchioForno.Application.UseCases.QuantityTypes.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IlVecchioForno.API.Presenters.QuantityTypes;
 
-public sealed class QuantityTypePresenter : PresenterBase, IApiQuantityTypePresenter
+public sealed class QuantityTypePresenter : IApiQuantityTypePresenter
 {
+    private ActionResult? _result;
+
+    public QuantityTypePresenter()
+    {
+        this._result = null;
+    }
+
+    public ActionResult Result =>
+        this._result
+        ?? throw new PresenterResultNotSetException();
+
     public void EntityFound(QuantityTypeDto entity)
     {
         this._result = new OkObjectResult(entity);

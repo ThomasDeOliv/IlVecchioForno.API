@@ -22,10 +22,7 @@ public sealed class IngredientsController : ApiControllerBase
     ) : base(mediator)
     {
         this._presenter = presenter;
-        this._presenter.Initialize(
-            nameof(this.GetByIdAsync).Replace("Async", string.Empty),
-            nameof(IngredientsController)
-        );
+        this._presenter.Initialize(this);
     }
 
     [HttpGet]

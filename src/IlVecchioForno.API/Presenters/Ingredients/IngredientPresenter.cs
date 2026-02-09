@@ -1,10 +1,37 @@
+using IlVecchioForno.API.Controllers;
+using IlVecchioForno.API.Exceptions;
 using IlVecchioForno.Application.UseCases.Ingredients.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IlVecchioForno.API.Presenters.Ingredients;
 
-public sealed class IngredientPresenter : PresenterBase, IApiIngredientPresenter
+public sealed class IngredientPresenter : IApiIngredientPresenter
 {
+    private IngredientsController? _ingredientsController;
+    private ActionResult? _result;
+
+    public IngredientPresenter()
+    {
+        this._ingredientsController = null;
+        this._result = null;
+    }
+
+    public IngredientsController IngredientsController =>
+        this._ingredientsController
+        ?? throw new PresenterControllerNotSetException();
+
+    public ActionResult Result =>
+        this._result
+        ?? throw new PresenterResultNotSetException();
+
+    public void Initialize(ApiControllerBase controller)
+    {
+        if (controller is not IngredientsController ingredientsController)
+            throw new PresenterInvalidControllerProvidedException(typeof(IngredientsController), controller.GetType());
+
+        this._ingredientsController = ingredientsController;
+    }
+
     public void EntityFound(IngredientDto entity)
     {
         this._result = new OkObjectResult(entity);
@@ -18,8 +45,8 @@ public sealed class IngredientPresenter : PresenterBase, IApiIngredientPresenter
     public void EntityRegistered(IngredientDto entity)
     {
         this._result = new CreatedAtActionResult(
-            this.ActionName,
-            this.ControllerName,
+            nameof(this.IngredientsController.GetByIdAsync).Replace("Async", string.Empty),
+            this.IngredientsController.GetType().Name.Replace("Controller", string.Empty),
             new { id = entity.Id },
             entity
         );

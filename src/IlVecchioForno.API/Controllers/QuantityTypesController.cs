@@ -20,10 +20,6 @@ public sealed class QuantityTypesController : ApiControllerBase
     ) : base(mediator)
     {
         this._presenter = presenter;
-        this._presenter.Initialize(
-            nameof(this.GetByIdAsync).Replace("Async", string.Empty),
-            nameof(QuantityTypesController)
-        );
     }
 
     [HttpGet]

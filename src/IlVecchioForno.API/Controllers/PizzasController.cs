@@ -27,10 +27,7 @@ public sealed class PizzasController : ApiControllerBase
     ) : base(mediator)
     {
         this._presenter = presenter;
-        this._presenter.Initialize(
-            nameof(this.GetActiveByIdAsync).Replace("Async", string.Empty),
-            nameof(PizzasController)
-        );
+        this._presenter.Initialize(this);
     }
 
     [HttpGet("active")]
