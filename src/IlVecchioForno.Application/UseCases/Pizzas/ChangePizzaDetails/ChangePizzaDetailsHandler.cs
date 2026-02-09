@@ -29,8 +29,8 @@ internal sealed class ChangePizzaDetailsHandler : IRequestHandler<ChangePizzaDet
         Pizza? target = await this._pizzaRepository.FindAsync(request.Id, cancellationToken);
 
         if (target is null)
-            return new ResponseWithErrorMessage(
-                ErrorMessageType.InvalidReferenceError,
+            return new ErrorResponseWithMessage(
+                ErrorResponseType.InvalidReferenceError,
                 "Pizza not found."
             );
 
@@ -38,8 +38,8 @@ internal sealed class ChangePizzaDetailsHandler : IRequestHandler<ChangePizzaDet
             await this._ingredientRepository.ResolveAsync(request.IngredientsAndQuantities.Keys, cancellationToken);
 
         if (targetIngredients.Count != request.IngredientsAndQuantities.Count)
-            return new ResponseWithErrorMessage(
-                ErrorMessageType.InvalidReferenceError,
+            return new ErrorResponseWithMessage(
+                ErrorResponseType.InvalidReferenceError,
                 "Some ingredients were not found."
             );
 
@@ -60,6 +60,9 @@ internal sealed class ChangePizzaDetailsHandler : IRequestHandler<ChangePizzaDet
         );
         target.UpdatePrice(new PizzaPrice(request.Price));
         await this._unitOfWork.SaveChangesAsync(cancellationToken);
-        return new ResponseForCommand<Unit>(Unit.Value);
+        return new Response<Unit>(
+            ResponseType.Command,
+            Unit.Value
+        );
     }
 }

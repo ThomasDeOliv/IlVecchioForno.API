@@ -6,20 +6,27 @@ namespace IlVecchioForno.API.Presenters;
 
 public sealed class Presenter : IPresenter
 {
+    private readonly ILogger<Presenter> _logger;
+
+    public Presenter(ILogger<Presenter> logger)
+    {
+        this._logger = logger;
+    }
+
     public ActionResult<T> Present<T>(IResponse response)
     {
         return response switch
         {
-            ResponseForQuery<T> r => new ObjectResult(r.Content)
-            {
-                StatusCode = StatusCodes.Status200OK
-            },
-            ResponseForCommand<T> r when r.Content is Unit => new NoContentResult(),
-            ResponseForCommand<T> r => new ObjectResult(r.Content)
+            Response<T> r when r.Type is ResponseType.Command && r.Content is Unit => new NoContentResult(),
+            Response<T> r when r.Type is ResponseType.Command => new ObjectResult(r.Content)
             {
                 StatusCode = StatusCodes.Status201Created
             },
-            ResponseWithErrorMessages r => new ObjectResult(
+            Response<T> r when r.Type is ResponseType.Query => new ObjectResult(r.Content)
+            {
+                StatusCode = StatusCodes.Status200OK
+            },
+            ErrorResponseWithMessages r => new ObjectResult(
                 new ValidationProblemDetails(r.Messages)
                 {
                     Type = "https://tools.ietf.org/html/rfc9110#section-15.5.1",
@@ -27,7 +34,7 @@ public sealed class Presenter : IPresenter
                     Status = StatusCodes.Status400BadRequest
                 }
             ),
-            ResponseWithErrorMessage r when r.Type is ErrorMessageType.InvalidReferenceError => new ObjectResult(
+            ErrorResponseWithMessage r when r.Type is ErrorResponseType.InvalidReferenceError => new ObjectResult(
                 new ProblemDetails
                 {
                     Type = "https://tools.ietf.org/html/rfc9110#section-15.5.1",
@@ -36,7 +43,7 @@ public sealed class Presenter : IPresenter
                     Detail = r.Message
                 }
             ),
-            ResponseWithErrorMessage r when r.Type is ErrorMessageType.EntityNotFoundError => new ObjectResult(
+            ErrorResponseWithMessage r when r.Type is ErrorResponseType.EntityNotFoundError => new ObjectResult(
                 new ProblemDetails
                 {
                     Type = "https://tools.ietf.org/html/rfc9110#section-15.5.5",
@@ -45,7 +52,7 @@ public sealed class Presenter : IPresenter
                     Detail = r.Message
                 }
             ),
-            ResponseWithErrorMessage r when r.Type is ErrorMessageType.EntityRegistrationError =>
+            ErrorResponseWithMessage r when r.Type is ErrorResponseType.EntityRegistrationError =>
                 new ObjectResult(
                     new ProblemDetails
                     {
@@ -55,15 +62,26 @@ public sealed class Presenter : IPresenter
                         Detail = r.Message
                     }
                 ),
-            _ => new ObjectResult(
-                new ProblemDetails
-                {
-                    Type = "https://tools.ietf.org/html/rfc9110#section-15.6.1",
-                    Title = "Internal server error.",
-                    Status = StatusCodes.Status500InternalServerError,
-                    Detail = "An unexpected error occurred"
-                }
-            )
+            _ => this.LogAndReturnError(response)
         };
+    }
+
+    private ObjectResult LogAndReturnError(IResponse response)
+    {
+        if (this._logger.IsEnabled(LogLevel.Error))
+            this._logger.LogError(
+                "Unexpected response type received in presenter: {ResponseType}",
+                response.GetType().Name
+            );
+
+        return new ObjectResult(
+            new ProblemDetails
+            {
+                Type = "https://tools.ietf.org/html/rfc9110#section-15.6.1",
+                Title = "Internal server error.",
+                Status = StatusCodes.Status500InternalServerError,
+                Detail = "An unexpected error occurred"
+            }
+        );
     }
 }

@@ -1,6 +1,6 @@
 namespace IlVecchioForno.Application.Common.Responses;
 
-public enum ErrorMessageType
+public enum ErrorResponseType
 {
     InvalidReferenceError,
     EntityNotFoundError,

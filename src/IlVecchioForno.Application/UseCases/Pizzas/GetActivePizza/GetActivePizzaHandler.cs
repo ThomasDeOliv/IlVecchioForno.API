@@ -31,7 +31,7 @@ internal sealed class GetActivePizzaHandler : IRequestHandler<GetActivePizzaQuer
         ValidationResult validationResult = await this._validator.ValidateAsync(query, cancellationToken);
 
         if (!validationResult.IsValid)
-            return new ResponseWithErrorMessages(
+            return new ErrorResponseWithMessages(
                 validationResult.Errors
                     .GroupBy(e => e.PropertyName)
                     .ToDictionary(
@@ -46,12 +46,13 @@ internal sealed class GetActivePizzaHandler : IRequestHandler<GetActivePizzaQuer
         );
 
         if (item is null || item.ArchivedAt is not null)
-            return new ResponseWithErrorMessage(
-                ErrorMessageType.EntityNotFoundError,
+            return new ErrorResponseWithMessage(
+                ErrorResponseType.EntityNotFoundError,
                 $"Active pizza with id {query.Id} was not found."
             );
 
-        return new ResponseForQuery<ActivePizzaDto>(
+        return new Response<ActivePizzaDto>(
+            ResponseType.Query,
             this._mapper.Map<ActivePizzaDto>(item)
         );
     }

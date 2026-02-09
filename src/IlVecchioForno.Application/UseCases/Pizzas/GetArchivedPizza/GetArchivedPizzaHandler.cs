@@ -26,12 +26,13 @@ internal sealed class GetArchivedPizzaHandler : IRequestHandler<GetArchivedPizza
         );
 
         if (item?.ArchivedAt is null)
-            return new ResponseWithErrorMessage(
-                ErrorMessageType.EntityNotFoundError,
+            return new ErrorResponseWithMessage(
+                ErrorResponseType.EntityNotFoundError,
                 $"Archived pizza with id {query.Id} was not found."
             );
 
-        return new ResponseForQuery<ArchivedPizzaDto>(
+        return new Response<ArchivedPizzaDto>(
+            ResponseType.Query,
             this._mapper.Map<ArchivedPizzaDto>(item)
         );
     }

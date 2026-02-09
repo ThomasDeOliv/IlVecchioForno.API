@@ -38,7 +38,7 @@ internal sealed class ListIngredientsHandler
         ValidationResult validationResult = await this._validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
-            return new ResponseWithErrorMessages(
+            return new ErrorResponseWithMessages(
                 validationResult.Errors
                     .GroupBy(e => e.PropertyName)
                     .ToDictionary(
@@ -63,7 +63,8 @@ internal sealed class ListIngredientsHandler
             cancellationToken
         );
 
-        return new ResponseForQuery<IReadOnlyList<IngredientDto>>(
+        return new Response<IReadOnlyList<IngredientDto>>(
+            ResponseType.Query,
             this._mapper.Map<IReadOnlyList<IngredientDto>>(items)
         );
     }

@@ -39,6 +39,7 @@ public static class Program
                 app.MapScalarApiReference();
             }
 
+            app.UseSerilogRequestLogging();
             app.UseHttpsRedirection();
             app.UseCors();
             app.UseAuthentication();

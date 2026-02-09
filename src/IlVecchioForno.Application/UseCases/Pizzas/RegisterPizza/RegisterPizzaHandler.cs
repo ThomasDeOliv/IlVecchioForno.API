@@ -35,8 +35,8 @@ internal sealed class RegisterPizzaHandler : IRequestHandler<RegisterPizzaComman
             .ResolveAsync(request.IngredientsAndQuantities.Keys, cancellationToken);
 
         if (targetIngredients.Count != request.IngredientsAndQuantities.Count)
-            return new ResponseWithErrorMessage(
-                ErrorMessageType.InvalidReferenceError,
+            return new ErrorResponseWithMessage(
+                ErrorResponseType.InvalidReferenceError,
                 "Some ingredients were not found."
             );
 
@@ -58,12 +58,13 @@ internal sealed class RegisterPizzaHandler : IRequestHandler<RegisterPizzaComman
         int result = await this._unitOfWork.SaveChangesAsync(cancellationToken);
 
         if (result == 0)
-            return new ResponseWithErrorMessage(
-                ErrorMessageType.EntityRegistrationError,
+            return new ErrorResponseWithMessage(
+                ErrorResponseType.EntityRegistrationError,
                 "Cannot register pizza."
             );
 
-        return new ResponseForCommand<ActivePizzaDto>(
+        return new Response<ActivePizzaDto>(
+            ResponseType.Command,
             this._mapper.Map<ActivePizzaDto>(pizza)
         );
     }

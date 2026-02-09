@@ -38,7 +38,7 @@ internal sealed class
         ValidationResult validationResult = await this._validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
-            return new ResponseWithErrorMessages(
+            return new ErrorResponseWithMessages(
                 validationResult.Errors
                     .GroupBy(e => e.PropertyName)
                     .ToDictionary(
@@ -64,7 +64,8 @@ internal sealed class
             cancellationToken
         );
 
-        return new ResponseForQuery<IReadOnlyList<QuantityTypeDto>>(
+        return new Response<IReadOnlyList<QuantityTypeDto>>(
+            ResponseType.Query,
             this._mapper.Map<IReadOnlyList<QuantityTypeDto>>(items)
         );
     }

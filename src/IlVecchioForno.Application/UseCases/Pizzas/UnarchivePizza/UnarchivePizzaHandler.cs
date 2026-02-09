@@ -24,13 +24,16 @@ internal sealed class UnarchivePizzaHandler : IRequestHandler<UnarchivePizzaComm
         Pizza? target = await this._pizzaRepository.FindAsync(request.Id, cancellationToken);
 
         if (target is null)
-            return new ResponseWithErrorMessage(
-                ErrorMessageType.InvalidReferenceError,
+            return new ErrorResponseWithMessage(
+                ErrorResponseType.InvalidReferenceError,
                 "Pizza not found."
             );
 
         target.UpdateArchived();
         await this._unitOfWork.SaveChangesAsync(cancellationToken);
-        return new ResponseForCommand<Unit>(Unit.Value);
+        return new Response<Unit>(
+            ResponseType.Command,
+            Unit.Value
+        );
     }
 }

@@ -26,12 +26,13 @@ internal sealed class GetIngredientHandler : IRequestHandler<GetIngredientQuery,
         );
 
         if (item is null)
-            return new ResponseWithErrorMessage(
-                ErrorMessageType.EntityNotFoundError,
+            return new ErrorResponseWithMessage(
+                ErrorResponseType.EntityNotFoundError,
                 $"Ingredient with id {query.Id} was not found."
             );
 
-        return new ResponseForQuery<IngredientDto>(
+        return new Response<IngredientDto>(
+            ResponseType.Query,
             this._mapper.Map<IngredientDto>(item)
         );
     }

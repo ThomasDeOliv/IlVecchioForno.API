@@ -28,12 +28,13 @@ internal sealed class
         );
 
         if (item is null)
-            return new ResponseWithErrorMessage(
-                ErrorMessageType.EntityNotFoundError,
+            return new ErrorResponseWithMessage(
+                ErrorResponseType.EntityNotFoundError,
                 $"Quantity type with id {query.Id} was not found."
             );
 
-        return new ResponseForQuery<QuantityTypeDto>(
+        return new Response<QuantityTypeDto>(
+            ResponseType.Query,
             this._mapper.Map<QuantityTypeDto>(item)
         );
     }

@@ -38,7 +38,7 @@ internal sealed class RegisterIngredientHandler : IRequestHandler<RegisterIngred
         ValidationResult validationResult = await this._validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
-            return new ResponseWithErrorMessages(
+            return new ErrorResponseWithMessages(
                 validationResult.Errors
                     .GroupBy(e => e.PropertyName)
                     .ToDictionary(
@@ -55,8 +55,8 @@ internal sealed class RegisterIngredientHandler : IRequestHandler<RegisterIngred
                 await this._quantityTypeRepository.FindAsync(request.QuantityTypeId.Value, cancellationToken);
 
             if (targetQuantityType is null)
-                return new ResponseWithErrorMessage(
-                    ErrorMessageType.InvalidReferenceError,
+                return new ErrorResponseWithMessage(
+                    ErrorResponseType.InvalidReferenceError,
                     "Provided quantity type not found."
                 );
         }
@@ -68,7 +68,8 @@ internal sealed class RegisterIngredientHandler : IRequestHandler<RegisterIngred
         this._ingredientRepository.Add(newIngredient);
         await this._unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new ResponseForCommand<IngredientDto>(
+        return new Response<IngredientDto>(
+            ResponseType.Command,
             this._mapper.Map<IngredientDto>(newIngredient)
         );
     }
