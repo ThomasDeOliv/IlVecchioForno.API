@@ -20,6 +20,7 @@ public sealed class QuantityTypesController : ApiControllerBase
     ) : base(mediator)
     {
         this._presenter = presenter;
+        this._presenter.Initialize(this);
     }
 
     [HttpGet]

@@ -18,11 +18,18 @@ public sealed class IngredientPresenter : IApiIngredientPresenter
 
     private IngredientsController Controller =>
         this._controller
-        ?? throw new PresenterControllerNotSetException();
+        ?? throw new PresenterNotInitializedException();
 
-    public ActionResult Result =>
-        this._result
-        ?? throw new PresenterResultNotSetException();
+    public ActionResult Result
+    {
+        get
+        {
+            ActionResult result = this._result
+                ?? throw new PresenterResultNotSetException();
+            this._result = null;
+            return result;
+        }
+    }
 
     public void Initialize(IngredientsController controller)
     {
@@ -31,19 +38,18 @@ public sealed class IngredientPresenter : IApiIngredientPresenter
 
     public void EntityFound(IngredientDto entity)
     {
-        this._result = new OkObjectResult(entity);
+        this._result = this.Controller.Ok(entity);
     }
 
     public void EntitiesListed(IReadOnlyList<IngredientDto> entities)
     {
-        this._result = new OkObjectResult(entities);
+        this._result = this.Controller.Ok(entities);
     }
 
     public void EntityRegistered(IngredientDto entity)
     {
-        this._result = new CreatedAtActionResult(
+        this._result = this.Controller.CreatedAtAction(
             nameof(this.Controller.GetByIdAsync).Replace("Async", string.Empty),
-            this.Controller.GetType().Name.Replace("Controller", string.Empty),
             new { id = entity.Id },
             entity
         );
@@ -51,33 +57,27 @@ public sealed class IngredientPresenter : IApiIngredientPresenter
 
     public void InvalidReferenceError(string message)
     {
-        this._result = new ObjectResult(
-            new ProblemDetails
-            {
-                Type = "https://tools.ietf.org/html/rfc9110#section-15.5.1",
-                Title = "A validation error occurred.",
-                Status = StatusCodes.Status400BadRequest,
-                Detail = message
-            }
+        this._result = this.Controller.Problem(
+            type: "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+            title: "A validation error occurred.",
+            statusCode: StatusCodes.Status400BadRequest,
+            detail: message
         );
     }
 
     public void EntityNotFound(string message)
     {
-        this._result = new ObjectResult(
-            new ProblemDetails
-            {
-                Type = "https://tools.ietf.org/html/rfc9110#section-15.5.5",
-                Title = "Entity not found.",
-                Status = StatusCodes.Status404NotFound,
-                Detail = message
-            }
+        this._result = this.Controller.Problem(
+            type: "https://tools.ietf.org/html/rfc9110#section-15.5.5",
+            title: "Entity not found.",
+            statusCode: StatusCodes.Status404NotFound,
+            detail: message
         );
     }
 
     public void ValidationErrors(Dictionary<string, string[]> errors)
     {
-        this._result = new ObjectResult(
+        this._result = this.Controller.ValidationProblem(
             new ValidationProblemDetails(errors)
             {
                 Type = "https://tools.ietf.org/html/rfc9110#section-15.5.1",
@@ -89,14 +89,11 @@ public sealed class IngredientPresenter : IApiIngredientPresenter
 
     public void RegistrationError(string message)
     {
-        this._result = new ObjectResult(
-            new ProblemDetails
-            {
-                Type = "https://tools.ietf.org/html/rfc9110#section-15.5.10",
-                Title = "Conflict.",
-                Status = StatusCodes.Status409Conflict,
-                Detail = message
-            }
+        this._result = this.Controller.Problem(
+            type: "https://tools.ietf.org/html/rfc9110#section-15.5.10",
+            title: "Conflict.",
+            statusCode: StatusCodes.Status409Conflict,
+            detail: message
         );
     }
 }
