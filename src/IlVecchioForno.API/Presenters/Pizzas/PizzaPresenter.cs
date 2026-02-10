@@ -1,5 +1,6 @@
 using IlVecchioForno.API.Controllers;
 using IlVecchioForno.API.Exceptions;
+using IlVecchioForno.Application.Common.DTOs;
 using IlVecchioForno.Application.UseCases.Pizzas.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +26,7 @@ public sealed class PizzaPresenter : IApiPizzaPresenter
         get
         {
             ActionResult result = this._result
-                ?? throw new PresenterResultNotSetException();
+                                  ?? throw new PresenterResultNotSetException();
             this._result = null;
             return result;
         }
@@ -54,6 +55,11 @@ public sealed class PizzaPresenter : IApiPizzaPresenter
     public void EntitiesListed(IReadOnlyList<ArchivedPizzaDto> entities)
     {
         this._result = this.Controller.Ok(entities);
+    }
+
+    public void EntitiesCount(EntitiesCountDto count)
+    {
+        this._result = this.Controller.Ok(count);
     }
 
     public void EntityRegistered(ActivePizzaDto entity)

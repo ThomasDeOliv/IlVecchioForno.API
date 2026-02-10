@@ -13,8 +13,7 @@ public static class ApplicationStartup
         TypeAdapterConfig.GlobalSettings.Scan(typeof(ApplicationStartup).Assembly);
 
         services.AddValidatorsFromAssembly(typeof(ApplicationStartup).Assembly, includeInternalTypes: true)
-            .AddMediatR(config => { config.RegisterServicesFromAssembly(typeof(ApplicationStartup).Assembly); }
-            )
+            .AddMediatR(config => { config.RegisterServicesFromAssembly(typeof(ApplicationStartup).Assembly); })
             .AddSingleton(TypeAdapterConfig.GlobalSettings)
             .AddScoped<IMapper, ServiceMapper>();
 

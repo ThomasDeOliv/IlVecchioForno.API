@@ -45,6 +45,26 @@ internal sealed class EfPizzaRepository : IPizzaRepository
             .SingleOrDefaultAsync(p => p.Id.Equals(id), cancellationToken);
     }
 
+    public async Task<int> CountActiveAsync(
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await this._ctx.Pizzas
+            .CountAsync(p => !p.ArchivedAt.HasValue,
+                cancellationToken
+            );
+    }
+
+    public async Task<int> CountArchivedAsync(
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await this._ctx.Pizzas
+            .CountAsync(p => p.ArchivedAt.HasValue,
+                cancellationToken
+            );
+    }
+
     public void Add(Pizza pizza)
     {
         this._ctx.Pizzas.Add(pizza);

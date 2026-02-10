@@ -21,5 +21,9 @@ public interface IIngredientRepository
         CancellationToken cancellationToken = default
     );
 
+    Task<int> CountAsync(
+        CancellationToken cancellationToken = default
+    );
+
     void Add(Ingredient newIngredient);
 }

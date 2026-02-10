@@ -1,3 +1,4 @@
+using IlVecchioForno.Application.Common.DTOs;
 using IlVecchioForno.Application.UseCases.Ingredients.DTOs;
 
 namespace IlVecchioForno.Application.Gateways.Presentation;
@@ -6,6 +7,7 @@ public interface IIngredientPresenter
 {
     void EntityFound(IngredientDto entity);
     void EntitiesListed(IReadOnlyList<IngredientDto> entities);
+    void EntitiesCount(EntitiesCountDto count);
     void EntityRegistered(IngredientDto entity);
     void RegistrationError(string message);
     void InvalidReferenceError(string message);

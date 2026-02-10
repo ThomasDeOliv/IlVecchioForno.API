@@ -67,6 +67,14 @@ internal sealed class EfIngredientRepository : IIngredientRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<int> CountAsync(
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await this._ctx.Ingredients
+            .CountAsync(cancellationToken);
+    }
+
     public void Add(Ingredient newIngredient)
     {
         this._ctx.Ingredients.Add(newIngredient);

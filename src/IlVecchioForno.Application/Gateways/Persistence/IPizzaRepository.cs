@@ -21,5 +21,13 @@ public interface IPizzaRepository
         CancellationToken cancellationToken = default
     );
 
+    Task<int> CountActiveAsync(
+        CancellationToken cancellationToken = default
+    );
+
+    Task<int> CountArchivedAsync(
+        CancellationToken cancellationToken = default
+    );
+
     void Add(Pizza pizza);
 }

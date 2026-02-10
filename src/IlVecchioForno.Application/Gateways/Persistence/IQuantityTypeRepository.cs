@@ -15,4 +15,8 @@ public interface IQuantityTypeRepository
         short id,
         CancellationToken cancellationToken = default
     );
+
+    Task<int> CountAsync(
+        CancellationToken cancellationToken = default
+    );
 }

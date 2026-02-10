@@ -49,4 +49,12 @@ internal sealed class EfQuantityTypeRepository : IQuantityTypeRepository
         return await this._ctx.QuantityTypes
             .FindAsync([id], cancellationToken);
     }
+
+    public async Task<int> CountAsync(
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await this._ctx.QuantityTypes
+            .CountAsync(cancellationToken);
+    }
 }
