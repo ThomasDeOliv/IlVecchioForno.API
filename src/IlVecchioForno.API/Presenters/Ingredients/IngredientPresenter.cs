@@ -20,9 +20,16 @@ public sealed class IngredientPresenter : IApiIngredientPresenter
         this._controller
         ?? throw new PresenterNotInitializedException();
 
-    public ActionResult Result =>
-        this._result
-        ?? throw new PresenterResultNotSetException();
+    public ActionResult Result
+    {
+        get
+        {
+            ActionResult result = this._result
+                ?? throw new PresenterResultNotSetException();
+            this._result = null;
+            return result;
+        }
+    }
 
     public void Initialize(IngredientsController controller)
     {
