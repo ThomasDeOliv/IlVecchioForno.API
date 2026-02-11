@@ -1,3 +1,4 @@
+using IlVecchioForno.Application.Common.DTOs;
 using IlVecchioForno.Application.UseCases.Pizzas.DTOs;
 
 namespace IlVecchioForno.Application.Gateways.Presentation;
@@ -8,6 +9,7 @@ public interface IPizzaPresenter
     void EntitiesListed(IReadOnlyList<ActivePizzaDto> entities);
     void EntityFound(ArchivedPizzaDto entity);
     void EntitiesListed(IReadOnlyList<ArchivedPizzaDto> entities);
+    void EntitiesCount(EntitiesCountDto count);
     void EntityRegistered(ActivePizzaDto entity);
     void EntityUpdated();
     void RegistrationError(string message);

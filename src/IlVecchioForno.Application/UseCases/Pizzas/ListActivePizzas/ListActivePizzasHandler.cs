@@ -53,7 +53,7 @@ internal sealed class
             return;
         }
 
-        QuerySpec<ActivePizzasSorter> querySpec = new QuerySpec<ActivePizzasSorter>(
+        ListQuerySpec<ActivePizzasSorter> querySpec = new ListQuerySpec<ActivePizzasSorter>(
             query.Page,
             query.PageSize,
             query.Sorter,

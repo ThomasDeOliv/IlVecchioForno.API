@@ -15,22 +15,22 @@ internal sealed class PizzaFilterService : IFilterService<Pizza>
                     current.Where(p =>
                         (
                             !rangeFilter.Min.HasValue
-                            || p.Price.Value >= rangeFilter.Min.Value
+                            || p.Price >= rangeFilter.Min.Value
                         )
                         &&
                         (
                             !rangeFilter.Max.HasValue
-                            || p.Price.Value <= rangeFilter.Max.Value
+                            || p.Price <= rangeFilter.Max.Value
                         )
                     ),
 
                 SearchFilterType searchFilter when !string.IsNullOrEmpty(searchFilter.Search) =>
                     current.Where(p =>
-                        EF.Functions.ILike(p.Name.Value, $"%{searchFilter.Search}%")
+                        EF.Functions.ILike(p.Name, $"%{searchFilter.Search}%")
                         || (
                             p.Description != null
-                            && !string.IsNullOrEmpty(p.Description.Value)
-                            && EF.Functions.ILike(p.Description.Value, $"%{searchFilter.Search}%")
+                            && !string.IsNullOrEmpty(p.Description)
+                            && EF.Functions.ILike(p.Description, $"%{searchFilter.Search}%")
                         )
                     ),
 

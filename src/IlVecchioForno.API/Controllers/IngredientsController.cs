@@ -2,6 +2,7 @@ using IlVecchioForno.API.Presenters.Ingredients;
 using IlVecchioForno.API.Requests.Ingredients;
 using IlVecchioForno.Application.Common;
 using IlVecchioForno.Application.Common.Queries.Sorters;
+using IlVecchioForno.Application.UseCases.Ingredients.CountIngredients;
 using IlVecchioForno.Application.UseCases.Ingredients.GetIngredient;
 using IlVecchioForno.Application.UseCases.Ingredients.ListIngredients;
 using IlVecchioForno.Application.UseCases.Ingredients.RegisterIngredient;
@@ -53,6 +54,17 @@ public sealed class IngredientsController : ApiControllerBase
     )
     {
         GetIngredientQuery query = new GetIngredientQuery(id);
+        await this._mediator.Send(query, cancellationToken);
+        return this._presenter.Result;
+    }
+
+    [HttpGet("count")]
+    public async Task<ActionResult> CountAsync(
+        [FromQuery] string? search = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        CountIngredientsQuery query = new CountIngredientsQuery(search);
         await this._mediator.Send(query, cancellationToken);
         return this._presenter.Result;
     }

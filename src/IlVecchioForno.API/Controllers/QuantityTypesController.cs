@@ -1,6 +1,7 @@
 using IlVecchioForno.API.Presenters.QuantityTypes;
 using IlVecchioForno.Application.Common;
 using IlVecchioForno.Application.Common.Queries.Sorters;
+using IlVecchioForno.Application.UseCases.QuantityTypes.CountQuantityTypes;
 using IlVecchioForno.Application.UseCases.QuantityTypes.GetQuantityType;
 using IlVecchioForno.Application.UseCases.QuantityTypes.ListQuantityTypes;
 using MediatR;
@@ -51,6 +52,17 @@ public sealed class QuantityTypesController : ApiControllerBase
     )
     {
         GetQuantityTypeQuery query = new GetQuantityTypeQuery(id);
+        await this._mediator.Send(query, cancellationToken);
+        return this._presenter.Result;
+    }
+
+    [HttpGet("count")]
+    public async Task<ActionResult> CountAsync(
+        [FromQuery] string? search = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        CountQuantityTypesQuery query = new CountQuantityTypesQuery(search);
         await this._mediator.Send(query, cancellationToken);
         return this._presenter.Result;
     }

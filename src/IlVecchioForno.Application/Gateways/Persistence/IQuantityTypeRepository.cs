@@ -6,8 +6,13 @@ namespace IlVecchioForno.Application.Gateways.Persistence;
 
 public interface IQuantityTypeRepository
 {
+    Task<int> TotalCountAsync(
+        TotalCountQuerySpec query,
+        CancellationToken cancellationToken = default
+    );
+
     Task<IReadOnlyCollection<QuantityType>> ListAsync(
-        QuerySpec<QuantityTypesSorter> query,
+        ListQuerySpec<QuantityTypesSorter> query,
         CancellationToken cancellationToken = default
     );
 

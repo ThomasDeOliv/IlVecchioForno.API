@@ -7,8 +7,7 @@ using MediatR;
 
 namespace IlVecchioForno.Application.UseCases.QuantityTypes.GetQuantityType;
 
-internal sealed class
-    GetQuantityTypeHandler : IRequestHandler<GetQuantityTypeQuery>
+internal sealed class GetQuantityTypeHandler : IRequestHandler<GetQuantityTypeQuery>
 {
     private readonly IMapper _mapper;
     private readonly IQuantityTypePresenter _presenter;

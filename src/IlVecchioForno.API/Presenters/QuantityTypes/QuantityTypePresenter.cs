@@ -1,5 +1,6 @@
 using IlVecchioForno.API.Controllers;
 using IlVecchioForno.API.Exceptions;
+using IlVecchioForno.Application.Common.DTOs;
 using IlVecchioForno.Application.UseCases.QuantityTypes.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +26,7 @@ public sealed class QuantityTypePresenter : IApiQuantityTypePresenter
         get
         {
             ActionResult result = this._result
-                ?? throw new PresenterResultNotSetException();
+                                  ?? throw new PresenterResultNotSetException();
             this._result = null;
             return result;
         }
@@ -44,6 +45,11 @@ public sealed class QuantityTypePresenter : IApiQuantityTypePresenter
     public void EntitiesListed(IReadOnlyList<QuantityTypeDto> entities)
     {
         this._result = this.Controller.Ok(entities);
+    }
+
+    public void EntitiesCount(EntitiesCountDto count)
+    {
+        this._result = this.Controller.Ok(count);
     }
 
     public void EntityNotFound(string message)

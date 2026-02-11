@@ -6,13 +6,23 @@ namespace IlVecchioForno.Application.Gateways.Persistence;
 
 public interface IPizzaRepository
 {
+    Task<int> TotalCountActiveAsync(
+        TotalCountQuerySpec query,
+        CancellationToken cancellationToken = default
+    );
+
     Task<IReadOnlyCollection<Pizza>> ListActiveAsync(
-        QuerySpec<ActivePizzasSorter> query,
+        ListQuerySpec<ActivePizzasSorter> query,
+        CancellationToken cancellationToken = default
+    );
+
+    Task<int> TotalCountArchivedAsync(
+        TotalCountQuerySpec query,
         CancellationToken cancellationToken = default
     );
 
     Task<IReadOnlyCollection<Pizza>> ListArchivedAsync(
-        QuerySpec<ArchivedPizzasSorter> query,
+        ListQuerySpec<ArchivedPizzasSorter> query,
         CancellationToken cancellationToken = default
     );
 

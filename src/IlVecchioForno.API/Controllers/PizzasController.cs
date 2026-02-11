@@ -4,6 +4,8 @@ using IlVecchioForno.Application.Common;
 using IlVecchioForno.Application.Common.Queries.Sorters;
 using IlVecchioForno.Application.UseCases.Pizzas.ArchivePizza;
 using IlVecchioForno.Application.UseCases.Pizzas.ChangePizzaDetails;
+using IlVecchioForno.Application.UseCases.Pizzas.CountActivePizzas;
+using IlVecchioForno.Application.UseCases.Pizzas.CountArchivedPizzas;
 using IlVecchioForno.Application.UseCases.Pizzas.GetActivePizza;
 using IlVecchioForno.Application.UseCases.Pizzas.GetArchivedPizza;
 using IlVecchioForno.Application.UseCases.Pizzas.ListActivePizzas;
@@ -66,6 +68,17 @@ public sealed class PizzasController : ApiControllerBase
         return this._presenter.Result;
     }
 
+    [HttpGet("active/count")]
+    public async Task<ActionResult> CountActivePizzasAsync(
+        [FromQuery] string? search = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        CountActivePizzasQuery query = new CountActivePizzasQuery(search);
+        await this._mediator.Send(query, cancellationToken);
+        return this._presenter.Result;
+    }
+
     [HttpGet("archived")]
     public async Task<ActionResult> GetArchivedPizzasAsync(
         [FromQuery] int page = QueryDefaultValues.PageNumberMin,
@@ -98,6 +111,17 @@ public sealed class PizzasController : ApiControllerBase
     )
     {
         GetArchivedPizzaQuery query = new GetArchivedPizzaQuery(id);
+        await this._mediator.Send(query, cancellationToken);
+        return this._presenter.Result;
+    }
+
+    [HttpGet("archived/count")]
+    public async Task<ActionResult> CountArchivedPizzasAsync(
+        [FromQuery] string? search = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        CountArchivedPizzasQuery query = new CountArchivedPizzasQuery(search);
         await this._mediator.Send(query, cancellationToken);
         return this._presenter.Result;
     }

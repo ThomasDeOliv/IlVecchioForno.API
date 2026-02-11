@@ -52,7 +52,7 @@ internal sealed class ListIngredientsHandler : IRequestHandler<ListIngredientsQu
             return;
         }
 
-        QuerySpec<IngredientsSorter> querySpec = new QuerySpec<IngredientsSorter>(
+        ListQuerySpec<IngredientsSorter> querySpec = new ListQuerySpec<IngredientsSorter>(
             query.Page,
             query.PageSize,
             query.Sorter,

@@ -45,13 +45,41 @@ internal sealed class EfPizzaRepository : IPizzaRepository
             .SingleOrDefaultAsync(p => p.Id.Equals(id), cancellationToken);
     }
 
+    public async Task<int> TotalCountActiveAsync(
+        TotalCountQuerySpec querySpec,
+        CancellationToken cancellationToken = default
+    )
+    {
+        IQueryable<Pizza> queryable = this._ctx.Pizzas;
+        queryable = this._filterService.Filter(queryable, querySpec.Filters);
+        return await queryable
+            .CountAsync(
+                p => !p.ArchivedAt.HasValue,
+                cancellationToken
+            );
+    }
+
+    public async Task<int> TotalCountArchivedAsync(
+        TotalCountQuerySpec querySpec,
+        CancellationToken cancellationToken = default
+    )
+    {
+        IQueryable<Pizza> queryable = this._ctx.Pizzas;
+        queryable = this._filterService.Filter(queryable, querySpec.Filters);
+        return await queryable
+            .CountAsync(
+                p => p.ArchivedAt.HasValue,
+                cancellationToken
+            );
+    }
+
     public void Add(Pizza pizza)
     {
         this._ctx.Pizzas.Add(pizza);
     }
 
     public async Task<IReadOnlyCollection<Pizza>> ListActiveAsync(
-        QuerySpec<ActivePizzasSorter> query,
+        ListQuerySpec<ActivePizzasSorter> querySpec,
         CancellationToken cancellationToken = default
     )
     {
@@ -60,16 +88,16 @@ internal sealed class EfPizzaRepository : IPizzaRepository
             .ThenInclude(pi => pi.Ingredient)
             .Where(p => !p.ArchivedAt.HasValue);
 
-        queryable = this._filterService.Filter(queryable, query.Filters);
-        queryable = this._activeSorterService.OrderBy(queryable, query.Sorter, query.Descending);
-        queryable = this._paginationService.Paginate(queryable, query.Page, query.PageSize);
+        queryable = this._filterService.Filter(queryable, querySpec.Filters);
+        queryable = this._activeSorterService.OrderBy(queryable, querySpec.Sorter, querySpec.Descending);
+        queryable = this._paginationService.Paginate(queryable, querySpec.Page, querySpec.PageSize);
 
         return await queryable
             .ToListAsync(cancellationToken);
     }
 
     public async Task<IReadOnlyCollection<Pizza>> ListArchivedAsync(
-        QuerySpec<ArchivedPizzasSorter> query,
+        ListQuerySpec<ArchivedPizzasSorter> querySpec,
         CancellationToken cancellationToken = default
     )
     {
@@ -78,9 +106,9 @@ internal sealed class EfPizzaRepository : IPizzaRepository
             .ThenInclude(pi => pi.Ingredient)
             .Where(p => p.ArchivedAt.HasValue);
 
-        queryable = this._filterService.Filter(queryable, query.Filters);
-        queryable = this._archivedSorterService.OrderBy(queryable, query.Sorter, query.Descending);
-        queryable = this._paginationService.Paginate(queryable, query.Page, query.PageSize);
+        queryable = this._filterService.Filter(queryable, querySpec.Filters);
+        queryable = this._archivedSorterService.OrderBy(queryable, querySpec.Sorter, querySpec.Descending);
+        queryable = this._paginationService.Paginate(queryable, querySpec.Page, querySpec.PageSize);
 
         return await queryable
             .ToListAsync(cancellationToken);
