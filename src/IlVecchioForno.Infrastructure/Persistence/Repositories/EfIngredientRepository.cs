@@ -34,21 +34,23 @@ internal sealed class EfIngredientRepository : IIngredientRepository
         CancellationToken cancellationToken = default
     )
     {
-        return await this._ctx.Ingredients
+        IQueryable<Ingredient> queryable = this._ctx.Ingredients;
+        queryable = this._filterService.Filter(queryable, querySpec.Filters);
+        return await queryable
             .CountAsync(cancellationToken);
     }
 
     public async Task<IReadOnlyCollection<Ingredient>> ListAsync(
-        ListQuerySpec<IngredientsSorter> query,
+        ListQuerySpec<IngredientsSorter> querySpec,
         CancellationToken cancellationToken = default
     )
     {
         IQueryable<Ingredient> queryable = this._ctx.Ingredients
             .Include(i => i.QuantityType);
 
-        queryable = this._filterService.Filter(queryable, query.Filters);
-        queryable = this._sorterService.OrderBy(queryable, query.Sorter, query.Descending);
-        queryable = this._paginationService.Paginate(queryable, query.Page, query.PageSize);
+        queryable = this._filterService.Filter(queryable, querySpec.Filters);
+        queryable = this._sorterService.OrderBy(queryable, querySpec.Sorter, querySpec.Descending);
+        queryable = this._paginationService.Paginate(queryable, querySpec.Page, querySpec.PageSize);
 
         return await queryable
             .ToListAsync(cancellationToken);

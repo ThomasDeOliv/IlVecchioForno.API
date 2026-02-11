@@ -10,11 +10,11 @@ internal sealed class IngredientSorterService : ISorterService<Ingredient, Ingre
         return (sorter, descending) switch
         {
             (IngredientsSorter.Name, true) =>
-                q.OrderByDescending(p => p.Name.Value)
+                q.OrderByDescending(p => p.Name)
                     .ThenBy(p => p.Id),
 
             (IngredientsSorter.Name, false) =>
-                q.OrderBy(p => p.Name.Value)
+                q.OrderBy(p => p.Name)
                     .ThenBy(p => p.Id),
 
             (IngredientsSorter.Id, true) =>
