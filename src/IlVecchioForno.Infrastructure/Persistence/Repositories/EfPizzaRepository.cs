@@ -45,7 +45,8 @@ internal sealed class EfPizzaRepository : IPizzaRepository
             .SingleOrDefaultAsync(p => p.Id.Equals(id), cancellationToken);
     }
 
-    public async Task<int> CountActiveAsync(
+    public async Task<int> TotalCountActiveAsync(
+        TotalCountQuerySpec querySpec,
         CancellationToken cancellationToken = default
     )
     {
@@ -55,7 +56,8 @@ internal sealed class EfPizzaRepository : IPizzaRepository
             );
     }
 
-    public async Task<int> CountArchivedAsync(
+    public async Task<int> TotalCountArchivedAsync(
+        TotalCountQuerySpec querySpec,
         CancellationToken cancellationToken = default
     )
     {
@@ -71,7 +73,7 @@ internal sealed class EfPizzaRepository : IPizzaRepository
     }
 
     public async Task<IReadOnlyCollection<Pizza>> ListActiveAsync(
-        QuerySpec<ActivePizzasSorter> query,
+        ListQuerySpec<ActivePizzasSorter> query,
         CancellationToken cancellationToken = default
     )
     {
@@ -89,7 +91,7 @@ internal sealed class EfPizzaRepository : IPizzaRepository
     }
 
     public async Task<IReadOnlyCollection<Pizza>> ListArchivedAsync(
-        QuerySpec<ArchivedPizzasSorter> query,
+        ListQuerySpec<ArchivedPizzasSorter> query,
         CancellationToken cancellationToken = default
     )
     {

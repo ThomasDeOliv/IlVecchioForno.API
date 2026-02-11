@@ -58,10 +58,11 @@ public sealed class QuantityTypesController : ApiControllerBase
 
     [HttpGet("count")]
     public async Task<ActionResult> CountAsync(
+        [FromQuery] string? search = null,
         CancellationToken cancellationToken = default
     )
     {
-        CountQuantityTypesQuery query = new CountQuantityTypesQuery();
+        CountQuantityTypesQuery query = new CountQuantityTypesQuery(search);
         await this._mediator.Send(query, cancellationToken);
         return this._presenter.Result;
     }

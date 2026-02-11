@@ -60,10 +60,11 @@ public sealed class IngredientsController : ApiControllerBase
 
     [HttpGet("count")]
     public async Task<ActionResult> CountAsync(
+        [FromQuery] string? search = null,
         CancellationToken cancellationToken = default
     )
     {
-        CountIngredientsQuery query = new CountIngredientsQuery();
+        CountIngredientsQuery query = new CountIngredientsQuery(search);
         await this._mediator.Send(query, cancellationToken);
         return this._presenter.Result;
     }

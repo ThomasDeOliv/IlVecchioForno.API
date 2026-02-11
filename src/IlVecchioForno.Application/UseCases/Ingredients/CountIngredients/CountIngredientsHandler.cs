@@ -1,5 +1,7 @@
 using IlVecchioForno.Application.Common.DTOs;
 using IlVecchioForno.Application.Gateways.Persistence;
+using IlVecchioForno.Application.Gateways.Persistence.Queries;
+using IlVecchioForno.Application.Gateways.Persistence.Queries.FilterTypes;
 using IlVecchioForno.Application.Gateways.Presentation;
 using MediatR;
 
@@ -21,7 +23,13 @@ internal sealed class CountIngredientsHandler : IRequestHandler<CountIngredients
 
     public async Task Handle(CountIngredientsQuery request, CancellationToken cancellationToken)
     {
-        int total = await this._repository.CountAsync(cancellationToken);
+        TotalCountQuerySpec querySpec = new TotalCountQuerySpec(
+            new List<IFilterType>
+            {
+                new SearchFilterType(request.Search)
+            }
+        );
+        int total = await this._repository.TotalCountAsync(querySpec, cancellationToken);
         this._presenter.EntitiesCount(new EntitiesCountDto(total));
     }
 }

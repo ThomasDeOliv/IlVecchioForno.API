@@ -70,10 +70,11 @@ public sealed class PizzasController : ApiControllerBase
 
     [HttpGet("active/count")]
     public async Task<ActionResult> CountActivePizzasAsync(
+        [FromQuery] string? search = null,
         CancellationToken cancellationToken = default
     )
     {
-        CountActivePizzasQuery query = new CountActivePizzasQuery();
+        CountActivePizzasQuery query = new CountActivePizzasQuery(search);
         await this._mediator.Send(query, cancellationToken);
         return this._presenter.Result;
     }
@@ -116,10 +117,11 @@ public sealed class PizzasController : ApiControllerBase
 
     [HttpGet("archived/count")]
     public async Task<ActionResult> CountArchivedPizzasAsync(
+        [FromQuery] string? search = null,
         CancellationToken cancellationToken = default
     )
     {
-        CountArchivedPizzasQuery query = new CountArchivedPizzasQuery();
+        CountArchivedPizzasQuery query = new CountArchivedPizzasQuery(search);
         await this._mediator.Send(query, cancellationToken);
         return this._presenter.Result;
     }

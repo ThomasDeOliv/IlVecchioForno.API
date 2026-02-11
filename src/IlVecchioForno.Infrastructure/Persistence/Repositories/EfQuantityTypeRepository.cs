@@ -29,8 +29,17 @@ internal sealed class EfQuantityTypeRepository : IQuantityTypeRepository
         this._sorterService = sorterService;
     }
 
+    public async Task<int> TotalCountAsync(
+        TotalCountQuerySpec querySpec,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await this._ctx.QuantityTypes
+            .CountAsync(cancellationToken);
+    }
+
     public async Task<IReadOnlyCollection<QuantityType>> ListAsync(
-        QuerySpec<QuantityTypesSorter> query,
+        ListQuerySpec<QuantityTypesSorter> query,
         CancellationToken cancellationToken = default
     )
     {
@@ -48,13 +57,5 @@ internal sealed class EfQuantityTypeRepository : IQuantityTypeRepository
     {
         return await this._ctx.QuantityTypes
             .FindAsync([id], cancellationToken);
-    }
-
-    public async Task<int> CountAsync(
-        CancellationToken cancellationToken = default
-    )
-    {
-        return await this._ctx.QuantityTypes
-            .CountAsync(cancellationToken);
     }
 }

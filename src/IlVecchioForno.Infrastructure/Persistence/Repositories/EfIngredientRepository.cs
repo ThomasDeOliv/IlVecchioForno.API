@@ -29,8 +29,17 @@ internal sealed class EfIngredientRepository : IIngredientRepository
         this._sorterService = _sorterService;
     }
 
+    public async Task<int> TotalCountAsync(
+        TotalCountQuerySpec querySpec,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await this._ctx.Ingredients
+            .CountAsync(cancellationToken);
+    }
+
     public async Task<IReadOnlyCollection<Ingredient>> ListAsync(
-        QuerySpec<IngredientsSorter> query,
+        ListQuerySpec<IngredientsSorter> query,
         CancellationToken cancellationToken = default
     )
     {
@@ -65,14 +74,6 @@ internal sealed class EfIngredientRepository : IIngredientRepository
             .Include(i => i.QuantityType)
             .Where(i => ids.Contains(i.Id))
             .ToListAsync(cancellationToken);
-    }
-
-    public async Task<int> CountAsync(
-        CancellationToken cancellationToken = default
-    )
-    {
-        return await this._ctx.Ingredients
-            .CountAsync(cancellationToken);
     }
 
     public void Add(Ingredient newIngredient)

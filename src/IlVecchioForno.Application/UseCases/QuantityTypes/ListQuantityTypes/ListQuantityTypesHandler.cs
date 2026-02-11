@@ -53,8 +53,8 @@ internal sealed class
             return;
         }
 
-        QuerySpec<QuantityTypesSorter> querySpec =
-            new QuerySpec<QuantityTypesSorter>(
+        ListQuerySpec<QuantityTypesSorter> querySpec =
+            new ListQuerySpec<QuantityTypesSorter>(
                 query.Page,
                 query.PageSize,
                 query.Sorter,

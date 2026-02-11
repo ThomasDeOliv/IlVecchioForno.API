@@ -6,8 +6,13 @@ namespace IlVecchioForno.Application.Gateways.Persistence;
 
 public interface IIngredientRepository
 {
+    Task<int> TotalCountAsync(
+        TotalCountQuerySpec query,
+        CancellationToken cancellationToken = default
+    );
+
     Task<IReadOnlyCollection<Ingredient>> ListAsync(
-        QuerySpec<IngredientsSorter> query,
+        ListQuerySpec<IngredientsSorter> query,
         CancellationToken cancellationToken = default
     );
 
@@ -18,10 +23,6 @@ public interface IIngredientRepository
 
     Task<IReadOnlyCollection<Ingredient>> ResolveAsync(
         IEnumerable<int> ids,
-        CancellationToken cancellationToken = default
-    );
-
-    Task<int> CountAsync(
         CancellationToken cancellationToken = default
     );
 
