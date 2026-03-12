@@ -1,6 +1,6 @@
 using IlVecchioForno.Application.Gateways.Persistence;
-using IlVecchioForno.Application.Gateways.Presentation;
 using IlVecchioForno.Application.UseCases.QuantityTypes.DTOs;
+using IlVecchioForno.Application.UseCases.QuantityTypes.Presenters;
 using IlVecchioForno.Domain.QuantityTypes;
 using MapsterMapper;
 using MediatR;

@@ -26,7 +26,7 @@ public sealed class IngredientPresenter : IApiIngredientPresenter
         get
         {
             ActionResult result = this._result
-                                  ?? throw new PresenterResultNotSetException();
+                    ?? throw new PresenterResultNotSetException();
             this._result = null;
             return result;
         }

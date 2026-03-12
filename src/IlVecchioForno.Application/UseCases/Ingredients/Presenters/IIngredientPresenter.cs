@@ -1,7 +1,7 @@
 using IlVecchioForno.Application.Common.DTOs;
 using IlVecchioForno.Application.UseCases.Ingredients.DTOs;
 
-namespace IlVecchioForno.Application.Gateways.Presentation;
+namespace IlVecchioForno.Application.UseCases.Ingredients.Presenters;
 
 public interface IIngredientPresenter
 {
