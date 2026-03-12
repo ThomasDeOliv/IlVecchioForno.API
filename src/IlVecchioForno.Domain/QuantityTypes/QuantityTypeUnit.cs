@@ -25,4 +25,9 @@ public sealed class QuantityTypeUnit
     {
         return valueObject.Value;
     }
+
+    public static implicit operator QuantityTypeUnit(string value)
+    {
+        return new QuantityTypeUnit(value);
+    }
 }

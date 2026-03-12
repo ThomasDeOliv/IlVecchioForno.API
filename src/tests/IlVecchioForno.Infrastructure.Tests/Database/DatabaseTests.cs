@@ -4,26 +4,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IlVecchioForno.Infrastructure.Tests.Database;
 
-public sealed class DatabaseTests : InfrastructureTestsBase
+public sealed class DatabaseTests : EmptyInfrastructureTestsBase
 {
     public DatabaseTests(DbContextFixture dbCtxFixture) : base(dbCtxFixture)
     {
     }
 
     [Fact]
-    public async Task Database_CanBeCreated()
-    {
-        // Arrange & Act
-        bool created = await this._ctx.Database.EnsureCreatedAsync();
-        // Assert
-        Assert.True(created);
-    }
-
-    [Fact]
     public async Task Migrations_ApplySuccessfully()
     {
         // Arrange & Act
-        await this._ctx.Database.MigrateAsync();
         IEnumerable<string> pendingMigrations = await this._ctx.Database.GetPendingMigrationsAsync();
         IEnumerable<string> appliedMigrations = await this._ctx.Database.GetAppliedMigrationsAsync();
         // Assert
@@ -34,9 +24,7 @@ public sealed class DatabaseTests : InfrastructureTestsBase
     [Fact]
     public async Task Schema_ExistsAfterMigration()
     {
-        // Arrange
-        await this._ctx.Database.MigrateAsync();
-        // Act
+        // Arrange & Act
         List<string> schemas = await this._ctx.Database
             .SqlQuery<string>(
                 $"""
@@ -48,7 +36,7 @@ public sealed class DatabaseTests : InfrastructureTestsBase
         // Assert
         Assert.NotEmpty(schemas);
         Assert.Contains(
-            DatabaseTestsData.PizzasDbSchema,
+            DbDescriptionTestsData.PizzasDbSchema,
             schemas
         );
     }
@@ -59,19 +47,18 @@ public sealed class DatabaseTests : InfrastructureTestsBase
         // Arrange
         List<string> expectedTables = new List<string>
         {
-            DatabaseTestsData.PizzasTable,
-            DatabaseTestsData.PizzasIngredientsTable,
-            DatabaseTestsData.IngredientsTable,
-            DatabaseTestsData.QuantityTypesTable
+            DbDescriptionTestsData.PizzasTable,
+            DbDescriptionTestsData.PizzasIngredientsTable,
+            DbDescriptionTestsData.IngredientsTable,
+            DbDescriptionTestsData.QuantityTypesTable
         };
-        await this._ctx.Database.MigrateAsync();
         // Act
         List<string> tables = await this._ctx.Database
             .SqlQuery<string>(
                 $"""
                  SELECT table_name
                  FROM information_schema.tables
-                 WHERE table_schema = {DatabaseTestsData.PizzasDbSchema}
+                 WHERE table_schema = {DbDescriptionTestsData.PizzasDbSchema}
                  """
             )
             .ToListAsync();
@@ -84,15 +71,13 @@ public sealed class DatabaseTests : InfrastructureTestsBase
     }
 
     [Theory]
-    [MemberData(nameof(DatabaseTestsData.TablesAndRelatedColumns), MemberType = typeof(DatabaseTestsData))]
+    [MemberData(nameof(DbDescriptionTestsData.TablesAndRelatedColumns), MemberType = typeof(DbDescriptionTestsData))]
     public async Task Table_ContainsExpectedFields(
         string tableName,
         ColumnInfo[] expectedColumns
     )
     {
-        // Arrange
-        await this._ctx.Database.MigrateAsync();
-        // Act
+        // Arrange & Act
         List<ColumnInfo> columns = await this._ctx.Database
             .SqlQuery<ColumnInfo>(
                 $"""
@@ -101,7 +86,7 @@ public sealed class DatabaseTests : InfrastructureTestsBase
                       data_type AS "DataType",
                       is_nullable = 'YES' AS "IsNullable"
                   FROM information_schema.columns
-                  WHERE table_schema = {DatabaseTestsData.PizzasDbSchema}
+                  WHERE table_schema = {DbDescriptionTestsData.PizzasDbSchema}
                       AND table_name = {tableName}
                  """
             )
@@ -113,35 +98,34 @@ public sealed class DatabaseTests : InfrastructureTestsBase
     }
 
     [Theory]
-    [MemberData(nameof(DatabaseTestsData.TablesAndRelatedVarcharColumnsLength), MemberType = typeof(DatabaseTestsData))]
-    public async Task Table_VarcharColumns_HaveExpectedLength(
+    [MemberData(nameof(DbDescriptionTestsData.TablesAndRelatedVarcharColumnsLength), MemberType = typeof(DbDescriptionTestsData))]
+    public async Task Table_CitextColumns_HaveExpectedCheckConstraint(
         string tableName,
-        string columnName,
-        int expectedLength
+        string constraintName,
+        string expectedCheckConstaint
     )
     {
-        // Arrange
-        await this._ctx.Database.MigrateAsync();
-        // Act
-        VarcharColumnInfo? info = await this._ctx.Database
-            .SqlQuery<VarcharColumnInfo>(
+        // Arrange & Act
+        CheckConstraintColumnInfo? info = await this._ctx.Database
+            .SqlQuery<CheckConstraintColumnInfo>(
                 $"""
-                  SELECT 
-                      character_maximum_length AS "MaxLength"
-                  FROM information_schema.columns
-                  WHERE table_schema = {DatabaseTestsData.PizzasDbSchema}
-                      AND table_name = {tableName}
-                      AND column_name = {columnName}
+                 SELECT cc.check_clause AS "CheckConstaint"
+                 FROM information_schema.check_constraints cc
+                 JOIN information_schema.constraint_column_usage ccu 
+                     ON cc.constraint_name = ccu.constraint_name
+                 WHERE ccu.table_schema = {DbDescriptionTestsData.PizzasDbSchema}
+                     AND ccu.table_name = {tableName}
+                     AND ccu.constraint_name = {constraintName}
                  """
             )
             .SingleOrDefaultAsync();
         // Assert
         Assert.NotNull(info);
-        Assert.Equal(expectedLength, info.MaxLength);
+        Assert.Equal(expectedCheckConstaint, info.CheckConstaint);
     }
 
     [Theory]
-    [MemberData(nameof(DatabaseTestsData.TablesAndNumericColumnsPrecision), MemberType = typeof(DatabaseTestsData))]
+    [MemberData(nameof(DbDescriptionTestsData.TablesAndNumericColumnsPrecision), MemberType = typeof(DbDescriptionTestsData))]
     public async Task Table_NumericColumns_HaveExpectedPrecisionAndScale(
         string tableName,
         string columnName,
@@ -149,9 +133,7 @@ public sealed class DatabaseTests : InfrastructureTestsBase
         int expectedScale
     )
     {
-        // Arrange
-        await this._ctx.Database.MigrateAsync();
-        // Act
+        // Arrange & Act
         NumericColumnInfo? info = await this._ctx.Database
             .SqlQuery<NumericColumnInfo>(
                 $"""
@@ -159,7 +141,7 @@ public sealed class DatabaseTests : InfrastructureTestsBase
                       numeric_precision AS "Precision", 
                       numeric_scale AS "Scale"
                   FROM information_schema.columns
-                  WHERE table_schema = {DatabaseTestsData.PizzasDbSchema}
+                  WHERE table_schema = {DbDescriptionTestsData.PizzasDbSchema}
                       AND table_name = {tableName}
                       AND column_name = {columnName}
                  """
@@ -172,7 +154,7 @@ public sealed class DatabaseTests : InfrastructureTestsBase
     }
 
     [Theory]
-    [MemberData(nameof(DatabaseTestsData.TablesAndExpectedPrimaryKeys), MemberType = typeof(DatabaseTestsData))]
+    [MemberData(nameof(DbDescriptionTestsData.TablesAndExpectedPrimaryKeys), MemberType = typeof(DbDescriptionTestsData))]
     public async Task Table_PrimaryKey_HasExpectedConstraint(
         string tableName,
         string expectedConstraintName,
@@ -181,7 +163,6 @@ public sealed class DatabaseTests : InfrastructureTestsBase
     {
         // Arrange
         string expectedColumnNamesString = string.Join(", ", expectedColumnNames);
-        await this._ctx.Database.MigrateAsync();
         // Act
         PrimaryKeyConstraintColumnsInfo? info = await this._ctx.Database
             .SqlQuery<PrimaryKeyConstraintColumnsInfo>(
@@ -192,7 +173,7 @@ public sealed class DatabaseTests : InfrastructureTestsBase
                  FROM information_schema.table_constraints tc                                                                                                                                                                                                                                                                                                                                                                                    
                  JOIN information_schema.key_column_usage kcu                                                                                                                                                                                                                                                                                                                                                                                    
                      ON tc.constraint_name = kcu.constraint_name                                                                                                                                                                                                                                                                                                                                                                                 
-                 WHERE tc.table_schema = {DatabaseTestsData.PizzasDbSchema}                                                                                                                                                                                                                                                                                                                                                                                        
+                 WHERE tc.table_schema = {DbDescriptionTestsData.PizzasDbSchema}                                                                                                                                                                                                                                                                                                                                                                                        
                      AND tc.table_name = {tableName}                                                                                                                                                                                                                                                                                                                                                                                             
                      AND tc.constraint_type = 'PRIMARY KEY'                                                                                                                                                                                                                                                                                                                                                                                      
                  GROUP BY tc.constraint_name               
@@ -206,7 +187,7 @@ public sealed class DatabaseTests : InfrastructureTestsBase
     }
 
     [Theory]
-    [MemberData(nameof(DatabaseTestsData.TablesAndExpectedForeignKeys), MemberType = typeof(DatabaseTestsData))]
+    [MemberData(nameof(DbDescriptionTestsData.TablesAndExpectedForeignKeys), MemberType = typeof(DbDescriptionTestsData))]
     public async Task Table_ForeignKeyColumns_HaveExpectedConstraint(
         string tableName,
         string columnName,
@@ -216,9 +197,7 @@ public sealed class DatabaseTests : InfrastructureTestsBase
         string expectedReferencedDeleteRule
     )
     {
-        // Arrange
-        await this._ctx.Database.MigrateAsync();
-        // Act
+        // Arrange & Act
         ForeignKeyConstraintColumnInfo? info = await this._ctx.Database
             .SqlQuery<ForeignKeyConstraintColumnInfo>(
                 $"""
@@ -234,7 +213,7 @@ public sealed class DatabaseTests : InfrastructureTestsBase
                       ON tc.constraint_name = ccu.constraint_name      
                   JOIN information_schema.referential_constraints rc                                                                                                                                                                                                                                                                                                                                                                              
                       ON tc.constraint_name = rc.constraint_name  
-                  WHERE tc.table_schema = {DatabaseTestsData.PizzasDbSchema}                                                                                                                                                                                                                                                                                                                                                                                        
+                  WHERE tc.table_schema = {DbDescriptionTestsData.PizzasDbSchema}                                                                                                                                                                                                                                                                                                                                                                                        
                       AND tc.table_name = {tableName}                                                                                                                                                                                                                                                                                                                                                                                             
                       AND kcu.column_name = {columnName}                                                                                                                                                                                                                                                                                                                                                                                          
                       AND tc.constraint_type = 'FOREIGN KEY'               

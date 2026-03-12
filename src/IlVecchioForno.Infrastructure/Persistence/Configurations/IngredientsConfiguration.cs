@@ -11,7 +11,9 @@ internal class IngredientsConfiguration : EntityConfigurationBase<Ingredient>
     {
         base.Configure(builder);
 
-        builder.ToTable("ingredients");
+        builder.ToTable("ingredients", tableBuilder =>
+            tableBuilder.HasCheckConstraint("ck_ingredients_name_maxlength", $"LENGTH(name) >= {IngredientInvariant.NameMinLength} AND LENGTH(name) <= {IngredientInvariant.NameMaxLength}")
+        );
 
         builder.Property(e => e.Id)
             .HasColumnName("id")
@@ -25,7 +27,8 @@ internal class IngredientsConfiguration : EntityConfigurationBase<Ingredient>
                 value => new IngredientName(value)
             )
             .HasColumnName("name")
-            .HasColumnType($"VARCHAR({IngredientInvariant.NameMaxLength})")
+            .HasColumnType("CITEXT")
+            .HasMaxLength(IngredientInvariant.NameMaxLength)
             .IsRequired();
 
         builder.Property<short?>("QuantityTypeId") // Shadow QuantityType FK

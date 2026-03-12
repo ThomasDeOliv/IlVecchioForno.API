@@ -25,4 +25,9 @@ public sealed class IngredientName
     {
         return valueObject.Value;
     }
+
+    public static implicit operator IngredientName(string value)
+    {
+        return new IngredientName(value);
+    }
 }

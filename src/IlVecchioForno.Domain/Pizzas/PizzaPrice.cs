@@ -20,4 +20,9 @@ public sealed class PizzaPrice
     {
         return valueObject.Value;
     }
+
+    public static implicit operator PizzaPrice(decimal value)
+    {
+        return new PizzaPrice(value);
+    }
 }

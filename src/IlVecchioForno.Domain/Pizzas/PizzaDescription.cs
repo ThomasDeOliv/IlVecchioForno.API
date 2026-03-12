@@ -25,4 +25,9 @@ public sealed class PizzaDescription
     {
         return valueObject.Value;
     }
+
+    public static implicit operator PizzaDescription(string value)
+    {
+        return new PizzaDescription(value);
+    }
 }

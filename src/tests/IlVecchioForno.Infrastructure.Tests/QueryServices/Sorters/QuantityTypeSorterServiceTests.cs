@@ -1,24 +1,16 @@
 using IlVecchioForno.Application.Common.Queries.Sorters;
 using IlVecchioForno.Domain.QuantityTypes;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Sorters;
+using IlVecchioForno.Infrastructure.Tests.Utilities.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace IlVecchioForno.Infrastructure.Tests.QueryServices.Sorters;
 
-public sealed class QuantityTypeSorterServiceTests
+public sealed class QuantityTypeSorterServiceTests : SeededInfrastructureTestsBase
 {
-    private static readonly List<QuantityType> _testsQuantityTypes = new List<QuantityType>
-    {
-        new QuantityType(new QuantityTypeName("Milligrams"), new QuantityTypeUnit("mg"), 1),
-        new QuantityType(new QuantityTypeName("Grams"), new QuantityTypeUnit("g"), 2),
-        new QuantityType(new QuantityTypeName("Kilograms"), new QuantityTypeUnit("kg"), 3),
-        new QuantityType(new QuantityTypeName("Milliliters"), new QuantityTypeUnit("mL"), 4),
-        new QuantityType(new QuantityTypeName("Centiliters"), new QuantityTypeUnit("cL"), 5),
-        new QuantityType(new QuantityTypeName("Liters"), new QuantityTypeUnit("L"), 6)
-    };
-
     private readonly ISorterService<QuantityType, QuantityTypesSorter> _sorterService;
 
-    public QuantityTypeSorterServiceTests()
+    public QuantityTypeSorterServiceTests(DbContextFixture dbContextFixture) : base(dbContextFixture)
     {
         this._sorterService = new QuantityTypeSorterService();
     }
@@ -28,84 +20,72 @@ public sealed class QuantityTypeSorterServiceTests
         {
             // Default
             {
-                false,
-                QuantityTypesSorter.Id,
-                _testsQuantityTypes
+                false, QuantityTypesSorter.Id, DbMockedTestsData.TestsQuantityTypes
             },
             {
-                true,
-                QuantityTypesSorter.Id,
-                _testsQuantityTypes.AsEnumerable().Reverse().ToList()
+                true, QuantityTypesSorter.Id, DbMockedTestsData.TestsQuantityTypes.AsEnumerable().Reverse().ToList()
             },
             // Name 
             {
-                false,
-                QuantityTypesSorter.Name,
-                new List<QuantityType>
+                false, QuantityTypesSorter.Name, new List<QuantityType>
                 {
-                    _testsQuantityTypes[4],
-                    _testsQuantityTypes[1],
-                    _testsQuantityTypes[2],
-                    _testsQuantityTypes[5],
-                    _testsQuantityTypes[0],
-                    _testsQuantityTypes[3]
+                    DbMockedTestsData.TestsQuantityTypes[4],
+                    DbMockedTestsData.TestsQuantityTypes[1],
+                    DbMockedTestsData.TestsQuantityTypes[2],
+                    DbMockedTestsData.TestsQuantityTypes[5],
+                    DbMockedTestsData.TestsQuantityTypes[0],
+                    DbMockedTestsData.TestsQuantityTypes[3]
                 }
             },
             {
-                true,
-                QuantityTypesSorter.Name,
-                new List<QuantityType>
+                true, QuantityTypesSorter.Name, new List<QuantityType>
                 {
-                    _testsQuantityTypes[4],
-                    _testsQuantityTypes[1],
-                    _testsQuantityTypes[2],
-                    _testsQuantityTypes[5],
-                    _testsQuantityTypes[0],
-                    _testsQuantityTypes[3]
+                    DbMockedTestsData.TestsQuantityTypes[4],
+                    DbMockedTestsData.TestsQuantityTypes[1],
+                    DbMockedTestsData.TestsQuantityTypes[2],
+                    DbMockedTestsData.TestsQuantityTypes[5],
+                    DbMockedTestsData.TestsQuantityTypes[0],
+                    DbMockedTestsData.TestsQuantityTypes[3]
                 }.AsEnumerable().Reverse().ToList()
             },
             // Unit
             {
-                false,
-                QuantityTypesSorter.Unit,
-                new List<QuantityType>
+                false, QuantityTypesSorter.Unit, new List<QuantityType>
                 {
-                    _testsQuantityTypes[4],
-                    _testsQuantityTypes[1],
-                    _testsQuantityTypes[2],
-                    _testsQuantityTypes[5],
-                    _testsQuantityTypes[0],
-                    _testsQuantityTypes[3]
+                    DbMockedTestsData.TestsQuantityTypes[4],
+                    DbMockedTestsData.TestsQuantityTypes[1],
+                    DbMockedTestsData.TestsQuantityTypes[2],
+                    DbMockedTestsData.TestsQuantityTypes[5],
+                    DbMockedTestsData.TestsQuantityTypes[0],
+                    DbMockedTestsData.TestsQuantityTypes[3]
                 }
             },
             {
-                true,
-                QuantityTypesSorter.Unit,
-                new List<QuantityType>
+                true, QuantityTypesSorter.Unit, new List<QuantityType>
                 {
-                    _testsQuantityTypes[4],
-                    _testsQuantityTypes[1],
-                    _testsQuantityTypes[2],
-                    _testsQuantityTypes[5],
-                    _testsQuantityTypes[0],
-                    _testsQuantityTypes[3]
+                    DbMockedTestsData.TestsQuantityTypes[4],
+                    DbMockedTestsData.TestsQuantityTypes[1],
+                    DbMockedTestsData.TestsQuantityTypes[2],
+                    DbMockedTestsData.TestsQuantityTypes[5],
+                    DbMockedTestsData.TestsQuantityTypes[0],
+                    DbMockedTestsData.TestsQuantityTypes[3]
                 }.AsEnumerable().Reverse().ToList()
             }
         };
 
     [Theory]
     [MemberData(nameof(SortedQuantityTypes))]
-    public void Sorter_ForQuantityTypes_Return_ExpectedSortedQuantityTypes(
+    public async Task Sorter_ForQuantityTypes_Return_ExpectedSortedQuantityTypes(
         bool descending,
         QuantityTypesSorter sorter,
         List<QuantityType> expected
     )
     {
         // Arrange
-        IQueryable<QuantityType> queryable = _testsQuantityTypes.AsQueryable();
+        IQueryable<QuantityType> queryable = this._ctx.QuantityTypes.AsQueryable();
         // Act
         IQueryable<QuantityType> queryResult = this._sorterService.OrderBy(queryable, sorter, descending);
-        List<QuantityType> collection = queryResult.ToList();
+        List<QuantityType> collection = await queryResult.ToListAsync();
         // Assert
         Assert.Equal(expected.Count, collection.Count);
         Assert.Equivalent(expected, collection);

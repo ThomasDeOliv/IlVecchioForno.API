@@ -25,4 +25,9 @@ public sealed class QuantityTypeName
     {
         return valueObject.Value;
     }
+
+    public static implicit operator QuantityTypeName(string value)
+    {
+        return new QuantityTypeName(value);
+    }
 }

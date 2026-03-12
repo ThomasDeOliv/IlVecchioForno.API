@@ -19,4 +19,9 @@ public sealed class PizzaIngredientQuantity
     {
         return valueObject.Value;
     }
+
+    public static implicit operator PizzaIngredientQuantity(decimal value)
+    {
+        return new PizzaIngredientQuantity(value);
+    }
 }

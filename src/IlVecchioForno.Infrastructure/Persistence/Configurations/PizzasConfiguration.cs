@@ -10,7 +10,11 @@ internal class PizzasConfiguration : EntityConfigurationBase<Pizza>
     {
         base.Configure(builder);
 
-        builder.ToTable("pizzas");
+        builder.ToTable("pizzas", tableBuilder =>
+        {
+            tableBuilder.HasCheckConstraint("ck_pizzas_name_maxlength", $"LENGTH(name) >= {PizzaInvariant.NameMinLength} AND LENGTH(name) <= {PizzaInvariant.NameMaxLength}");
+            tableBuilder.HasCheckConstraint("ck_pizzas_description_maxlength", $"description IS NULL OR (LENGTH(description) >= {PizzaInvariant.DescriptionMinLength} AND LENGTH(description) <= {PizzaInvariant.DescriptionMaxLength})");
+        });
 
         builder.Property(e => e.Id)
             .HasColumnName("id")
@@ -24,7 +28,8 @@ internal class PizzasConfiguration : EntityConfigurationBase<Pizza>
                 value => new PizzaName(value)
             )
             .HasColumnName("name")
-            .HasColumnType($"VARCHAR({PizzaInvariant.NameMaxLength})")
+            .HasColumnType("CITEXT")
+            .HasMaxLength(PizzaInvariant.NameMaxLength)
             .IsRequired();
 
         builder.Property(e => e.Description)
@@ -33,7 +38,8 @@ internal class PizzasConfiguration : EntityConfigurationBase<Pizza>
                 value => !string.IsNullOrEmpty(value) ? new PizzaDescription(value) : null
             )
             .HasColumnName("description")
-            .HasColumnType($"VARCHAR({PizzaInvariant.DescriptionMaxLength})")
+            .HasColumnType("CITEXT")
+            .HasMaxLength(PizzaInvariant.DescriptionMaxLength)
             .IsRequired(false);
 
         builder.Property(e => e.ArchivedAt)

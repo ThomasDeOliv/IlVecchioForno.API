@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IlVecchioForno.Infrastructure.Tests.Database;
 
-public sealed class InfrastructureContextTests : InfrastructureTestsBase
+public sealed class InfrastructureContextTests : EmptyInfrastructureTestsBase
 {
     public InfrastructureContextTests(DbContextFixture dbCtxFixture) : base(dbCtxFixture)
     {
@@ -31,10 +31,9 @@ public sealed class InfrastructureContextTests : InfrastructureTestsBase
     }
 
     [Fact]
-    public async Task SaveChanges_OnInsert_GeneratesIdAndTimestampsAndSetsStateToUnchanged()
+    public void SaveChanges_OnInsert_GeneratesIdAndTimestampsAndSetsStateToUnchanged()
     {
         // Arrange
-        await this._ctx.Database.MigrateAsync();
         QuantityType quantityType = GetTestQuantityType("Gram", "g");
 
         EntityState stateBeforeInsert = this._ctx.Entry(quantityType).State;
@@ -78,7 +77,6 @@ public sealed class InfrastructureContextTests : InfrastructureTestsBase
     public async Task SaveChangesAsync_OnInsert_GeneratesIdAndTimestampsAndSetsStateToUnchanged()
     {
         // Arrange
-        await this._ctx.Database.MigrateAsync();
         QuantityType quantityType = GetTestQuantityType("Gram", "g");
 
         EntityState stateBeforeInsert = this._ctx.Entry(quantityType).State;
@@ -119,13 +117,12 @@ public sealed class InfrastructureContextTests : InfrastructureTestsBase
     }
 
     [Fact]
-    public async Task SaveChanges_OnUpdate_SetsUpdatedAtAndSetsStateToUnchanged()
+    public void SaveChanges_OnUpdate_SetsUpdatedAtAndSetsStateToUnchanged()
     {
         // Arrange
-        await this._ctx.Database.MigrateAsync();
         Pizza pizza = GetTestPizza("Gorgonzola", null, 12.50m);
         this._ctx.Pizzas.Add(pizza);
-        await this._ctx.SaveChangesAsync();
+        this._ctx.SaveChanges();
 
         EntityState stateBeforeUpdate = this._ctx.Entry(pizza).State;
         int idBeforeUpdate = pizza.Id;
@@ -168,7 +165,6 @@ public sealed class InfrastructureContextTests : InfrastructureTestsBase
     public async Task SaveChangesAsync_OnUpdate_SetsUpdatedAtAndSetsStateToUnchanged()
     {
         // Arrange
-        await this._ctx.Database.MigrateAsync();
         Pizza pizza = GetTestPizza("Gorgonzola", null, 12.50m);
         this._ctx.Pizzas.Add(pizza);
         await this._ctx.SaveChangesAsync();
@@ -211,10 +207,9 @@ public sealed class InfrastructureContextTests : InfrastructureTestsBase
     }
 
     [Fact]
-    public async Task SaveChanges_WithFalse_OnInsert_SetsTimestampsButKeepsStateAsAdded()
+    public void SaveChanges_WithFalse_OnInsert_SetsTimestampsButKeepsStateAsAdded()
     {
-        // Arrange                                                                                                                                                                                                                                                                                                                                                                                                                  
-        await this._ctx.Database.MigrateAsync();
+        // Arrange                                 
         QuantityType quantityType = GetTestQuantityType("Gram", "g");
 
         EntityState stateBeforeInsert = this._ctx.Entry(quantityType).State;
@@ -258,8 +253,7 @@ public sealed class InfrastructureContextTests : InfrastructureTestsBase
     [Fact]
     public async Task SaveChangesAsync_WithFalse_OnInsert_SetsTimestampsButKeepsStateAsAdded()
     {
-        // Arrange                                                                                                                                                                                                                                                                                                                                                                                                                  
-        await this._ctx.Database.MigrateAsync();
+        // Arrange                                    
         QuantityType quantityType = GetTestQuantityType("Gram", "g");
 
         EntityState stateBeforeInsert = this._ctx.Entry(quantityType).State;
@@ -301,13 +295,12 @@ public sealed class InfrastructureContextTests : InfrastructureTestsBase
     }
 
     [Fact]
-    public async Task SaveChanges_WithFalse_OnUpdate_SetsUpdatedAtButKeepsStateAsModified()
+    public void SaveChanges_WithFalse_OnUpdate_SetsUpdatedAtButKeepsStateAsModified()
     {
-        // Arrange                                                                                                                                                         
-        await this._ctx.Database.MigrateAsync();
+        // Arrange                                 
         Pizza pizza = GetTestPizza("Gorgonzola", null, 12.50m);
         this._ctx.Pizzas.Add(pizza);
-        await this._ctx.SaveChangesAsync();
+        this._ctx.SaveChanges();
 
         EntityState stateBeforeUpdate = this._ctx.Entry(pizza).State;
         int idBeforeUpdate = pizza.Id;
@@ -349,8 +342,7 @@ public sealed class InfrastructureContextTests : InfrastructureTestsBase
     [Fact]
     public async Task SaveChangesAsync_WithFalse_OnUpdate_SetsUpdatedAtButKeepsStateAsModified()
     {
-        // Arrange                                                                                                                                                         
-        await this._ctx.Database.MigrateAsync();
+        // Arrange                                  
         Pizza pizza = GetTestPizza("Gorgonzola", null, 12.50m);
         this._ctx.Pizzas.Add(pizza);
         await this._ctx.SaveChangesAsync();
@@ -393,10 +385,9 @@ public sealed class InfrastructureContextTests : InfrastructureTestsBase
     }
 
     [Fact]
-    public async Task SaveChanges_WithTrue_OnInsert_SameAsWithoutParameters()
+    public void SaveChanges_WithTrue_OnInsert_SameAsWithoutParameters()
     {
-        // Arrange                                                                                                                                                                                                                                                                                                                                                                                                                  
-        await this._ctx.Database.MigrateAsync();
+        // Arrange                                 
         QuantityType quantityType = GetTestQuantityType("Gram", "g");
 
         EntityState stateBeforeInsert = this._ctx.Entry(quantityType).State;
@@ -439,8 +430,7 @@ public sealed class InfrastructureContextTests : InfrastructureTestsBase
     [Fact]
     public async Task SaveChangesAsync_WithTrue_OnInsert_SameAsWithoutParameters()
     {
-        // Arrange                                                                                                                                                                                                                                                                                                                                                                                                                  
-        await this._ctx.Database.MigrateAsync();
+        // Arrange                                
         QuantityType quantityType = GetTestQuantityType("Gram", "g");
 
         EntityState stateBeforeInsert = this._ctx.Entry(quantityType).State;
@@ -481,13 +471,12 @@ public sealed class InfrastructureContextTests : InfrastructureTestsBase
     }
 
     [Fact]
-    public async Task SaveChanges_WithTrue_OnUpdate_SameAsWithoutParameters()
+    public void SaveChanges_WithTrue_OnUpdate_SameAsWithoutParameters()
     {
         // Arrange
-        await this._ctx.Database.MigrateAsync();
         Pizza pizza = GetTestPizza("Gorgonzola", null, 12.50m);
         this._ctx.Pizzas.Add(pizza);
-        await this._ctx.SaveChangesAsync();
+        this._ctx.SaveChanges();
 
         EntityState stateBeforeUpdate = this._ctx.Entry(pizza).State;
         int idBeforeUpdate = pizza.Id;
@@ -530,7 +519,6 @@ public sealed class InfrastructureContextTests : InfrastructureTestsBase
     public async Task SaveChangesAsync_WithTrue_OnUpdate_SameAsWithoutParameters()
     {
         // Arrange
-        await this._ctx.Database.MigrateAsync();
         Pizza pizza = GetTestPizza("Gorgonzola", null, 12.50m);
         this._ctx.Pizzas.Add(pizza);
         await this._ctx.SaveChangesAsync();

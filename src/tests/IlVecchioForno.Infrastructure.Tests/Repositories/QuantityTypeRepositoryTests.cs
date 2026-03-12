@@ -2,7 +2,7 @@ using IlVecchioForno.Application.Gateways.Persistence;
 
 namespace IlVecchioForno.Infrastructure.Tests.Repositories;
 
-public sealed class QuantityTypeRepositoryTests : InfrastructureTestsBase
+public sealed class QuantityTypeRepositoryTests : EmptyInfrastructureTestsBase
 {
     private readonly IQuantityTypeRepository _repository;
 

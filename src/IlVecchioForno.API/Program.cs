@@ -48,7 +48,7 @@ public static class Program
 
             await app.RunAsync();
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not HostAbortedException and not OperationCanceledException)
         {
             Log.Fatal(ex, "Application terminated unexpectedly.");
         }

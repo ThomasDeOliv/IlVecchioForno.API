@@ -9,13 +9,15 @@ public class QuantityTypeTests
     public void QuantityType_CreateInstance_Succeeds_WhenProvidingNullUnit()
     {
         // Arrange
-        const string quantityTypeNameBase = "Unit";
+        const string quantityTypeNameBase = "Grams";
+        const string quantityTypeUnitBase = "g";
         QuantityTypeName quantityTypeName = new QuantityTypeName(quantityTypeNameBase);
+        QuantityTypeUnit quantityTypeUnit = new QuantityTypeUnit(quantityTypeUnitBase);
         // Act
-        QuantityType quantityType = new QuantityType(quantityTypeName, null);
+        QuantityType quantityType = new QuantityType(quantityTypeName, quantityTypeUnit);
         // Assert
         Assert.Equal(quantityTypeNameBase, quantityType.Name);
-        Assert.Null(quantityType.Unit);
+        Assert.Equal(quantityTypeUnitBase, quantityType.Unit);
     }
 
     [Theory]

@@ -51,7 +51,7 @@ public class PizzaIngredientTests
         // Act
         PizzaIngredient pizzaIngredient = new PizzaIngredient(pizzaIngredientQuantity, ingredient);
         // Assert
-        Assert.Equal(quantity, pizzaIngredient.Quantity);
+        Assert.Equal(quantity, (decimal)pizzaIngredient.Quantity);
     }
 
     [Theory]

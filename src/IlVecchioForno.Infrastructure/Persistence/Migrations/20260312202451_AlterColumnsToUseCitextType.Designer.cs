@@ -3,6 +3,7 @@ using System;
 using IlVecchioForno.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IlVecchioForno.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(IlVecchioFornoDbContext))]
-    partial class IlVecchioFornoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260312202451_AlterColumnsToUseCitextType")]
+    partial class AlterColumnsToUseCitextType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,10 +59,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("QuantityTypeId");
 
-                    b.ToTable("ingredients", "pizzas_schema", t =>
-                        {
-                            t.HasCheckConstraint("ck_ingredients_name_maxlength", "LENGTH(name) >= 1 AND LENGTH(name) <= 256");
-                        });
+                    b.ToTable("ingredients", "pizzas_schema");
                 });
 
             modelBuilder.Entity("IlVecchioForno.Domain.PizzaIngredients.PizzaIngredient", b =>
@@ -131,12 +131,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_pizzas");
 
-                    b.ToTable("pizzas", "pizzas_schema", t =>
-                        {
-                            t.HasCheckConstraint("ck_pizzas_description_maxlength", "description IS NULL OR (LENGTH(description) >= 1 AND LENGTH(description) <= 1024)");
-
-                            t.HasCheckConstraint("ck_pizzas_name_maxlength", "LENGTH(name) >= 1 AND LENGTH(name) <= 256");
-                        });
+                    b.ToTable("pizzas", "pizzas_schema");
                 });
 
             modelBuilder.Entity("IlVecchioForno.Domain.QuantityTypes.QuantityType", b =>
@@ -171,12 +166,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_quantity_types");
 
-                    b.ToTable("quantity_types", "pizzas_schema", t =>
-                        {
-                            t.HasCheckConstraint("ck_quantity_types_name_maxlength", "LENGTH(name) >= 1 AND LENGTH(name) <= 256");
-
-                            t.HasCheckConstraint("ck_quantity_types_unit_maxlength", "LENGTH(unit) >= 1 AND LENGTH(unit) <= 4");
-                        });
+                    b.ToTable("quantity_types", "pizzas_schema");
                 });
 
             modelBuilder.Entity("IlVecchioForno.Domain.Ingredients.Ingredient", b =>

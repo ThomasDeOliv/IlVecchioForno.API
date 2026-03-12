@@ -36,7 +36,7 @@ public sealed class DbContextFixture : IAsyncLifetime
         return this.CreateTestDbContext(dbName, TimeProvider.System);
     }
 
-    public IlVecchioFornoDbContext CreateTestDbContext(string dbName, TimeProvider timeProvider)
+    private IlVecchioFornoDbContext CreateTestDbContext(string dbName, TimeProvider timeProvider)
     {
         string containerConnectionString = this._container.GetConnectionString();
 

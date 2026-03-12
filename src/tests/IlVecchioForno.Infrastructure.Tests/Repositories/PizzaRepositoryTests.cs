@@ -2,7 +2,7 @@ using IlVecchioForno.Application.Gateways.Persistence;
 
 namespace IlVecchioForno.Infrastructure.Tests.Repositories;
 
-public sealed class PizzaRepositoryTests : InfrastructureTestsBase
+public sealed class PizzaRepositoryTests : EmptyInfrastructureTestsBase
 {
     private readonly IPizzaRepository _repository;
 

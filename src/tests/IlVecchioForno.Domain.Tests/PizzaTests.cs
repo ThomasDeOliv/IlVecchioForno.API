@@ -19,7 +19,6 @@ public class PizzaTests
     {
         List<QuantityType> quantityTypes = new List<QuantityType>
         {
-            new QuantityType(new QuantityTypeName("Unit"), null),
             new QuantityType(new QuantityTypeName("Milligrams"), new QuantityTypeUnit("mg")),
             new QuantityType(new QuantityTypeName("Grams"), new QuantityTypeUnit("g")),
             new QuantityType(new QuantityTypeName("Kilograms"), new QuantityTypeUnit("kg")),
@@ -70,23 +69,47 @@ public class PizzaTests
     public static TheoryData<string, string, decimal> ValidPizzasWithDescription =>
         new TheoryData<string, string, decimal>
         {
-            { "Margherita", "Tomato sauce, mozzarella, basil.", 9.50m },
-            { "Marinara", "Tomato sauce, garlic, oregano.", 8.00m },
-            { "Pepperoni", "Tomato sauce, mozzarella, pepperoni.", 12.90m },
-            { "Diavola", "Spicy salami, chili, mozzarella", 13.50m },
-            { "Quattro Formaggi", "Mozzarella, gorgonzola, parmesan, emmental.", 14.50m },
-            { "Prosciutto", "Ham, mozzarella, tomato sauce.", 12.00m },
-            { "Funghi", "Mushrooms, mozzarella, tomato sauce.", 11.00m },
-            { "Capricciosa", "Ham, mushrooms, artichokes, olives.", 13.90m },
-            { "Vegetariana", "Seasonal vegetables, mozzarella.", 12.50m },
-            { "Truffle", "Cream base, mushrooms, truffle oil.", 16.90m }
+            {
+                "Margherita", "Tomato sauce, mozzarella, basil.", 9.50m
+            },
+            {
+                "Marinara", "Tomato sauce, garlic, oregano.", 8.00m
+            },
+            {
+                "Pepperoni", "Tomato sauce, mozzarella, pepperoni.", 12.90m
+            },
+            {
+                "Diavola", "Spicy salami, chili, mozzarella", 13.50m
+            },
+            {
+                "Quattro Formaggi", "Mozzarella, gorgonzola, parmesan, emmental.", 14.50m
+            },
+            {
+                "Prosciutto", "Ham, mozzarella, tomato sauce.", 12.00m
+            },
+            {
+                "Funghi", "Mushrooms, mozzarella, tomato sauce.", 11.00m
+            },
+            {
+                "Capricciosa", "Ham, mushrooms, artichokes, olives.", 13.90m
+            },
+            {
+                "Vegetariana", "Seasonal vegetables, mozzarella.", 12.50m
+            },
+            {
+                "Truffle", "Cream base, mushrooms, truffle oil.", 16.90m
+            }
         };
 
     public static TheoryData<string, decimal> ValidPizzasWithoutDescription =>
         new TheoryData<string, decimal>
         {
-            { "Gorgonzola", 12.00m },
-            { "Special of the day", 10.00m }
+            {
+                "Gorgonzola", 12.00m
+            },
+            {
+                "Special of the day", 10.00m
+            }
         };
 
     public static TheoryData<decimal> ValidPrices =>
@@ -143,7 +166,7 @@ public class PizzaTests
         Pizza pizza = CreatePizza(name, description, price);
         // Assert
         Assert.Equal(name, pizza.Name);
-        Assert.Equal(price, pizza.Price);
+        Assert.Equal(price, (decimal)pizza.Price);
         Assert.Null(pizza.ArchivedAt);
         Assert.Empty(pizza.PizzaIngredients);
         Assert.NotNull(pizza.Description);
@@ -158,7 +181,7 @@ public class PizzaTests
         Pizza pizza = CreatePizza(name, null, price);
         // Assert
         Assert.Equal(name, pizza.Name);
-        Assert.Equal(price, pizza.Price);
+        Assert.Equal(price, (decimal)pizza.Price);
         Assert.Null(pizza.ArchivedAt);
         Assert.Empty(pizza.PizzaIngredients);
         Assert.Null(pizza.Description);
@@ -181,7 +204,7 @@ public class PizzaTests
         Assert.Equal(name, pizza.Name);
         Assert.NotNull(pizza.Description);
         Assert.Equal(pizzaDescriptionBase, pizza.Description);
-        Assert.Equal(pizzaPriceBase, pizza.Price);
+        Assert.Equal(pizzaPriceBase, (decimal)pizza.Price);
         Assert.Null(pizza.ArchivedAt);
         Assert.Empty(pizza.PizzaIngredients);
     }
@@ -199,7 +222,7 @@ public class PizzaTests
         Assert.Equal(pizzaNameBase, pizza.Name);
         Assert.NotNull(pizza.Description);
         Assert.Equal(description, pizza.Description);
-        Assert.Equal(pizzaPriceBase, pizza.Price);
+        Assert.Equal(pizzaPriceBase, (decimal)pizza.Price);
         Assert.Null(pizza.ArchivedAt);
         Assert.Empty(pizza.PizzaIngredients);
     }
@@ -217,7 +240,7 @@ public class PizzaTests
         Assert.Equal(pizzaNameBase, pizza.Name);
         Assert.NotNull(pizza.Description);
         Assert.Equal(pizzaDescriptionBase, pizza.Description);
-        Assert.Equal(price, pizza.Price);
+        Assert.Equal(price, (decimal)pizza.Price);
         Assert.Null(pizza.ArchivedAt);
         Assert.Empty(pizza.PizzaIngredients);
     }
@@ -233,7 +256,7 @@ public class PizzaTests
         Assert.Equal(pizzaNameBase, pizza.Name);
         Assert.NotNull(pizza.Description);
         Assert.Equal(pizzaDescriptionBase, pizza.Description);
-        Assert.Equal(pizzaPriceBase, pizza.Price);
+        Assert.Equal(pizzaPriceBase, (decimal)pizza.Price);
         Assert.NotNull(pizza.ArchivedAt);
         Assert.Empty(pizza.PizzaIngredients);
     }
@@ -251,7 +274,7 @@ public class PizzaTests
         Assert.Equal(pizzaNameBase, pizza.Name);
         Assert.NotNull(pizza.Description);
         Assert.Equal(pizzaDescriptionBase, pizza.Description);
-        Assert.Equal(pizzaPriceBase, pizza.Price);
+        Assert.Equal(pizzaPriceBase, (decimal)pizza.Price);
         Assert.Null(pizza.ArchivedAt);
         Assert.Empty(pizza.PizzaIngredients);
         Assert.NotNull(archivedValue);
@@ -281,7 +304,7 @@ public class PizzaTests
         Assert.Equal(pizzaNameBase, pizza.Name);
         Assert.NotNull(pizza.Description);
         Assert.Equal(pizzaDescriptionBase, pizza.Description);
-        Assert.Equal(pizzaPriceBase, pizza.Price);
+        Assert.Equal(pizzaPriceBase, (decimal)pizza.Price);
         Assert.Null(pizza.ArchivedAt);
         Assert.Equal(0, beforeInsertIngredientsCount);
         Assert.Equal(newPizzaIngredients.Count, afterInsertIngredientsCount);

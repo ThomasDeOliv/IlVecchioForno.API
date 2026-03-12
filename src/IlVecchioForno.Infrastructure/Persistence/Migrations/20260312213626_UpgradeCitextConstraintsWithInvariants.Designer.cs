@@ -3,6 +3,7 @@ using System;
 using IlVecchioForno.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IlVecchioForno.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(IlVecchioFornoDbContext))]
-    partial class IlVecchioFornoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260312213626_UpgradeCitextConstraintsWithInvariants")]
+    partial class UpgradeCitextConstraintsWithInvariants
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

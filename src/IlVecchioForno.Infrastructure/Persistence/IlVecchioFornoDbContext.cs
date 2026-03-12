@@ -27,7 +27,8 @@ public class IlVecchioFornoDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        modelBuilder.ApplySchemaConfiguration("pizzas_schema");
+        modelBuilder.ApplyExtensionsConfiguration();
+        modelBuilder.ApplySchemasConfiguration();
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(IlVecchioFornoDbContext).Assembly);
     }
 
