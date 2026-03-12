@@ -53,7 +53,7 @@ internal sealed class
             return;
         }
 
-        ListQuerySpec<ArchivedPizzasSorter> querySpec = new ListQuerySpec<ArchivedPizzasSorter>(
+        ListQuerySpec<PizzasSorter> querySpec = new ListQuerySpec<PizzasSorter>(
             query.Page,
             query.PageSize,
             query.Sorter,

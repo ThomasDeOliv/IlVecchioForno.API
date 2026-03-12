@@ -6,7 +6,7 @@ namespace IlVecchioForno.Application.UseCases.Pizzas.ListArchivedPizzas;
 public sealed record ListArchivedPizzasQuery(
     int Page,
     int PageSize,
-    ArchivedPizzasSorter Sorter,
+    PizzasSorter Sorter,
     bool Descending,
     string? Search,
     decimal? MinPrice,

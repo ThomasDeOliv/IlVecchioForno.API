@@ -12,7 +12,7 @@ public interface IPizzaRepository
     );
 
     Task<IReadOnlyCollection<Pizza>> ListActiveAsync(
-        ListQuerySpec<ActivePizzasSorter> query,
+        ListQuerySpec<PizzasSorter> query,
         CancellationToken cancellationToken = default
     );
 
@@ -22,7 +22,7 @@ public interface IPizzaRepository
     );
 
     Task<IReadOnlyCollection<Pizza>> ListArchivedAsync(
-        ListQuerySpec<ArchivedPizzasSorter> query,
+        ListQuerySpec<PizzasSorter> query,
         CancellationToken cancellationToken = default
     );
 

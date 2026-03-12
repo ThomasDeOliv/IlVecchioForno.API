@@ -36,7 +36,7 @@ public sealed class PizzasController : ApiControllerBase
     public async Task<ActionResult> GetActivePizzasAsync(
         [FromQuery] int page = QueryDefaultValues.PageNumberMin,
         [FromQuery] int pageSize = QueryDefaultValues.PageSizeDefault,
-        [FromQuery] ActivePizzasSorter sorter = ActivePizzasSorter.Id,
+        [FromQuery] PizzasSorter sorter = PizzasSorter.Id,
         [FromQuery] bool descending = false,
         [FromQuery] string? search = null,
         [FromQuery] decimal? minPrice = null,
@@ -83,7 +83,7 @@ public sealed class PizzasController : ApiControllerBase
     public async Task<ActionResult> GetArchivedPizzasAsync(
         [FromQuery] int page = QueryDefaultValues.PageNumberMin,
         [FromQuery] int pageSize = QueryDefaultValues.PageSizeDefault,
-        [FromQuery] ArchivedPizzasSorter sorter = ArchivedPizzasSorter.Id,
+        [FromQuery] PizzasSorter sorter = PizzasSorter.Id,
         [FromQuery] bool descending = false,
         [FromQuery] string? search = null,
         [FromQuery] decimal? minPrice = null,

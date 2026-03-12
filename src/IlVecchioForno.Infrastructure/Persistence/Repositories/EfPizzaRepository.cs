@@ -11,25 +11,22 @@ namespace IlVecchioForno.Infrastructure.Persistence.Repositories;
 
 internal sealed class EfPizzaRepository : IPizzaRepository
 {
-    private readonly ISorterService<Pizza, ActivePizzasSorter> _activeSorterService;
-    private readonly ISorterService<Pizza, ArchivedPizzasSorter> _archivedSorterService;
     private readonly IlVecchioFornoDbContext _ctx;
     private readonly IFilterService<Pizza> _filterService;
     private readonly IPaginationService<Pizza> _paginationService;
+    private readonly ISorterService<Pizza, PizzasSorter> _sorterService;
 
     public EfPizzaRepository(
         IlVecchioFornoDbContext ctx,
         IFilterService<Pizza> filterService,
         IPaginationService<Pizza> paginationService,
-        ISorterService<Pizza, ActivePizzasSorter> activeSorterService,
-        ISorterService<Pizza, ArchivedPizzasSorter> archivedSorterService
+        ISorterService<Pizza, PizzasSorter> sorterService
     )
     {
         this._ctx = ctx;
         this._filterService = filterService;
         this._paginationService = paginationService;
-        this._activeSorterService = activeSorterService;
-        this._archivedSorterService = archivedSorterService;
+        this._sorterService = sorterService;
     }
 
     public async Task<Pizza?> FindAsync(
@@ -79,7 +76,7 @@ internal sealed class EfPizzaRepository : IPizzaRepository
     }
 
     public async Task<IReadOnlyCollection<Pizza>> ListActiveAsync(
-        ListQuerySpec<ActivePizzasSorter> querySpec,
+        ListQuerySpec<PizzasSorter> querySpec,
         CancellationToken cancellationToken = default
     )
     {
@@ -89,7 +86,7 @@ internal sealed class EfPizzaRepository : IPizzaRepository
             .Where(p => !p.ArchivedAt.HasValue);
 
         queryable = this._filterService.Filter(queryable, querySpec.Filters);
-        queryable = this._activeSorterService.OrderBy(queryable, querySpec.Sorter, querySpec.Descending);
+        queryable = this._sorterService.OrderBy(queryable, querySpec.Sorter, querySpec.Descending);
         queryable = this._paginationService.Paginate(queryable, querySpec.Page, querySpec.PageSize);
 
         return await queryable
@@ -97,7 +94,7 @@ internal sealed class EfPizzaRepository : IPizzaRepository
     }
 
     public async Task<IReadOnlyCollection<Pizza>> ListArchivedAsync(
-        ListQuerySpec<ArchivedPizzasSorter> querySpec,
+        ListQuerySpec<PizzasSorter> querySpec,
         CancellationToken cancellationToken = default
     )
     {
@@ -107,7 +104,7 @@ internal sealed class EfPizzaRepository : IPizzaRepository
             .Where(p => p.ArchivedAt.HasValue);
 
         queryable = this._filterService.Filter(queryable, querySpec.Filters);
-        queryable = this._archivedSorterService.OrderBy(queryable, querySpec.Sorter, querySpec.Descending);
+        queryable = this._sorterService.OrderBy(queryable, querySpec.Sorter, querySpec.Descending);
         queryable = this._paginationService.Paginate(queryable, querySpec.Page, querySpec.PageSize);
 
         return await queryable

@@ -34,8 +34,7 @@ public static class InfrastructureStartup
             .AddScoped<IFilterService<Pizza>, PizzaFilterService>()
             .AddScoped<IFilterService<QuantityType>, QuantityTypeFilterService>()
             .AddScoped<ISorterService<Ingredient, IngredientsSorter>, IngredientSorterService>()
-            .AddScoped<ISorterService<Pizza, ActivePizzasSorter>, ActivePizzaSorterService>()
-            .AddScoped<ISorterService<Pizza, ArchivedPizzasSorter>, ArchivedPizzaSorterService>()
+            .AddScoped<ISorterService<Pizza, PizzasSorter>, PizzaSorterService>()
             .AddScoped<ISorterService<QuantityType, QuantityTypesSorter>, QuantityTypeSorterService>()
             .AddScoped(typeof(IPaginationService<>), typeof(PaginationService<>));
 

@@ -1,6 +1,6 @@
 namespace IlVecchioForno.Application.Common.Queries.Sorters;
 
-public enum ArchivedPizzasSorter
+public enum PizzasSorter
 {
     Id = 0,
     Name,
