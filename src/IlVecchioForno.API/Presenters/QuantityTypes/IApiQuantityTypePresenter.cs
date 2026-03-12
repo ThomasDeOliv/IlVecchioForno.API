@@ -1,5 +1,5 @@
 using IlVecchioForno.API.Controllers;
-using IlVecchioForno.Application.Gateways.Presentation;
+using IlVecchioForno.Application.UseCases.QuantityTypes.Presenters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IlVecchioForno.API.Presenters.QuantityTypes;
