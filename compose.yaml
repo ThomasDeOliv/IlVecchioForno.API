@@ -1,0 +1,35 @@
+name: ilvecchioforno
+
+services:
+  ilvecchioforno_api:
+    container_name: ilvecchioforno_api
+    image: ilvecchioforno.api
+    build:
+      context: .
+      dockerfile: src/IlVecchioForno.API/Dockerfile
+    restart: always
+    depends_on:
+      - ilvecchioforno_db
+    networks:
+      - ilvecchioforno_net
+
+  ilvecchioforno_db:
+    container_name: ilvecchioforno_db
+    image: postgres:18.1
+    restart: always
+    volumes:
+      - ilvecchioforno_db_vol:/var/lib/postgresql:Z
+    networks:
+      - ilvecchioforno_net
+
+networks:
+  ilvecchioforno_net:
+    driver: bridge
+
+volumes:
+  ilvecchioforno_db_vol:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${USER}/Databases/PostgreSQL

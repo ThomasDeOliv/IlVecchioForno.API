@@ -1,0 +1,18 @@
+services:
+  ilvecchioforno_api:
+    env_file:
+      - staging.env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Staging
+      - ConnectionStrings__IlVecchioFornoContext=Host=ilvecchioforno_db;Port=5432;Username=${DB_USER};Password=${DB_PASSWORD};Database=${DB_NAME}
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+
+  ilvecchioforno_db:
+    env_file:
+      - staging.env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}

@@ -7,10 +7,11 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+COPY ["Directory.Packages.props", "."]
 COPY ["src/IlVecchioForno.API/IlVecchioForno.API.csproj", "src/IlVecchioForno.API/"]
-COPY ["src/IlVecchioForno.Domain/IlVecchioForno.Domain.csproj", "src/IlVecchioForno.Domain/"]
 COPY ["src/IlVecchioForno.Infrastructure/IlVecchioForno.Infrastructure.csproj", "src/IlVecchioForno.Infrastructure/"]
 COPY ["src/IlVecchioForno.Application/IlVecchioForno.Application.csproj", "src/IlVecchioForno.Application/"]
+COPY ["src/IlVecchioForno.Domain/IlVecchioForno.Domain.csproj", "src/IlVecchioForno.Domain/"]
 RUN dotnet restore "src/IlVecchioForno.API/IlVecchioForno.API.csproj"
 COPY . .
 WORKDIR "/src/src/IlVecchioForno.API"
