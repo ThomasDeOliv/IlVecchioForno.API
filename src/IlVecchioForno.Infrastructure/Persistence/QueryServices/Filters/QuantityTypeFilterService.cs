@@ -1,6 +1,7 @@
 using IlVecchioForno.Application.Gateways.Persistence.Queries.FilterTypes;
 using IlVecchioForno.Domain.QuantityTypes;
 using IlVecchioForno.Infrastructure.Common.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace IlVecchioForno.Infrastructure.Persistence.QueryServices.Filters;
 
@@ -12,8 +13,8 @@ internal sealed class QuantityTypeFilterService : IFilterService<QuantityType>
             {
                 SearchFilterType searchFilter when !string.IsNullOrWhiteSpace(searchFilter.Search) =>
                     current.Where(qT =>
-                        ((string)qT.Name).Contains(searchFilter.Search)
-                        || ((string)qT.Unit).Contains(searchFilter.Search)
+                        EF.Functions.ILike(qT.Name, $"%{searchFilter.Search}%")
+                        || EF.Functions.ILike(qT.Unit, $"%{searchFilter.Search}%")
                     ),
 
                 SearchFilterType searchFilter when string.IsNullOrEmpty(searchFilter.Search) => current,

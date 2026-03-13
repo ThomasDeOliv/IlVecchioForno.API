@@ -5,6 +5,7 @@ using IlVecchioForno.Domain.QuantityTypes;
 using IlVecchioForno.Infrastructure.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Logging;
 
 namespace IlVecchioForno.Infrastructure.Persistence;
 
@@ -75,5 +76,10 @@ public class IlVecchioFornoDbContext : DbContext
     {
         this.ApplyEntityAudit();
         return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
     }
 }

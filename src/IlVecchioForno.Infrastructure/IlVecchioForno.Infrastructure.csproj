@@ -21,8 +21,4 @@
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Persistence\QueryServices\"/>
-    </ItemGroup>
-
 </Project>

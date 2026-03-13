@@ -2,7 +2,7 @@ using Xunit.Abstractions;
 
 namespace IlVecchioForno.Infrastructure.Tests.Utilities.Models;
 
-public record ColumnInfo : IXunitSerializable
+public sealed record ColumnInfo : IXunitSerializable
 {
     public ColumnInfo()
     {

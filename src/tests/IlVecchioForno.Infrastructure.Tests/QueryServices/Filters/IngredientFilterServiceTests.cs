@@ -23,6 +23,15 @@ public sealed class IngredientFilterServiceTests : SeededInfrastructureTestsBase
             },
             {
                 "Sa", new List<Ingredient>([DbMockedTestsData.TestsIngredients[3], DbMockedTestsData.TestsIngredients[5]])
+            },
+            {
+                "sa", new List<Ingredient>([DbMockedTestsData.TestsIngredients[3], DbMockedTestsData.TestsIngredients[5]])
+            },
+            {
+                "SA", new List<Ingredient>([DbMockedTestsData.TestsIngredients[3], DbMockedTestsData.TestsIngredients[5]])
+            },
+            {
+                "sA", new List<Ingredient>([DbMockedTestsData.TestsIngredients[3], DbMockedTestsData.TestsIngredients[5]])
             }
         };
 

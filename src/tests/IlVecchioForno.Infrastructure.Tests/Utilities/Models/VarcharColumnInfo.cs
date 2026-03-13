@@ -1,3 +1,3 @@
 namespace IlVecchioForno.Infrastructure.Tests.Utilities.Models;
 
-public record CheckConstraintColumnInfo(string CheckConstaint);
+public sealed record VarcharColumnInfo(int MaxLength);

@@ -10,15 +10,11 @@ internal class PizzasConfiguration : EntityConfigurationBase<Pizza>
     {
         base.Configure(builder);
 
-        builder.ToTable("pizzas", tableBuilder =>
-        {
-            tableBuilder.HasCheckConstraint("ck_pizzas_name_maxlength", $"LENGTH(name) >= {PizzaInvariant.NameMinLength} AND LENGTH(name) <= {PizzaInvariant.NameMaxLength}");
-            tableBuilder.HasCheckConstraint("ck_pizzas_description_maxlength", $"description IS NULL OR (LENGTH(description) >= {PizzaInvariant.DescriptionMinLength} AND LENGTH(description) <= {PizzaInvariant.DescriptionMaxLength})");
-        });
+        builder.ToTable("pizzas");
 
         builder.Property(e => e.Id)
             .HasColumnName("id")
-            .HasColumnType("INTEGER")
+            .HasColumnType("integer")
             .ValueGeneratedOnAdd()
             .UseIdentityByDefaultColumn();
 
@@ -28,8 +24,7 @@ internal class PizzasConfiguration : EntityConfigurationBase<Pizza>
                 value => new PizzaName(value)
             )
             .HasColumnName("name")
-            .HasColumnType("CITEXT")
-            .HasMaxLength(PizzaInvariant.NameMaxLength)
+            .HasColumnType($"character varying({PizzaInvariant.NameMaxLength})")
             .IsRequired();
 
         builder.Property(e => e.Description)
@@ -38,13 +33,12 @@ internal class PizzasConfiguration : EntityConfigurationBase<Pizza>
                 value => !string.IsNullOrEmpty(value) ? new PizzaDescription(value) : null
             )
             .HasColumnName("description")
-            .HasColumnType("CITEXT")
-            .HasMaxLength(PizzaInvariant.DescriptionMaxLength)
+            .HasColumnType($"character varying({PizzaInvariant.DescriptionMaxLength})")
             .IsRequired(false);
 
         builder.Property(e => e.ArchivedAt)
             .HasColumnName("archived_at")
-            .HasColumnType("TIMESTAMPTZ")
+            .HasColumnType("timestamptz")
             .IsRequired(false);
 
         builder.Property(e => e.Price)
@@ -53,7 +47,7 @@ internal class PizzasConfiguration : EntityConfigurationBase<Pizza>
                 value => new PizzaPrice(value)
             )
             .HasColumnName("price")
-            .HasColumnType("NUMERIC(6, 2)")
+            .HasColumnType("numeric(6, 2)")
             .IsRequired();
 
         builder.HasKey(e => e.Id)

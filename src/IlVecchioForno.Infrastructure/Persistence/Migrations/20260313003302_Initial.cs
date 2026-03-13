@@ -15,17 +15,20 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
             migrationBuilder.EnsureSchema(
                 name: "pizzas_schema");
 
+            migrationBuilder.AlterDatabase()
+                .Annotation("Npgsql:PostgresExtension:citext", ",,");
+
             migrationBuilder.CreateTable(
                 name: "pizzas",
                 schema: "pizzas_schema",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "INTEGER", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "VARCHAR(256)", nullable: false),
-                    description = table.Column<string>(type: "VARCHAR(1024)", nullable: true),
+                    name = table.Column<string>(type: "character varying(256)", nullable: false),
+                    description = table.Column<string>(type: "character varying(1024)", nullable: true),
                     price = table.Column<decimal>(type: "numeric(6,2)", nullable: false),
-                    archived_at = table.Column<DateTimeOffset>(type: "TIMESTAMPTZ", nullable: true),
+                    archived_at = table.Column<DateTimeOffset>(type: "timestamptz", nullable: true),
                     created_at = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: false),
                     updated_at = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: false)
                 },
@@ -39,10 +42,10 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                 schema: "pizzas_schema",
                 columns: table => new
                 {
-                    id = table.Column<short>(type: "SMALLINT", nullable: false)
+                    id = table.Column<short>(type: "smallint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "VARCHAR(256)", nullable: false),
-                    unit = table.Column<string>(type: "VARCHAR(4)", nullable: false),
+                    name = table.Column<string>(type: "character varying(256)", nullable: false),
+                    unit = table.Column<string>(type: "character varying(4)", nullable: false),
                     created_at = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: false),
                     updated_at = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: false)
                 },
@@ -56,10 +59,10 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                 schema: "pizzas_schema",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "INTEGER", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "VARCHAR(256)", nullable: false),
-                    quantity_type_id = table.Column<short>(type: "SMALLINT", nullable: true),
+                    name = table.Column<string>(type: "character varying(256)", nullable: false),
+                    quantity_type_id = table.Column<short>(type: "smallint", nullable: true),
                     created_at = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: false),
                     updated_at = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: false)
                 },
@@ -80,8 +83,8 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                 schema: "pizzas_schema",
                 columns: table => new
                 {
-                    pizza_id = table.Column<int>(type: "INTEGER", nullable: false),
-                    ingredient_id = table.Column<int>(type: "INTEGER", nullable: false),
+                    pizza_id = table.Column<int>(type: "integer", nullable: false),
+                    ingredient_id = table.Column<int>(type: "integer", nullable: false),
                     quantity = table.Column<decimal>(type: "numeric(9,3)", nullable: false),
                     created_at = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: false),
                     updated_at = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: false)

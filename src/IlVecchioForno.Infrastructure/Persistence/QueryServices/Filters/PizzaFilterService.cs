@@ -1,6 +1,7 @@
 using IlVecchioForno.Application.Gateways.Persistence.Queries.FilterTypes;
 using IlVecchioForno.Domain.Pizzas;
 using IlVecchioForno.Infrastructure.Common.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace IlVecchioForno.Infrastructure.Persistence.QueryServices.Filters;
 
@@ -14,20 +15,20 @@ internal sealed class PizzaFilterService : IFilterService<Pizza>
                     current.Where(p =>
                         (
                             !rangeFilter.Min.HasValue
-                            || (decimal)p.Price >= rangeFilter.Min.Value
+                            || p.Price >= rangeFilter.Min.Value
                         )
                         &&
                         (
                             !rangeFilter.Max.HasValue
-                            || (decimal)p.Price <= rangeFilter.Max.Value
+                            || p.Price <= rangeFilter.Max.Value
                         )
                     ),
 
                 SearchFilterType searchFilter when !string.IsNullOrEmpty(searchFilter.Search) =>
                     current.Where(p =>
-                        ((string)p.Name).Contains(searchFilter.Search)
+                        EF.Functions.ILike(p.Name, $"%{searchFilter.Search}%")
                         || p.Description != null
-                        && ((string)p.Description).Contains(searchFilter.Search)
+                        && EF.Functions.ILike(p.Description, $"%{searchFilter.Search}%")
                     ),
 
                 SearchFilterType searchFilter when string.IsNullOrEmpty(searchFilter.Search) => current,

@@ -28,7 +28,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
@@ -39,12 +39,11 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("CITEXT")
+                        .HasColumnType("character varying(256)")
                         .HasColumnName("name");
 
                     b.Property<short?>("QuantityTypeId")
-                        .HasColumnType("SMALLINT")
+                        .HasColumnType("smallint")
                         .HasColumnName("quantity_type_id");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -56,20 +55,17 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("QuantityTypeId");
 
-                    b.ToTable("ingredients", "pizzas_schema", t =>
-                        {
-                            t.HasCheckConstraint("ck_ingredients_name_maxlength", "LENGTH(name) >= 1 AND LENGTH(name) <= 256");
-                        });
+                    b.ToTable("ingredients", "pizzas_schema");
                 });
 
             modelBuilder.Entity("IlVecchioForno.Domain.PizzaIngredients.PizzaIngredient", b =>
                 {
                     b.Property<int>("PizzaId")
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("integer")
                         .HasColumnName("pizza_id");
 
                     b.Property<int>("IngredientId")
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("integer")
                         .HasColumnName("ingredient_id");
 
                     b.Property<DateTime>("CreatedAt")
@@ -77,7 +73,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                         .HasColumnName("created_at");
 
                     b.Property<decimal>("Quantity")
-                        .HasColumnType("NUMERIC(9, 3)")
+                        .HasColumnType("numeric(9, 3)")
                         .HasColumnName("quantity");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -96,13 +92,13 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTimeOffset?>("ArchivedAt")
-                        .HasColumnType("TIMESTAMPTZ")
+                        .HasColumnType("timestamptz")
                         .HasColumnName("archived_at");
 
                     b.Property<DateTime>("CreatedAt")
@@ -110,18 +106,16 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                         .HasColumnName("created_at");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(1024)
-                        .HasColumnType("CITEXT")
+                        .HasColumnType("character varying(1024)")
                         .HasColumnName("description");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("CITEXT")
+                        .HasColumnType("character varying(256)")
                         .HasColumnName("name");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("NUMERIC(6, 2)")
+                        .HasColumnType("numeric(6, 2)")
                         .HasColumnName("price");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -131,19 +125,14 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_pizzas");
 
-                    b.ToTable("pizzas", "pizzas_schema", t =>
-                        {
-                            t.HasCheckConstraint("ck_pizzas_description_maxlength", "description IS NULL OR (LENGTH(description) >= 1 AND LENGTH(description) <= 1024)");
-
-                            t.HasCheckConstraint("ck_pizzas_name_maxlength", "LENGTH(name) >= 1 AND LENGTH(name) <= 256");
-                        });
+                    b.ToTable("pizzas", "pizzas_schema");
                 });
 
             modelBuilder.Entity("IlVecchioForno.Domain.QuantityTypes.QuantityType", b =>
                 {
                     b.Property<short>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("SMALLINT")
+                        .HasColumnType("smallint")
                         .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<short>("Id"));
@@ -154,14 +143,12 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("CITEXT")
+                        .HasColumnType("character varying(256)")
                         .HasColumnName("name");
 
                     b.Property<string>("Unit")
                         .IsRequired()
-                        .HasMaxLength(4)
-                        .HasColumnType("CITEXT")
+                        .HasColumnType("character varying(4)")
                         .HasColumnName("unit");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -171,12 +158,7 @@ namespace IlVecchioForno.Infrastructure.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_quantity_types");
 
-                    b.ToTable("quantity_types", "pizzas_schema", t =>
-                        {
-                            t.HasCheckConstraint("ck_quantity_types_name_maxlength", "LENGTH(name) >= 1 AND LENGTH(name) <= 256");
-
-                            t.HasCheckConstraint("ck_quantity_types_unit_maxlength", "LENGTH(unit) >= 1 AND LENGTH(unit) <= 4");
-                        });
+                    b.ToTable("quantity_types", "pizzas_schema");
                 });
 
             modelBuilder.Entity("IlVecchioForno.Domain.Ingredients.Ingredient", b =>

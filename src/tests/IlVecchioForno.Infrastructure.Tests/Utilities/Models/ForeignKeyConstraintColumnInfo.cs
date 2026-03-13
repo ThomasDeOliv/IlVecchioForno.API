@@ -1,6 +1,6 @@
 namespace IlVecchioForno.Infrastructure.Tests.Utilities.Models;
 
-public record ForeignKeyConstraintColumnInfo(
+public sealed record ForeignKeyConstraintColumnInfo(
     string ConstraintName,
     string ReferencedTable,
     string ReferencedColumn,

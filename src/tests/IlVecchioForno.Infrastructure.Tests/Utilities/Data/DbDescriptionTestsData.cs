@@ -14,23 +14,23 @@ public static class DbDescriptionTestsData
     public const string IngredientsTable = "ingredients";
     public const string QuantityTypesTable = "quantity_types";
 
-    public static TheoryData<string, string, string> TablesAndRelatedVarcharColumnsLength =>
-        new TheoryData<string, string, string>
+    public static TheoryData<string, string, int> TablesAndRelatedVarcharColumnsLength =>
+        new TheoryData<string, string, int>
         {
             {
-                PizzasTable, "ck_pizzas_name_maxlength", $"((length((name)::text) >= {PizzaInvariant.NameMinLength}) AND (length((name)::text) <= {PizzaInvariant.NameMaxLength}))"
+                PizzasTable, "name", PizzaInvariant.NameMaxLength
             },
             {
-                PizzasTable, "ck_pizzas_description_maxlength", $"((description IS NULL) OR ((length((description)::text) >= {PizzaInvariant.DescriptionMinLength}) AND (length((description)::text) <= {PizzaInvariant.DescriptionMaxLength})))"
+                PizzasTable, "description", PizzaInvariant.DescriptionMaxLength
             },
             {
-                IngredientsTable, "ck_ingredients_name_maxlength", $"((length((name)::text) >= {IngredientInvariant.NameMinLength}) AND (length((name)::text) <= {IngredientInvariant.NameMaxLength}))"
+                IngredientsTable, "name", IngredientInvariant.NameMaxLength
             },
             {
-                QuantityTypesTable, "ck_quantity_types_name_maxlength", $"((length((name)::text) >= {QuantityTypeInvariant.NameMinLength}) AND (length((name)::text) <= {QuantityTypeInvariant.NameMaxLength}))"
+                QuantityTypesTable, "name", QuantityTypeInvariant.NameMaxLength
             },
             {
-                QuantityTypesTable, "ck_quantity_types_unit_maxlength", $"((length((unit)::text) >= {QuantityTypeInvariant.UnitMinLength}) AND (length((unit)::text) <= {QuantityTypeInvariant.UnitMaxLength}))"
+                QuantityTypesTable, "unit", QuantityTypeInvariant.UnitMaxLength
             }
         };
 
@@ -52,8 +52,8 @@ public static class DbDescriptionTestsData
             {
                 PizzasTable, [
                     new ColumnInfo("id", "integer", false),
-                    new ColumnInfo("name", "USER-DEFINED", false),
-                    new ColumnInfo("description", "USER-DEFINED", true),
+                    new ColumnInfo("name", "character varying", false),
+                    new ColumnInfo("description", "character varying", true),
                     new ColumnInfo("price", "numeric", false),
                     new ColumnInfo("archived_at", "timestamp with time zone", true),
                     new ColumnInfo("created_at", "timestamp with time zone", false),
@@ -72,7 +72,7 @@ public static class DbDescriptionTestsData
             {
                 IngredientsTable, [
                     new ColumnInfo("id", "integer", false),
-                    new ColumnInfo("name", "USER-DEFINED", false),
+                    new ColumnInfo("name", "character varying", false),
                     new ColumnInfo("quantity_type_id", "smallint", true),
                     new ColumnInfo("created_at", "timestamp with time zone", false),
                     new ColumnInfo("updated_at", "timestamp with time zone", false)
@@ -81,8 +81,8 @@ public static class DbDescriptionTestsData
             {
                 QuantityTypesTable, [
                     new ColumnInfo("id", "smallint", false),
-                    new ColumnInfo("name", "USER-DEFINED", false),
-                    new ColumnInfo("unit", "USER-DEFINED", false),
+                    new ColumnInfo("name", "character varying", false),
+                    new ColumnInfo("unit", "character varying", false),
                     new ColumnInfo("created_at", "timestamp with time zone", false),
                     new ColumnInfo("updated_at", "timestamp with time zone", false)
                 ]

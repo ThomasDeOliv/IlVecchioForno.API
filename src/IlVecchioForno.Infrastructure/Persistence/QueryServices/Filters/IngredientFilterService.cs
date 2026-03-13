@@ -1,6 +1,7 @@
 using IlVecchioForno.Application.Gateways.Persistence.Queries.FilterTypes;
 using IlVecchioForno.Domain.Ingredients;
 using IlVecchioForno.Infrastructure.Common.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace IlVecchioForno.Infrastructure.Persistence.QueryServices.Filters;
 
@@ -12,7 +13,7 @@ internal sealed class IngredientFilterService : IFilterService<Ingredient>
             {
                 SearchFilterType searchFilter when !string.IsNullOrEmpty(searchFilter.Search) =>
                     current.Where(i =>
-                        ((string)i.Name).Contains(searchFilter.Search)
+                        EF.Functions.ILike(i.Name, $"%{searchFilter.Search}%")
                     ),
 
                 SearchFilterType searchFilter when string.IsNullOrEmpty(searchFilter.Search) => current,

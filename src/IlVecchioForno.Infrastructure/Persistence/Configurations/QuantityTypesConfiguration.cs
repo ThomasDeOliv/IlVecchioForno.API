@@ -10,15 +10,11 @@ internal class QuantityTypesConfiguration : EntityConfigurationBase<QuantityType
     {
         base.Configure(builder);
 
-        builder.ToTable("quantity_types", tableBuilder =>
-        {
-            tableBuilder.HasCheckConstraint("ck_quantity_types_name_maxlength", $"LENGTH(name) >= {QuantityTypeInvariant.NameMinLength} AND LENGTH(name) <= {QuantityTypeInvariant.NameMaxLength}");
-            tableBuilder.HasCheckConstraint("ck_quantity_types_unit_maxlength", $"LENGTH(unit) >= {QuantityTypeInvariant.UnitMinLength} AND LENGTH(unit) <= {QuantityTypeInvariant.UnitMaxLength}");
-        });
+        builder.ToTable("quantity_types");
 
         builder.Property(e => e.Id)
             .HasColumnName("id")
-            .HasColumnType("SMALLINT")
+            .HasColumnType("smallint")
             .ValueGeneratedOnAdd()
             .UseIdentityByDefaultColumn();
 
@@ -28,8 +24,7 @@ internal class QuantityTypesConfiguration : EntityConfigurationBase<QuantityType
                 value => new QuantityTypeName(value)
             )
             .HasColumnName("name")
-            .HasColumnType("CITEXT")
-            .HasMaxLength(QuantityTypeInvariant.NameMaxLength)
+            .HasColumnType($"character varying({QuantityTypeInvariant.NameMaxLength})")
             .IsRequired();
 
         builder.Property(e => e.Unit)
@@ -38,8 +33,7 @@ internal class QuantityTypesConfiguration : EntityConfigurationBase<QuantityType
                 value => new QuantityTypeUnit(value)
             )
             .HasColumnName("unit")
-            .HasColumnType("CITEXT")
-            .HasMaxLength(QuantityTypeInvariant.UnitMaxLength)
+            .HasColumnType($"character varying({QuantityTypeInvariant.UnitMaxLength})")
             .IsRequired();
 
         builder.HasKey(e => e.Id)

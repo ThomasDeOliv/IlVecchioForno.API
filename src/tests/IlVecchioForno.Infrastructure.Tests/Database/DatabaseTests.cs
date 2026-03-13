@@ -99,29 +99,30 @@ public sealed class DatabaseTests : EmptyInfrastructureTestsBase
 
     [Theory]
     [MemberData(nameof(DbDescriptionTestsData.TablesAndRelatedVarcharColumnsLength), MemberType = typeof(DbDescriptionTestsData))]
-    public async Task Table_CitextColumns_HaveExpectedCheckConstraint(
+    public async Task Table_VarcharColumns_HaveExpectedLength(
         string tableName,
-        string constraintName,
-        string expectedCheckConstaint
+        string columnName,
+        int expectedLength
     )
     {
-        // Arrange & Act
-        CheckConstraintColumnInfo? info = await this._ctx.Database
-            .SqlQuery<CheckConstraintColumnInfo>(
+        // Arrange
+        await this._ctx.Database.MigrateAsync();
+        // Act
+        VarcharColumnInfo? info = await this._ctx.Database
+            .SqlQuery<VarcharColumnInfo>(
                 $"""
-                 SELECT cc.check_clause AS "CheckConstaint"
-                 FROM information_schema.check_constraints cc
-                 JOIN information_schema.constraint_column_usage ccu 
-                     ON cc.constraint_name = ccu.constraint_name
-                 WHERE ccu.table_schema = {DbDescriptionTestsData.PizzasDbSchema}
-                     AND ccu.table_name = {tableName}
-                     AND ccu.constraint_name = {constraintName}
+                  SELECT 
+                      character_maximum_length AS "MaxLength"
+                  FROM information_schema.columns
+                  WHERE table_schema = {DbDescriptionTestsData.PizzasDbSchema}
+                      AND table_name = {tableName}
+                      AND column_name = {columnName}
                  """
             )
             .SingleOrDefaultAsync();
         // Assert
         Assert.NotNull(info);
-        Assert.Equal(expectedCheckConstaint, info.CheckConstaint);
+        Assert.Equal(expectedLength, info.MaxLength);
     }
 
     [Theory]
