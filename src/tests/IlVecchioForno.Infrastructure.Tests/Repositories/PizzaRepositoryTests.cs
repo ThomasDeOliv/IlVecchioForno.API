@@ -143,7 +143,7 @@ public sealed class PizzaRepositoryTests : SeededInfrastructureTestsBase
         // Arrange
         IPizzaRepository repository = this.CreateNewRepository();
         // Act
-        Pizza? result = await repository.FindAsync(1);
+        Pizza? result = await repository.FindAsync(1, TestContext.Current.CancellationToken);
         // Assert
         Assert.NotNull(result);
         Assert.Equal(DbMockedTestsData.TestsPizzas[0], result);

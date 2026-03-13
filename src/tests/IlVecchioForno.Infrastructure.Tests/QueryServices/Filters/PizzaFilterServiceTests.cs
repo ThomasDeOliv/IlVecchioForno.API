@@ -116,7 +116,7 @@ public sealed class PizzaFilterServiceTests : SeededInfrastructureTestsBase
                 new SearchFilterType(search)
             }
         );
-        List<Pizza> collection = await queryResult.ToListAsync();
+        List<Pizza> collection = await queryResult.ToListAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(expected.Count, collection.Count);
         Assert.Equivalent(expected, collection);
@@ -139,7 +139,7 @@ public sealed class PizzaFilterServiceTests : SeededInfrastructureTestsBase
                 new RangeFilterType<decimal>(min, max)
             }
         );
-        List<Pizza> collection = await queryResult.ToListAsync();
+        List<Pizza> collection = await queryResult.ToListAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(expected.Count, collection.Count);
         Assert.Equivalent(expected, collection);

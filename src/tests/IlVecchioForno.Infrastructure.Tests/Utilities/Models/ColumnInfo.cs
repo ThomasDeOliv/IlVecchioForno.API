@@ -1,4 +1,4 @@
-using Xunit.Abstractions;
+using Xunit.Sdk;
 
 namespace IlVecchioForno.Infrastructure.Tests.Utilities.Models;
 
@@ -18,8 +18,8 @@ public sealed record ColumnInfo : IXunitSerializable
         this.IsNullable = isNullable;
     }
 
-    public string ColumnName { get; private set; }
-    public string DataType { get; private set; }
+    public string? ColumnName { get; private set; }
+    public string? DataType { get; private set; }
     public bool IsNullable { get; private set; }
 
     public void Deserialize(IXunitSerializationInfo info)

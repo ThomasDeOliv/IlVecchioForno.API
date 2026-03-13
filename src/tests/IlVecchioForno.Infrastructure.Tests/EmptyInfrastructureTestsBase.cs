@@ -15,18 +15,19 @@ public abstract class EmptyInfrastructureTestsBase : IAsyncLifetime
         this._ctx = null!;
     }
 
-    public virtual async Task DisposeAsync()
+    public virtual async ValueTask DisposeAsync()
     {
-        await this._ctx.Database.EnsureDeletedAsync();
+        await this._ctx.Database.EnsureDeletedAsync(TestContext.Current.CancellationToken);
         await this._ctx.DisposeAsync();
         this._ctx = null!;
+        GC.SuppressFinalize(this);
     }
 
-    public virtual async Task InitializeAsync()
+    public virtual async ValueTask InitializeAsync()
     {
         string dbName = GetRandomDbName();
         this._ctx = this._dbCtxFixture.CreateTestDbContext(dbName);
-        await this._ctx.Database.MigrateAsync();
+        await this._ctx.Database.MigrateAsync(TestContext.Current.CancellationToken);
     }
 
     private static string GetRandomDbName()

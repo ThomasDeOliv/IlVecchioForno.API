@@ -14,8 +14,8 @@ public sealed class DatabaseTests : EmptyInfrastructureTestsBase
     public async Task Migrations_ApplySuccessfully()
     {
         // Arrange & Act
-        IEnumerable<string> pendingMigrations = await this._ctx.Database.GetPendingMigrationsAsync();
-        IEnumerable<string> appliedMigrations = await this._ctx.Database.GetAppliedMigrationsAsync();
+        IEnumerable<string> pendingMigrations = await this._ctx.Database.GetPendingMigrationsAsync(TestContext.Current.CancellationToken);
+        IEnumerable<string> appliedMigrations = await this._ctx.Database.GetAppliedMigrationsAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Empty(pendingMigrations);
         Assert.NotEmpty(appliedMigrations);
@@ -32,7 +32,7 @@ public sealed class DatabaseTests : EmptyInfrastructureTestsBase
                   FROM information_schema.schemata
                  """
             )
-            .ToListAsync();
+            .ToListAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.NotEmpty(schemas);
         Assert.Contains(
@@ -61,7 +61,7 @@ public sealed class DatabaseTests : EmptyInfrastructureTestsBase
                  WHERE table_schema = {DbDescriptionTestsData.PizzasDbSchema}
                  """
             )
-            .ToListAsync();
+            .ToListAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.NotEmpty(tables);
         Assert.Equivalent(
@@ -90,7 +90,7 @@ public sealed class DatabaseTests : EmptyInfrastructureTestsBase
                       AND table_name = {tableName}
                  """
             )
-            .ToListAsync();
+            .ToListAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.NotEmpty(columns);
         Assert.Equal(expectedColumns.Length, columns.Count);
@@ -106,7 +106,7 @@ public sealed class DatabaseTests : EmptyInfrastructureTestsBase
     )
     {
         // Arrange
-        await this._ctx.Database.MigrateAsync();
+        await this._ctx.Database.MigrateAsync(TestContext.Current.CancellationToken);
         // Act
         VarcharColumnInfo? info = await this._ctx.Database
             .SqlQuery<VarcharColumnInfo>(
@@ -119,7 +119,7 @@ public sealed class DatabaseTests : EmptyInfrastructureTestsBase
                       AND column_name = {columnName}
                  """
             )
-            .SingleOrDefaultAsync();
+            .SingleOrDefaultAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.NotNull(info);
         Assert.Equal(expectedLength, info.MaxLength);
@@ -147,7 +147,7 @@ public sealed class DatabaseTests : EmptyInfrastructureTestsBase
                       AND column_name = {columnName}
                  """
             )
-            .SingleOrDefaultAsync();
+            .SingleOrDefaultAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.NotNull(info);
         Assert.Equal(expectedLength, info.Precision);
@@ -180,7 +180,7 @@ public sealed class DatabaseTests : EmptyInfrastructureTestsBase
                  GROUP BY tc.constraint_name               
                  """
             )
-            .SingleOrDefaultAsync();
+            .SingleOrDefaultAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.NotNull(info);
         Assert.Equal(expectedConstraintName, info.ConstraintName);
@@ -220,7 +220,7 @@ public sealed class DatabaseTests : EmptyInfrastructureTestsBase
                       AND tc.constraint_type = 'FOREIGN KEY'               
                  """
             )
-            .SingleOrDefaultAsync();
+            .SingleOrDefaultAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.NotNull(info);
         Assert.Equal(expectedConstraintName, info.ConstraintName);

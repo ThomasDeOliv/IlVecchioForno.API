@@ -62,7 +62,7 @@ public sealed class QuantityTypeFilterServiceTests : SeededInfrastructureTestsBa
                 new SearchFilterType(search)
             }
         );
-        List<QuantityType> collection = await queryResult.ToListAsync();
+        List<QuantityType> collection = await queryResult.ToListAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(expected.Count, collection.Count);
         Assert.Equivalent(expected, collection);

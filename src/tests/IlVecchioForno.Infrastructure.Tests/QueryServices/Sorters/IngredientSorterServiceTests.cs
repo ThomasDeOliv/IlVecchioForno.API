@@ -96,7 +96,7 @@ public sealed class IngredientSorterServiceTests : SeededInfrastructureTestsBase
         IQueryable<Ingredient> queryable = this._ctx.Ingredients.AsQueryable();
         // Act
         IQueryable<Ingredient> queryResult = this._sorterService.OrderBy(queryable, sorter, descending);
-        List<Ingredient> collection = await queryResult.ToListAsync();
+        List<Ingredient> collection = await queryResult.ToListAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(expected.Count, collection.Count);
         Assert.Equivalent(expected, collection);

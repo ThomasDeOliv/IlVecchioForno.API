@@ -11,7 +11,7 @@ public abstract class SeededInfrastructureTestsBase : EmptyInfrastructureTestsBa
     {
     }
 
-    public override async Task InitializeAsync()
+    public override async ValueTask InitializeAsync()
     {
         await base.InitializeAsync();
 
@@ -19,26 +19,21 @@ public abstract class SeededInfrastructureTestsBase : EmptyInfrastructureTestsBa
         foreach (QuantityType qT in DbMockedTestsData.TestsQuantityTypes)
         {
             this._ctx.QuantityTypes.Add(qT);
-            await this._ctx.SaveChangesAsync();
+            await this._ctx.SaveChangesAsync(TestContext.Current.CancellationToken);
         }
 
         // Need deterministic insert
         foreach (Ingredient i in DbMockedTestsData.TestsIngredients)
         {
             this._ctx.Ingredients.Add(i);
-            await this._ctx.SaveChangesAsync();
+            await this._ctx.SaveChangesAsync(TestContext.Current.CancellationToken);
         }
 
         // Need deterministic insert
         foreach (Pizza p in DbMockedTestsData.TestsPizzas)
         {
             this._ctx.Pizzas.Add(p);
-            await this._ctx.SaveChangesAsync();
+            await this._ctx.SaveChangesAsync(TestContext.Current.CancellationToken);
         }
-    }
-
-    public override async Task DisposeAsync()
-    {
-        await base.DisposeAsync();
     }
 }

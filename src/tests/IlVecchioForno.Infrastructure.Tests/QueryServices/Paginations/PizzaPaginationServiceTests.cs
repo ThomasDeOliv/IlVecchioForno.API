@@ -146,7 +146,7 @@ public sealed class PizzaPaginationServiceTests : SeededInfrastructureTestsBase
         IQueryable<Pizza> queryable = this._ctx.Pizzas.AsQueryable();
         // Act
         IQueryable<Pizza> queryResult = this._paginationService.Paginate(queryable, page, pageSize);
-        List<Pizza> collection = await queryResult.ToListAsync();
+        List<Pizza> collection = await queryResult.ToListAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(expected.Count, collection.Count);
         Assert.Equivalent(expected, collection);
@@ -160,7 +160,7 @@ public sealed class PizzaPaginationServiceTests : SeededInfrastructureTestsBase
         // Act
         IQueryable<Pizza> queryResult = this._paginationService.Paginate(queryable, 0, 100);
         // Assert
-        await Assert.ThrowsAsync<PostgresException>(() => queryResult.ToListAsync());
+        await Assert.ThrowsAsync<PostgresException>(() => queryResult.ToListAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -171,7 +171,7 @@ public sealed class PizzaPaginationServiceTests : SeededInfrastructureTestsBase
         // Act
         IQueryable<Pizza> queryResult = this._paginationService.Paginate(queryable, -1, 100);
         // Assert
-        await Assert.ThrowsAsync<PostgresException>(() => queryResult.ToListAsync());
+        await Assert.ThrowsAsync<PostgresException>(() => queryResult.ToListAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -182,6 +182,6 @@ public sealed class PizzaPaginationServiceTests : SeededInfrastructureTestsBase
         // Act
         IQueryable<Pizza> queryResult = this._paginationService.Paginate(queryable, 1, -100);
         // Assert
-        await Assert.ThrowsAsync<PostgresException>(() => queryResult.ToListAsync());
+        await Assert.ThrowsAsync<PostgresException>(() => queryResult.ToListAsync(TestContext.Current.CancellationToken));
     }
 }

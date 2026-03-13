@@ -85,7 +85,7 @@ public sealed class QuantityTypeSorterServiceTests : SeededInfrastructureTestsBa
         IQueryable<QuantityType> queryable = this._ctx.QuantityTypes.AsQueryable();
         // Act
         IQueryable<QuantityType> queryResult = this._sorterService.OrderBy(queryable, sorter, descending);
-        List<QuantityType> collection = await queryResult.ToListAsync();
+        List<QuantityType> collection = await queryResult.ToListAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(expected.Count, collection.Count);
         Assert.Equivalent(expected, collection);

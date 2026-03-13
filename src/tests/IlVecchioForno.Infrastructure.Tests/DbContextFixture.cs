@@ -21,12 +21,12 @@ public sealed class DbContextFixture : IAsyncLifetime
                 .Build();
     }
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
-        await this._container.StartAsync();
+        await this._container.StartAsync(TestContext.Current.CancellationToken);
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         await this._container.DisposeAsync();
     }

@@ -90,6 +90,33 @@ public sealed class IngredientRepositoryTests : SeededInfrastructureTestsBase
             );
     }
 
+    public static TheoryData<int, Ingredient?> IngredientResult =>
+        new TheoryData<int, Ingredient?>
+        {
+            {
+                1, DbMockedTestsData.TestsIngredients[0]
+            },
+
+            {
+                2, DbMockedTestsData.TestsIngredients[1]
+            },
+            {
+                3, DbMockedTestsData.TestsIngredients[2]
+            },
+            {
+                4, DbMockedTestsData.TestsIngredients[3]
+            },
+            {
+                5, DbMockedTestsData.TestsIngredients[4]
+            },
+            {
+                59, null
+            },
+            {
+                2733, null
+            }
+        };
+
     private EfIngredientRepository CreateNewRepository()
     {
         return new EfIngredientRepository(
@@ -100,15 +127,16 @@ public sealed class IngredientRepositoryTests : SeededInfrastructureTestsBase
         );
     }
 
-    [Fact]
-    public async Task TestExample()
+    [Theory]
+    [MemberData(nameof(IngredientResult))]
+    public async Task FindAsync_WithProvidedIntAsId_Return_ExpectedResult(int id, Ingredient? expectedIngredient)
     {
         // Arrange
         IIngredientRepository repository = this.CreateNewRepository();
         // Act
-        Ingredient? result = await repository.FindAsync(1);
+        Ingredient? result = await repository.FindAsync(id, TestContext.Current.CancellationToken);
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(DbMockedTestsData.TestsIngredients[0], result);
+        Assert.True(expectedIngredient is not null ? result is not null : result is null);
+        Assert.Equal(expectedIngredient, result);
     }
 }

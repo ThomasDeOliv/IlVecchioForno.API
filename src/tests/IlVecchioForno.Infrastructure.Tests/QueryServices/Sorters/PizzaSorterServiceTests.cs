@@ -162,7 +162,7 @@ public sealed class PizzaSorterServiceTests : SeededInfrastructureTestsBase
         IQueryable<Pizza> queryable = this._ctx.Pizzas.AsQueryable();
         // Act
         IQueryable<Pizza> queryResult = this._sorterService.OrderBy(queryable, sorter, descending);
-        List<Pizza> collection = await queryResult.ToListAsync();
+        List<Pizza> collection = await queryResult.ToListAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(expected.Count, collection.Count);
         Assert.Equivalent(expected, collection);

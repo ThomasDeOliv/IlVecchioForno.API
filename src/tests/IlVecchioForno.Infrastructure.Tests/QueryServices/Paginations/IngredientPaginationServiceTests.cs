@@ -175,7 +175,7 @@ public sealed class IngredientPaginationServiceTests : SeededInfrastructureTests
         IQueryable<Ingredient> queryable = this._ctx.Ingredients.AsQueryable();
         // Act
         IQueryable<Ingredient> queryResult = this._paginationService.Paginate(queryable, page, pageSize);
-        List<Ingredient> collection = await queryResult.ToListAsync();
+        List<Ingredient> collection = await queryResult.ToListAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(expected.Count, collection.Count);
         Assert.Equivalent(expected, collection);
@@ -189,7 +189,7 @@ public sealed class IngredientPaginationServiceTests : SeededInfrastructureTests
         // Act
         IQueryable<Ingredient> queryResult = this._paginationService.Paginate(queryable, 0, 100);
         // Assert
-        await Assert.ThrowsAsync<PostgresException>(() => queryResult.ToListAsync());
+        await Assert.ThrowsAsync<PostgresException>(() => queryResult.ToListAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -200,7 +200,7 @@ public sealed class IngredientPaginationServiceTests : SeededInfrastructureTests
         // Act
         IQueryable<Ingredient> queryResult = this._paginationService.Paginate(queryable, -1, 100);
         // Assert
-        await Assert.ThrowsAsync<PostgresException>(() => queryResult.ToListAsync());
+        await Assert.ThrowsAsync<PostgresException>(() => queryResult.ToListAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -211,6 +211,6 @@ public sealed class IngredientPaginationServiceTests : SeededInfrastructureTests
         // Act
         IQueryable<Ingredient> queryResult = this._paginationService.Paginate(queryable, 1, -100);
         // Assert
-        await Assert.ThrowsAsync<PostgresException>(() => queryResult.ToListAsync());
+        await Assert.ThrowsAsync<PostgresException>(() => queryResult.ToListAsync(TestContext.Current.CancellationToken));
     }
 }

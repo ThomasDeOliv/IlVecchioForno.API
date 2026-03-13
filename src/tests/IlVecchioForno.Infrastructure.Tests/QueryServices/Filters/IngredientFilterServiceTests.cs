@@ -59,7 +59,7 @@ public sealed class IngredientFilterServiceTests : SeededInfrastructureTestsBase
                 new SearchFilterType(search)
             }
         );
-        List<Ingredient> collection = await queryResult.ToListAsync();
+        List<Ingredient> collection = await queryResult.ToListAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(expected.Count, collection.Count);
         Assert.Equivalent(expected, collection);

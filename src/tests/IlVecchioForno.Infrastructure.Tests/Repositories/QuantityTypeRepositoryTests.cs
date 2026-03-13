@@ -115,7 +115,7 @@ public sealed class QuantityTypeRepositoryTests : SeededInfrastructureTestsBase
         // Arrange
         IQuantityTypeRepository repository = this.CreateNewRepository();
         // Act
-        QuantityType? result = await repository.FindAsync(1);
+        QuantityType? result = await repository.FindAsync(1, TestContext.Current.CancellationToken);
         // Assert
         Assert.NotNull(result);
         Assert.Equal(DbMockedTestsData.TestsQuantityTypes[0], result);

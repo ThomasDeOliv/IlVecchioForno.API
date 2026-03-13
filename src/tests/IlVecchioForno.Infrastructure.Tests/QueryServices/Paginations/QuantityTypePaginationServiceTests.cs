@@ -91,7 +91,7 @@ public sealed class QuantityTypePaginationServiceTests : SeededInfrastructureTes
         IQueryable<QuantityType> queryable = this._ctx.QuantityTypes.AsQueryable();
         // Act
         IQueryable<QuantityType> queryResult = this._paginationService.Paginate(queryable, page, pageSize);
-        List<QuantityType> collection = await queryResult.ToListAsync();
+        List<QuantityType> collection = await queryResult.ToListAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(expected.Count, collection.Count);
         Assert.Equivalent(expected, collection);
@@ -105,7 +105,7 @@ public sealed class QuantityTypePaginationServiceTests : SeededInfrastructureTes
         // Act
         IQueryable<QuantityType> queryResult = this._paginationService.Paginate(queryable, 0, 100);
         // Assert
-        await Assert.ThrowsAsync<PostgresException>(() => queryResult.ToListAsync());
+        await Assert.ThrowsAsync<PostgresException>(() => queryResult.ToListAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -116,7 +116,7 @@ public sealed class QuantityTypePaginationServiceTests : SeededInfrastructureTes
         // Act
         IQueryable<QuantityType> queryResult = this._paginationService.Paginate(queryable, -1, 100);
         // Assert
-        await Assert.ThrowsAsync<PostgresException>(() => queryResult.ToListAsync());
+        await Assert.ThrowsAsync<PostgresException>(() => queryResult.ToListAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -127,6 +127,6 @@ public sealed class QuantityTypePaginationServiceTests : SeededInfrastructureTes
         // Act
         IQueryable<QuantityType> queryResult = this._paginationService.Paginate(queryable, 1, -100);
         // Assert
-        await Assert.ThrowsAsync<PostgresException>(() => queryResult.ToListAsync());
+        await Assert.ThrowsAsync<PostgresException>(() => queryResult.ToListAsync(TestContext.Current.CancellationToken));
     }
 }

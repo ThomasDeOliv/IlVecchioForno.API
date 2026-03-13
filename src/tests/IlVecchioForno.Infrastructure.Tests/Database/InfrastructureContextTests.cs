@@ -92,7 +92,7 @@ public sealed class InfrastructureContextTests : EmptyInfrastructureTestsBase
         DateTime createdAtAfterInsert = quantityType.CreatedAt;
         DateTime updatedAtAfterInsert = quantityType.UpdatedAt;
 
-        await this._ctx.SaveChangesAsync();
+        await this._ctx.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         EntityState stateAfterSaveChanges = this._ctx.Entry(quantityType).State;
         int idAfterSaveChanges = quantityType.Id;
@@ -167,7 +167,7 @@ public sealed class InfrastructureContextTests : EmptyInfrastructureTestsBase
         // Arrange
         Pizza pizza = GetTestPizza("Gorgonzola", null, 12.50m);
         this._ctx.Pizzas.Add(pizza);
-        await this._ctx.SaveChangesAsync();
+        await this._ctx.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         EntityState stateBeforeUpdate = this._ctx.Entry(pizza).State;
         int idBeforeUpdate = pizza.Id;
@@ -182,7 +182,7 @@ public sealed class InfrastructureContextTests : EmptyInfrastructureTestsBase
         DateTime createdAtAfterUpdate = pizza.CreatedAt;
         DateTime updatedAtAfterUpdate = pizza.UpdatedAt;
 
-        await this._ctx.SaveChangesAsync();
+        await this._ctx.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         EntityState stateAfterSaveChanges = this._ctx.Entry(pizza).State;
         int idAfterSaveChanges = pizza.Id;
@@ -270,7 +270,7 @@ public sealed class InfrastructureContextTests : EmptyInfrastructureTestsBase
         DateTime createdAtAfterInsert = quantityType.CreatedAt;
         DateTime updatedAtAfterInsert = quantityType.UpdatedAt;
 
-        await this._ctx.SaveChangesAsync(false);
+        await this._ctx.SaveChangesAsync(false, TestContext.Current.CancellationToken);
 
         EntityState stateAfterSaveChanges = this._ctx.Entry(quantityType).State;
         int idAfterSaveChanges = quantityType.Id;
@@ -345,7 +345,7 @@ public sealed class InfrastructureContextTests : EmptyInfrastructureTestsBase
         // Arrange                                  
         Pizza pizza = GetTestPizza("Gorgonzola", null, 12.50m);
         this._ctx.Pizzas.Add(pizza);
-        await this._ctx.SaveChangesAsync();
+        await this._ctx.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         EntityState stateBeforeUpdate = this._ctx.Entry(pizza).State;
         int idBeforeUpdate = pizza.Id;
@@ -360,7 +360,7 @@ public sealed class InfrastructureContextTests : EmptyInfrastructureTestsBase
         DateTime createdAtAfterUpdate = pizza.CreatedAt;
         DateTime updatedAtAfterUpdate = pizza.UpdatedAt;
 
-        await this._ctx.SaveChangesAsync(false);
+        await this._ctx.SaveChangesAsync(false, TestContext.Current.CancellationToken);
 
         EntityState stateAfterSaveChanges = this._ctx.Entry(pizza).State;
         int idAfterSaveChanges = pizza.Id;
@@ -446,7 +446,7 @@ public sealed class InfrastructureContextTests : EmptyInfrastructureTestsBase
         DateTime createdAtAfterInsert = quantityType.CreatedAt;
         DateTime updatedAtAfterInsert = quantityType.UpdatedAt;
 
-        await this._ctx.SaveChangesAsync(true);
+        await this._ctx.SaveChangesAsync(true, TestContext.Current.CancellationToken);
 
         EntityState stateAfterSaveChanges = this._ctx.Entry(quantityType).State;
         int idAfterSaveChanges = quantityType.Id;
@@ -521,7 +521,7 @@ public sealed class InfrastructureContextTests : EmptyInfrastructureTestsBase
         // Arrange
         Pizza pizza = GetTestPizza("Gorgonzola", null, 12.50m);
         this._ctx.Pizzas.Add(pizza);
-        await this._ctx.SaveChangesAsync();
+        await this._ctx.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         EntityState stateBeforeUpdate = this._ctx.Entry(pizza).State;
         int idBeforeUpdate = pizza.Id;
@@ -536,7 +536,7 @@ public sealed class InfrastructureContextTests : EmptyInfrastructureTestsBase
         DateTime createdAtAfterUpdate = pizza.CreatedAt;
         DateTime updatedAtAfterUpdate = pizza.UpdatedAt;
 
-        await this._ctx.SaveChangesAsync(true);
+        await this._ctx.SaveChangesAsync(true, TestContext.Current.CancellationToken);
 
         EntityState stateAfterSaveChanges = this._ctx.Entry(pizza).State;
         int idAfterSaveChanges = pizza.Id;
