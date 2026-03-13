@@ -7,7 +7,6 @@ using IlVecchioForno.Infrastructure.Persistence.QueryServices.Filters;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Paginations;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Sorters;
 using IlVecchioForno.Infrastructure.Persistence.Repositories;
-using IlVecchioForno.Infrastructure.Tests.Utilities.Data;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 
@@ -138,7 +137,7 @@ public sealed class PizzaRepositoryTests : SeededInfrastructureTestsBase
     }
 
     [Fact]
-    public async Task TestExample()
+    public async Task FindAsync_WithExistingId_ReturnsExpectedPizza()
     {
         // Arrange
         IPizzaRepository repository = this.CreateNewRepository();
@@ -146,6 +145,6 @@ public sealed class PizzaRepositoryTests : SeededInfrastructureTestsBase
         Pizza? result = await repository.FindAsync(1, TestContext.Current.CancellationToken);
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(DbMockedTestsData.TestsPizzas[0], result);
+        Assert.Equivalent(this._pizzas[0], result);
     }
 }

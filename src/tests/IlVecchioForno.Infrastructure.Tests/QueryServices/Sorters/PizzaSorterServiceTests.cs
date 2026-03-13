@@ -1,7 +1,6 @@
 using IlVecchioForno.Application.Common.Queries.Sorters;
 using IlVecchioForno.Domain.Pizzas;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Sorters;
-using IlVecchioForno.Infrastructure.Tests.Utilities.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace IlVecchioForno.Infrastructure.Tests.QueryServices.Sorters;
@@ -15,138 +14,36 @@ public sealed class PizzaSorterServiceTests : SeededInfrastructureTestsBase
         this._sorterService = new PizzaSorterService();
     }
 
-    public static TheoryData<bool, PizzasSorter, List<Pizza>> SortedPizzas =>
-        new TheoryData<bool, PizzasSorter, List<Pizza>>
+    public static TheoryData<bool, PizzasSorter, List<int>> SortedPizzas =>
+        new TheoryData<bool, PizzasSorter, List<int>>
         {
             // Default
             {
-                false, PizzasSorter.Id, DbMockedTestsData.TestsPizzas
+                false, PizzasSorter.Id, [..Enumerable.Range(0, 15)]
             },
             {
-                true, PizzasSorter.Id, DbMockedTestsData.TestsPizzas.AsEnumerable().Reverse().ToList()
+                true, PizzasSorter.Id, [..Enumerable.Range(0, 15).Reverse()]
             },
             // Name
             {
-                false, PizzasSorter.Name, new List<Pizza>
-                {
-                    DbMockedTestsData.TestsPizzas[7],
-                    DbMockedTestsData.TestsPizzas[8],
-                    DbMockedTestsData.TestsPizzas[4],
-                    DbMockedTestsData.TestsPizzas[3],
-                    DbMockedTestsData.TestsPizzas[0],
-                    DbMockedTestsData.TestsPizzas[1],
-                    DbMockedTestsData.TestsPizzas[9],
-                    DbMockedTestsData.TestsPizzas[11],
-                    DbMockedTestsData.TestsPizzas[13],
-                    DbMockedTestsData.TestsPizzas[5],
-                    DbMockedTestsData.TestsPizzas[10],
-                    DbMockedTestsData.TestsPizzas[2],
-                    DbMockedTestsData.TestsPizzas[6],
-                    DbMockedTestsData.TestsPizzas[14],
-                    DbMockedTestsData.TestsPizzas[12]
-                }
+                false, PizzasSorter.Name, [7, 8, 4, 3, 0, 1, 9, 11, 13, 5, 10, 2, 6, 14, 12]
             },
             {
-                true, PizzasSorter.Name, new List<Pizza>
-                {
-                    DbMockedTestsData.TestsPizzas[12],
-                    DbMockedTestsData.TestsPizzas[14],
-                    DbMockedTestsData.TestsPizzas[6],
-                    DbMockedTestsData.TestsPizzas[2],
-                    DbMockedTestsData.TestsPizzas[10],
-                    DbMockedTestsData.TestsPizzas[5],
-                    DbMockedTestsData.TestsPizzas[13],
-                    DbMockedTestsData.TestsPizzas[11],
-                    DbMockedTestsData.TestsPizzas[9],
-                    DbMockedTestsData.TestsPizzas[1],
-                    DbMockedTestsData.TestsPizzas[0],
-                    DbMockedTestsData.TestsPizzas[3],
-                    DbMockedTestsData.TestsPizzas[4],
-                    DbMockedTestsData.TestsPizzas[8],
-                    DbMockedTestsData.TestsPizzas[7]
-                }
+                true, PizzasSorter.Name, [12, 14, 6, 2, 10, 5, 13, 11, 9, 1, 0, 3, 4, 8, 7]
             },
             // Price
             {
-                false, PizzasSorter.Price, new List<Pizza>
-                {
-                    DbMockedTestsData.TestsPizzas[1],
-                    DbMockedTestsData.TestsPizzas[0],
-                    DbMockedTestsData.TestsPizzas[10],
-                    DbMockedTestsData.TestsPizzas[9],
-                    DbMockedTestsData.TestsPizzas[3],
-                    DbMockedTestsData.TestsPizzas[11],
-                    DbMockedTestsData.TestsPizzas[8],
-                    DbMockedTestsData.TestsPizzas[12],
-                    DbMockedTestsData.TestsPizzas[5],
-                    DbMockedTestsData.TestsPizzas[13],
-                    DbMockedTestsData.TestsPizzas[2],
-                    DbMockedTestsData.TestsPizzas[4],
-                    DbMockedTestsData.TestsPizzas[6],
-                    DbMockedTestsData.TestsPizzas[7],
-                    DbMockedTestsData.TestsPizzas[14]
-                }
+                false, PizzasSorter.Price, [1, 0, 10, 9, 3, 11, 8, 12, 5, 13, 2, 4, 6, 7, 14]
             },
             {
-                true, PizzasSorter.Price, new List<Pizza>
-                {
-                    DbMockedTestsData.TestsPizzas[14],
-                    DbMockedTestsData.TestsPizzas[7],
-                    DbMockedTestsData.TestsPizzas[6],
-                    DbMockedTestsData.TestsPizzas[4],
-                    DbMockedTestsData.TestsPizzas[2],
-                    DbMockedTestsData.TestsPizzas[5],
-                    DbMockedTestsData.TestsPizzas[13],
-                    DbMockedTestsData.TestsPizzas[8],
-                    DbMockedTestsData.TestsPizzas[12],
-                    DbMockedTestsData.TestsPizzas[3],
-                    DbMockedTestsData.TestsPizzas[11],
-                    DbMockedTestsData.TestsPizzas[9],
-                    DbMockedTestsData.TestsPizzas[10],
-                    DbMockedTestsData.TestsPizzas[0],
-                    DbMockedTestsData.TestsPizzas[1]
-                }
+                true, PizzasSorter.Price, [14, 7, 6, 4, 2, 5, 13, 8, 12, 3, 11, 9, 10, 0, 1]
             },
             // Archived
             {
-                false, PizzasSorter.Archived, new List<Pizza>
-                {
-                    DbMockedTestsData.TestsPizzas[10],
-                    DbMockedTestsData.TestsPizzas[11],
-                    DbMockedTestsData.TestsPizzas[14],
-                    DbMockedTestsData.TestsPizzas[0],
-                    DbMockedTestsData.TestsPizzas[1],
-                    DbMockedTestsData.TestsPizzas[2],
-                    DbMockedTestsData.TestsPizzas[3],
-                    DbMockedTestsData.TestsPizzas[4],
-                    DbMockedTestsData.TestsPizzas[5],
-                    DbMockedTestsData.TestsPizzas[6],
-                    DbMockedTestsData.TestsPizzas[7],
-                    DbMockedTestsData.TestsPizzas[8],
-                    DbMockedTestsData.TestsPizzas[9],
-                    DbMockedTestsData.TestsPizzas[12],
-                    DbMockedTestsData.TestsPizzas[13]
-                }
+                false, PizzasSorter.Archived, [10, 11, 14, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13]
             },
             {
-                true, PizzasSorter.Archived, new List<Pizza>
-                {
-                    DbMockedTestsData.TestsPizzas[14],
-                    DbMockedTestsData.TestsPizzas[11],
-                    DbMockedTestsData.TestsPizzas[10],
-                    DbMockedTestsData.TestsPizzas[0],
-                    DbMockedTestsData.TestsPizzas[1],
-                    DbMockedTestsData.TestsPizzas[2],
-                    DbMockedTestsData.TestsPizzas[3],
-                    DbMockedTestsData.TestsPizzas[4],
-                    DbMockedTestsData.TestsPizzas[5],
-                    DbMockedTestsData.TestsPizzas[6],
-                    DbMockedTestsData.TestsPizzas[7],
-                    DbMockedTestsData.TestsPizzas[8],
-                    DbMockedTestsData.TestsPizzas[9],
-                    DbMockedTestsData.TestsPizzas[12],
-                    DbMockedTestsData.TestsPizzas[13]
-                }
+                true, PizzasSorter.Archived, [14, 11, 10, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13]
             }
         };
 
@@ -155,10 +52,11 @@ public sealed class PizzaSorterServiceTests : SeededInfrastructureTestsBase
     public async Task Sorter_ForPizzas_Return_ExpectedSortedPizzas(
         bool descending,
         PizzasSorter sorter,
-        List<Pizza> expected
+        List<int> expectedIndexes
     )
     {
         // Arrange
+        List<Pizza> expected = expectedIndexes.Select(i => this._pizzas[i]).ToList();
         IQueryable<Pizza> queryable = this._ctx.Pizzas.AsQueryable();
         // Act
         IQueryable<Pizza> queryResult = this._sorterService.OrderBy(queryable, sorter, descending);

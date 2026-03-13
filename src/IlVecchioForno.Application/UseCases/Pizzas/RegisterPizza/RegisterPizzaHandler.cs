@@ -1,6 +1,6 @@
+using FluentValidation;
+using FluentValidation.Results;
 using IlVecchioForno.Application.Gateways.Persistence;
-using IlVecchioForno.Application.UseCases.Pizzas.DTOs;
-using IlVecchioForno.Application.UseCases.Pizzas.Presenters;
 using IlVecchioForno.Domain.Ingredients;
 using IlVecchioForno.Domain.PizzaIngredients;
 using IlVecchioForno.Domain.Pizzas;
@@ -16,13 +16,15 @@ internal sealed class RegisterPizzaHandler : IRequestHandler<RegisterPizzaComman
     private readonly IPizzaRepository _pizzaRepository;
     private readonly IPizzaPresenter _presenter;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IValidator<RegisterPizzaCommand> _validator;
 
     public RegisterPizzaHandler(
         IIngredientRepository ingredientRepository,
         IMapper mapper,
         IPizzaPresenter presenter,
         IPizzaRepository pizzaRepository,
-        IUnitOfWork unitOfWork
+        IUnitOfWork unitOfWork,
+        IValidator<RegisterPizzaCommand> validator
     )
     {
         this._ingredientRepository = ingredientRepository;
@@ -30,6 +32,7 @@ internal sealed class RegisterPizzaHandler : IRequestHandler<RegisterPizzaComman
         this._presenter = presenter;
         this._pizzaRepository = pizzaRepository;
         this._unitOfWork = unitOfWork;
+        this._validator = validator;
     }
 
     public async Task Handle(
@@ -37,6 +40,21 @@ internal sealed class RegisterPizzaHandler : IRequestHandler<RegisterPizzaComman
         CancellationToken cancellationToken
     )
     {
+        ValidationResult validationResult = await this._validator.ValidateAsync(command, cancellationToken);
+
+        if (!validationResult.IsValid)
+        {
+            this._presenter.ValidationErrors(
+                validationResult.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    )
+            );
+            return;
+        }
+
         IReadOnlyCollection<Ingredient> targetIngredients = await this._ingredientRepository
             .ResolveAsync(command.IngredientsAndQuantities.Keys, cancellationToken);
 
@@ -48,15 +66,17 @@ internal sealed class RegisterPizzaHandler : IRequestHandler<RegisterPizzaComman
 
         List<PizzaIngredient> pizzaIngredients = targetIngredients
             .Select(t => new PizzaIngredient(
-                    new PizzaIngredientQuantity(command.IngredientsAndQuantities[t.Id]),
+                    command.IngredientsAndQuantities[t.Id],
                     t
                 )
             ).ToList();
 
         Pizza pizza = new Pizza(
-            new PizzaName(command.Name),
-            !string.IsNullOrEmpty(command.Description) ? new PizzaDescription(command.Description) : null,
-            new PizzaPrice(command.Price)
+            command.Name,
+            !string.IsNullOrEmpty(command.Description)
+                ? new PizzaDescription(command.Description)
+                : null,
+            command.Price
         );
 
         pizza.UpdateIngredients(pizzaIngredients);

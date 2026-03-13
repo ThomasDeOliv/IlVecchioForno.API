@@ -18,13 +18,24 @@ public class IngredientTests
         IngredientName ingredientName = new IngredientName(name);
         const string quantityTypeNameBase = "Grams";
         const string? quantityTypeUnitBase = "g";
-        QuantityTypeName quantityTypeName = new QuantityTypeName(quantityTypeNameBase);
-        QuantityTypeUnit quantityTypeUnit = new QuantityTypeUnit(quantityTypeUnitBase);
-        QuantityType quantityType = new QuantityType(quantityTypeName, quantityTypeUnit);
+        QuantityType quantityType = new QuantityType(quantityTypeNameBase, quantityTypeUnitBase);
         // Arrange & Act
         Ingredient ingredient = new Ingredient(ingredientName, quantityType);
         // Assert
         Assert.Equal(name, ingredient.Name);
+    }
+
+    [Theory]
+    [InlineData("Fresh basil leaves")]
+    [InlineData("Garlic clove")]
+    [InlineData("Black olives")]
+    public void Ingredient_CreateInstance_Succeeds_WhenQuantityTypeIsNull(string name)
+    {
+        // Arrange & Act
+        Ingredient ingredient = new Ingredient(name, null);
+        // Assert
+        Assert.Equal(name, ingredient.Name);
+        Assert.Null(ingredient.QuantityType);
     }
 
     [Theory]
@@ -62,5 +73,82 @@ public class IngredientTests
             $"{nameof(IngredientName)} exceeds maximum length of {IngredientInvariant.NameMaxLength} characters.",
             exception.Message
         );
+    }
+
+    [Fact]
+    public void IngredientName_CanBeImplicitlyCastToString()
+    {
+        // Arrange
+        const string rawValue = "A random name...";
+        IngredientName valueObject = new IngredientName(rawValue);
+        // Act
+        string result = valueObject;
+        // Assert
+        Assert.IsType<string>(result);
+        Assert.Equal(rawValue, result);
+    }
+
+    [Fact]
+    public void IngredientName_CanBeImplicitlyCreatedFromValidString()
+    {
+        // Arrange
+        const string rawValue = "A random name...";
+        // Act
+        IngredientName result = rawValue;
+        // Assert
+        Assert.IsType<IngredientName>(result);
+        Assert.Equal(rawValue, result.Value);
+    }
+
+    [Fact]
+    public void IngredientName_CannotBeImplicitlyCreatedFromNull()
+    {
+        // Arrange
+        const string? rawValue = null;
+        // Act & Assert
+        IngredientNameException ex = Assert.Throws<IngredientNameException>(() =>
+        {
+            IngredientName _ = rawValue!;
+        });
+        Assert.Equal($"{nameof(IngredientName)} cannot be instantiated from null, empty or whitespace value.", ex.Message);
+    }
+
+    [Fact]
+    public void IngredientName_CannotBeImplicitlyCreatedFromEmptyString()
+    {
+        // Arrange
+        const string rawValue = "";
+        // Act & Assert
+        IngredientNameException ex = Assert.Throws<IngredientNameException>(() =>
+        {
+            IngredientName _ = rawValue!;
+        });
+        Assert.Equal($"{nameof(IngredientName)} cannot be instantiated from null, empty or whitespace value.", ex.Message);
+    }
+
+    [Fact]
+    public void IngredientName_CannotBeImplicitlyCreatedFromStringFilledWithWhiteSpaces()
+    {
+        // Arrange
+        const string rawValue = "                  ";
+        // Act & Assert
+        IngredientNameException ex = Assert.Throws<IngredientNameException>(() =>
+        {
+            IngredientName _ = rawValue!;
+        });
+        Assert.Equal($"{nameof(IngredientName)} cannot be instantiated from null, empty or whitespace value.", ex.Message);
+    }
+
+    [Fact]
+    public void IngredientName_CannotBeImplicitlyCreatedFromStringExceedingMaxLength()
+    {
+        // Arrange
+        string rawValue = new string('c', IngredientInvariant.NameMaxLength + 1);
+        // Act & Assert
+        IngredientNameException ex = Assert.Throws<IngredientNameException>(() =>
+        {
+            IngredientName _ = rawValue!;
+        });
+        Assert.Equal($"{nameof(IngredientName)} exceeds maximum length of {IngredientInvariant.NameMaxLength} characters.", ex.Message);
     }
 }

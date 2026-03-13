@@ -2,7 +2,6 @@
 
 using IlVecchioForno.Domain.Ingredients;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Paginations;
-using IlVecchioForno.Infrastructure.Tests.Utilities.Data;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -17,149 +16,68 @@ public sealed class IngredientPaginationServiceTests : SeededInfrastructureTests
         this._paginationService = new PaginationService<Ingredient>();
     }
 
-    public static TheoryData<int, int, List<Ingredient>> PaginatedIngredients =>
-        new TheoryData<int, int, List<Ingredient>>
+    public static TheoryData<int, int, List<int>> PaginatedIngredients =>
+        new TheoryData<int, int, List<int>>
         {
             {
-                1, 1, new List<Ingredient>([
-                    DbMockedTestsData.TestsIngredients[0]
-                ])
+                1, 1, [0]
             },
             {
-                1, 5, new List<Ingredient>([
-                    DbMockedTestsData.TestsIngredients[0],
-                    DbMockedTestsData.TestsIngredients[1],
-                    DbMockedTestsData.TestsIngredients[2],
-                    DbMockedTestsData.TestsIngredients[3],
-                    DbMockedTestsData.TestsIngredients[4]
-                ])
+                1, 5, [0, 1, 2, 3, 4]
             },
             {
-                1, 10, new List<Ingredient>([
-                    DbMockedTestsData.TestsIngredients[0],
-                    DbMockedTestsData.TestsIngredients[1],
-                    DbMockedTestsData.TestsIngredients[2],
-                    DbMockedTestsData.TestsIngredients[3],
-                    DbMockedTestsData.TestsIngredients[4],
-                    DbMockedTestsData.TestsIngredients[5],
-                    DbMockedTestsData.TestsIngredients[6],
-                    DbMockedTestsData.TestsIngredients[7],
-                    DbMockedTestsData.TestsIngredients[8],
-                    DbMockedTestsData.TestsIngredients[9]
-                ])
+                1, 10, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
             },
             {
-                1, 23, new List<Ingredient>(
-                    DbMockedTestsData.TestsIngredients
-                )
+                1, 23, [..Enumerable.Range(0, 23)]
             },
             {
-                1, 100, new List<Ingredient>(
-                    DbMockedTestsData.TestsIngredients
-                )
+                1, 100, [..Enumerable.Range(0, 23)]
             },
             {
-                2, 5, new List<Ingredient>([
-                    DbMockedTestsData.TestsIngredients[5],
-                    DbMockedTestsData.TestsIngredients[6],
-                    DbMockedTestsData.TestsIngredients[7],
-                    DbMockedTestsData.TestsIngredients[8],
-                    DbMockedTestsData.TestsIngredients[9]
-                ])
+                2, 5, [5, 6, 7, 8, 9]
             },
             {
-                2, 10, new List<Ingredient>([
-                    DbMockedTestsData.TestsIngredients[10],
-                    DbMockedTestsData.TestsIngredients[11],
-                    DbMockedTestsData.TestsIngredients[12],
-                    DbMockedTestsData.TestsIngredients[13],
-                    DbMockedTestsData.TestsIngredients[14],
-                    DbMockedTestsData.TestsIngredients[15],
-                    DbMockedTestsData.TestsIngredients[16],
-                    DbMockedTestsData.TestsIngredients[17],
-                    DbMockedTestsData.TestsIngredients[18],
-                    DbMockedTestsData.TestsIngredients[19]
-                ])
+                2, 10, [10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
             },
             {
-                3, 5, new List<Ingredient>([
-                    DbMockedTestsData.TestsIngredients[10],
-                    DbMockedTestsData.TestsIngredients[11],
-                    DbMockedTestsData.TestsIngredients[12],
-                    DbMockedTestsData.TestsIngredients[13],
-                    DbMockedTestsData.TestsIngredients[14]
-                ])
+                3, 5, [10, 11, 12, 13, 14]
             },
             {
-                3, 7, new List<Ingredient>([
-                    DbMockedTestsData.TestsIngredients[14],
-                    DbMockedTestsData.TestsIngredients[15],
-                    DbMockedTestsData.TestsIngredients[16],
-                    DbMockedTestsData.TestsIngredients[17],
-                    DbMockedTestsData.TestsIngredients[18],
-                    DbMockedTestsData.TestsIngredients[19],
-                    DbMockedTestsData.TestsIngredients[20]
-                ])
+                3, 7, [14, 15, 16, 17, 18, 19, 20]
             },
             {
-                3, 8, new List<Ingredient>([
-                    DbMockedTestsData.TestsIngredients[16],
-                    DbMockedTestsData.TestsIngredients[17],
-                    DbMockedTestsData.TestsIngredients[18],
-                    DbMockedTestsData.TestsIngredients[19],
-                    DbMockedTestsData.TestsIngredients[20],
-                    DbMockedTestsData.TestsIngredients[21],
-                    DbMockedTestsData.TestsIngredients[22]
-                ])
+                3, 8, [16, 17, 18, 19, 20, 21, 22]
             },
             {
-                3, 10, new List<Ingredient>([
-                    DbMockedTestsData.TestsIngredients[20],
-                    DbMockedTestsData.TestsIngredients[21],
-                    DbMockedTestsData.TestsIngredients[22]
-                ])
+                3, 10, [20, 21, 22]
             },
             {
-                4, 6, new List<Ingredient>([
-                    DbMockedTestsData.TestsIngredients[18],
-                    DbMockedTestsData.TestsIngredients[19],
-                    DbMockedTestsData.TestsIngredients[20],
-                    DbMockedTestsData.TestsIngredients[21],
-                    DbMockedTestsData.TestsIngredients[22]
-                ])
+                4, 6, [18, 19, 20, 21, 22]
             },
             {
-                5, 5, new List<Ingredient>([
-                    DbMockedTestsData.TestsIngredients[20],
-                    DbMockedTestsData.TestsIngredients[21],
-                    DbMockedTestsData.TestsIngredients[22]
-                ])
+                5, 5, [20, 21, 22]
             },
             {
-                23, 1, new List<Ingredient>([
-                    DbMockedTestsData.TestsIngredients[22]
-                ])
+                23, 1, [22]
             },
             {
-                8, 3, new List<Ingredient>([
-                    DbMockedTestsData.TestsIngredients[21],
-                    DbMockedTestsData.TestsIngredients[22]
-                ])
+                8, 3, [21, 22]
             },
             {
-                24, 1, new List<Ingredient>()
+                24, 1, []
             },
             {
-                4, 8, new List<Ingredient>()
+                4, 8, []
             },
             {
-                5, 6, new List<Ingredient>()
+                5, 6, []
             },
             {
-                100, 10, new List<Ingredient>()
+                100, 10, []
             },
             {
-                1, 0, new List<Ingredient>()
+                1, 0, []
             }
         };
 
@@ -168,10 +86,11 @@ public sealed class IngredientPaginationServiceTests : SeededInfrastructureTests
     public async Task Paginate_ForIngredients_Return_ExpectedIngredients(
         int page,
         int pageSize,
-        List<Ingredient> expected
+        List<int> expectedIndexes
     )
     {
         // Arrange
+        List<Ingredient> expected = expectedIndexes.Select(i => this._ingredients[i]).ToList();
         IQueryable<Ingredient> queryable = this._ctx.Ingredients.AsQueryable();
         // Act
         IQueryable<Ingredient> queryResult = this._paginationService.Paginate(queryable, page, pageSize);

@@ -1,4 +1,4 @@
-namespace IlVecchioForno.Application.UseCases.QuantityTypes.DTOs;
+namespace IlVecchioForno.Application.UseCases.QuantityTypes;
 
 public sealed record QuantityTypeDto(
     int Id,

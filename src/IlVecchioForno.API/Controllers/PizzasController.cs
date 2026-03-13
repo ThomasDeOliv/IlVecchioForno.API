@@ -1,7 +1,9 @@
 using IlVecchioForno.API.Presenters.Pizzas;
 using IlVecchioForno.API.Requests.Pizzas;
 using IlVecchioForno.Application.Common;
+using IlVecchioForno.Application.Common.DTOs;
 using IlVecchioForno.Application.Common.Queries.Sorters;
+using IlVecchioForno.Application.UseCases.Pizzas;
 using IlVecchioForno.Application.UseCases.Pizzas.ArchivePizza;
 using IlVecchioForno.Application.UseCases.Pizzas.ChangePizzaDetails;
 using IlVecchioForno.Application.UseCases.Pizzas.CountActivePizzas;
@@ -33,6 +35,8 @@ public sealed class PizzasController : ApiControllerBase
     }
 
     [HttpGet("active")]
+    [ProducesResponseType<IReadOnlyList<ActivePizzaDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> GetActivePizzasAsync(
         [FromQuery] int page = QueryDefaultValues.PageNumberMin,
         [FromQuery] int pageSize = QueryDefaultValues.PageSizeDefault,
@@ -58,6 +62,8 @@ public sealed class PizzasController : ApiControllerBase
     }
 
     [HttpGet("active/{id:int}")]
+    [ProducesResponseType<ActivePizzaDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> GetActiveByIdAsync(
         [FromRoute] int id,
         CancellationToken cancellationToken = default
@@ -69,6 +75,7 @@ public sealed class PizzasController : ApiControllerBase
     }
 
     [HttpGet("active/count")]
+    [ProducesResponseType<EntitiesCountDto>(StatusCodes.Status200OK)]
     public async Task<ActionResult> CountActivePizzasAsync(
         [FromQuery] string? search = null,
         CancellationToken cancellationToken = default
@@ -80,6 +87,8 @@ public sealed class PizzasController : ApiControllerBase
     }
 
     [HttpGet("archived")]
+    [ProducesResponseType<IReadOnlyList<ArchivedPizzaDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> GetArchivedPizzasAsync(
         [FromQuery] int page = QueryDefaultValues.PageNumberMin,
         [FromQuery] int pageSize = QueryDefaultValues.PageSizeDefault,
@@ -105,6 +114,8 @@ public sealed class PizzasController : ApiControllerBase
     }
 
     [HttpGet("archived/{id:int}")]
+    [ProducesResponseType<ArchivedPizzaDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> GetArchivedByIdAsync(
         [FromRoute] int id,
         CancellationToken cancellationToken = default
@@ -116,6 +127,7 @@ public sealed class PizzasController : ApiControllerBase
     }
 
     [HttpGet("archived/count")]
+    [ProducesResponseType<EntitiesCountDto>(StatusCodes.Status200OK)]
     public async Task<ActionResult> CountArchivedPizzasAsync(
         [FromQuery] string? search = null,
         CancellationToken cancellationToken = default
@@ -127,6 +139,9 @@ public sealed class PizzasController : ApiControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType<ActivePizzaDto>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<ActionResult> PostAsync(
         [FromBody] RegisterPizzaRequest request,
         CancellationToken cancellationToken = default
@@ -143,6 +158,9 @@ public sealed class PizzasController : ApiControllerBase
     }
 
     [HttpPatch("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> PatchDetailsAsync(
         [FromRoute] int id,
         [FromBody] ChangePizzaDetailsRequest request,
@@ -160,6 +178,8 @@ public sealed class PizzasController : ApiControllerBase
     }
 
     [HttpPatch("{id:int}/archive")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> PatchArchiveAsync(
         [FromRoute] int id,
         CancellationToken cancellationToken = default
@@ -171,6 +191,8 @@ public sealed class PizzasController : ApiControllerBase
     }
 
     [HttpPatch("{id:int}/unarchive")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> PatchUnarchiveAsync(
         [FromRoute] int id,
         CancellationToken cancellationToken = default

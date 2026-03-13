@@ -3,9 +3,9 @@ using IlVecchioForno.API.Filters;
 using IlVecchioForno.API.Presenters.Ingredients;
 using IlVecchioForno.API.Presenters.Pizzas;
 using IlVecchioForno.API.Presenters.QuantityTypes;
-using IlVecchioForno.Application.UseCases.Ingredients.Presenters;
-using IlVecchioForno.Application.UseCases.Pizzas.Presenters;
-using IlVecchioForno.Application.UseCases.QuantityTypes.Presenters;
+using IlVecchioForno.Application.UseCases.Ingredients;
+using IlVecchioForno.Application.UseCases.Pizzas;
+using IlVecchioForno.Application.UseCases.QuantityTypes;
 
 namespace IlVecchioForno.API;
 

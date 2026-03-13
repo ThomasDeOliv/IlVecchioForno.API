@@ -2,23 +2,12 @@ using FluentValidation;
 using IlVecchioForno.Domain.PizzaIngredients;
 using IlVecchioForno.Domain.Pizzas;
 
-namespace IlVecchioForno.Application.UseCases.Pizzas.RegisterPizza;
+namespace IlVecchioForno.Application.UseCases.Pizzas.ChangePizzaDetails;
 
-public class RegisterPizzaCommandValidator : AbstractValidator<RegisterPizzaCommand>
+public class ChangePizzaDetailsCommandValidator : AbstractValidator<ChangePizzaDetailsCommand>
 {
-    public RegisterPizzaCommandValidator()
+    public ChangePizzaDetailsCommandValidator()
     {
-        this.RuleFor(c => c.Name)
-            .Cascade(CascadeMode.Stop)
-            .Must(v => !string.IsNullOrWhiteSpace(v) && v == v.Trim())
-            .WithMessage(
-                "Name must not be null, empty, whitespace, or contain leading/trailing whitespace."
-            )
-            .Length(PizzaInvariant.NameMinLength, PizzaInvariant.NameMaxLength)
-            .WithMessage(
-                $"Name size must be within the allowed range ({PizzaInvariant.NameMinLength} – {PizzaInvariant.NameMaxLength})."
-            );
-
         this.RuleFor(c => c.Description)
             .Cascade(CascadeMode.Stop)
             .Must(v => v is null || !string.IsNullOrWhiteSpace(v) && v == v.Trim())

@@ -1,7 +1,7 @@
 using IlVecchioForno.API.Controllers;
 using IlVecchioForno.API.Exceptions;
 using IlVecchioForno.Application.Common.DTOs;
-using IlVecchioForno.Application.UseCases.Ingredients.DTOs;
+using IlVecchioForno.Application.UseCases.Ingredients;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IlVecchioForno.API.Presenters.Ingredients;
@@ -26,7 +26,7 @@ public sealed class IngredientPresenter : IApiIngredientPresenter
         get
         {
             ActionResult result = this._result
-                    ?? throw new PresenterResultNotSetException();
+                                  ?? throw new PresenterResultNotSetException();
             this._result = null;
             return result;
         }
@@ -56,7 +56,10 @@ public sealed class IngredientPresenter : IApiIngredientPresenter
     {
         this._result = this.Controller.CreatedAtAction(
             nameof(this.Controller.GetByIdAsync).Replace("Async", string.Empty),
-            new { id = entity.Id },
+            new
+            {
+                id = entity.Id
+            },
             entity
         );
     }

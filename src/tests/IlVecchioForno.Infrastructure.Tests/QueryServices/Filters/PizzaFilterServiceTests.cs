@@ -2,7 +2,6 @@ using IlVecchioForno.Application.Gateways.Persistence.Queries.FilterTypes;
 using IlVecchioForno.Domain.Pizzas;
 using IlVecchioForno.Infrastructure.Common.Exceptions;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Filters;
-using IlVecchioForno.Infrastructure.Tests.Utilities.Data;
 using IlVecchioForno.Infrastructure.Tests.Utilities.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,86 +16,58 @@ public sealed class PizzaFilterServiceTests : SeededInfrastructureTestsBase
         this._filterService = new PizzaFilterService();
     }
 
-    public static TheoryData<string, List<Pizza>> FilteredPizzas =>
-        new TheoryData<string, List<Pizza>>
+    public static TheoryData<string, List<int>> FilteredPizzas =>
+        new TheoryData<string, List<int>>
         {
             {
-                string.Empty, new List<Pizza>(DbMockedTestsData.TestsPizzas)
+                string.Empty, [..Enumerable.Range(0, 15)]
             },
             {
-                "Ananas", new List<Pizza>()
+                "Ananas", []
             },
             {
-                "Quattro Formaggi", new List<Pizza>([DbMockedTestsData.TestsPizzas[2]])
+                "Quattro Formaggi", [2]
             },
             {
-                "ANA", new List<Pizza>([DbMockedTestsData.TestsPizzas[11], DbMockedTestsData.TestsPizzas[13]])
+                "ANA", [11, 13]
             },
             {
-                "ana", new List<Pizza>([DbMockedTestsData.TestsPizzas[11], DbMockedTestsData.TestsPizzas[13]])
+                "ana", [11, 13]
             },
             {
-                "aNa", new List<Pizza>([DbMockedTestsData.TestsPizzas[11], DbMockedTestsData.TestsPizzas[13]])
+                "aNa", [11, 13]
             },
             {
-                "classic Neapolitan pizza", new List<Pizza>([DbMockedTestsData.TestsPizzas[0]])
+                "classic Neapolitan pizza", [0]
             }
         };
 
-    public static TheoryData<decimal?, decimal?, List<Pizza>> RangeFilteredPizzas =>
-        new TheoryData<decimal?, decimal?, List<Pizza>>
+    public static TheoryData<decimal?, decimal?, List<int>> RangeFilteredPizzas =>
+        new TheoryData<decimal?, decimal?, List<int>>
         {
             {
-                null, null, new List<Pizza>(
-                    DbMockedTestsData.TestsPizzas
-                )
+                null, null, [..Enumerable.Range(0, 15)]
             },
             {
-                12.00m, null, new List<Pizza>
-                {
-                    DbMockedTestsData.TestsPizzas[4],
-                    DbMockedTestsData.TestsPizzas[6],
-                    DbMockedTestsData.TestsPizzas[7],
-                    DbMockedTestsData.TestsPizzas[14]
-                }
+                12.00m, null, [4, 6, 7, 14]
             },
             {
-                null, 9.00m, new List<Pizza>
-                {
-                    DbMockedTestsData.TestsPizzas[0],
-                    DbMockedTestsData.TestsPizzas[1],
-                    DbMockedTestsData.TestsPizzas[10]
-                }
+                null, 9.00m, [0, 1, 10]
             },
             {
-                10.00m, 11.00m, new List<Pizza>
-                {
-                    DbMockedTestsData.TestsPizzas[3],
-                    DbMockedTestsData.TestsPizzas[5],
-                    DbMockedTestsData.TestsPizzas[8],
-                    DbMockedTestsData.TestsPizzas[11],
-                    DbMockedTestsData.TestsPizzas[12],
-                    DbMockedTestsData.TestsPizzas[13]
-                }
+                10.00m, 11.00m, [3, 5, 8, 11, 12, 13]
             },
             {
-                10.00m, 10.00m, new List<Pizza>
-                {
-                    DbMockedTestsData.TestsPizzas[3],
-                    DbMockedTestsData.TestsPizzas[11]
-                }
+                10.00m, 10.00m, [3, 11]
             },
             {
-                8.00m, 8.00m, new List<Pizza>
-                {
-                    DbMockedTestsData.TestsPizzas[0]
-                }
+                8.00m, 8.00m, [0]
             },
             {
-                20.00m, null, new List<Pizza>()
+                20.00m, null, []
             },
             {
-                null, 5.00m, new List<Pizza>()
+                null, 5.00m, []
             }
         };
 
@@ -104,10 +75,11 @@ public sealed class PizzaFilterServiceTests : SeededInfrastructureTestsBase
     [MemberData(nameof(FilteredPizzas))]
     public async Task Filter_ForPizzas_Return_ExpectedFilteredPizzas(
         string search,
-        List<Pizza> expected
+        List<int> expectedIndexes
     )
     {
         // Arrange
+        List<Pizza> expected = expectedIndexes.Select(i => this._pizzas[i]).ToList();
         IQueryable<Pizza> queryable = this._ctx.Pizzas.AsQueryable();
         // Act
         IQueryable<Pizza> queryResult = this._filterService.Filter(
@@ -127,10 +99,11 @@ public sealed class PizzaFilterServiceTests : SeededInfrastructureTestsBase
     public async Task RangeFilter_ForPizzas_Return_ExpectedFilteredPizzas(
         decimal? min,
         decimal? max,
-        List<Pizza> expected
+        List<int> expectedIndexes
     )
     {
         // Arrange
+        List<Pizza> expected = expectedIndexes.Select(i => this._pizzas[i]).ToList();
         IQueryable<Pizza> queryable = this._ctx.Pizzas.AsQueryable();
         // Act
         IQueryable<Pizza> queryResult = this._filterService.Filter(

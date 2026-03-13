@@ -1,5 +1,6 @@
 using IlVecchioForno.Application.Common.Queries.Sorters;
 using IlVecchioForno.Application.Gateways.Persistence;
+using IlVecchioForno.Application.Gateways.Persistence.Queries;
 using IlVecchioForno.Application.Gateways.Persistence.Queries.FilterTypes;
 using IlVecchioForno.Domain.Ingredients;
 using IlVecchioForno.Infrastructure.Common.Exceptions;
@@ -7,7 +8,6 @@ using IlVecchioForno.Infrastructure.Persistence.QueryServices.Filters;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Paginations;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Sorters;
 using IlVecchioForno.Infrastructure.Persistence.Repositories;
-using IlVecchioForno.Infrastructure.Tests.Utilities.Data;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 
@@ -90,30 +90,32 @@ public sealed class IngredientRepositoryTests : SeededInfrastructureTestsBase
             );
     }
 
-    public static TheoryData<int, Ingredient?> IngredientResult =>
-        new TheoryData<int, Ingredient?>
+    public static TheoryData<int, int?> IngredientResult =>
+        new TheoryData<int, int?>
         {
             {
-                1, DbMockedTestsData.TestsIngredients[0]
-            },
-
-            {
-                2, DbMockedTestsData.TestsIngredients[1]
+                1, 0
             },
             {
-                3, DbMockedTestsData.TestsIngredients[2]
+                2, 1
             },
             {
-                4, DbMockedTestsData.TestsIngredients[3]
+                3, 2
             },
             {
-                5, DbMockedTestsData.TestsIngredients[4]
+                4, 3
+            },
+            {
+                5, 4
             },
             {
                 59, null
             },
             {
                 2733, null
+            },
+            {
+                -2733, null
             }
         };
 
@@ -127,16 +129,50 @@ public sealed class IngredientRepositoryTests : SeededInfrastructureTestsBase
         );
     }
 
-    [Theory]
-    [MemberData(nameof(IngredientResult))]
-    public async Task FindAsync_WithProvidedIntAsId_Return_ExpectedResult(int id, Ingredient? expectedIngredient)
+    [Fact]
+    public async Task ListAsync_Return_ExpectedResult()
     {
         // Arrange
         IIngredientRepository repository = this.CreateNewRepository();
+        ListQuerySpec<IngredientsSorter> querySpec = new ListQuerySpec<IngredientsSorter>(
+            1,
+            200,
+            IngredientsSorter.Id,
+            false,
+            new List<IFilterType>()
+        );
+        // Act
+        IReadOnlyCollection<Ingredient> result = await repository.ListAsync(querySpec, TestContext.Current.CancellationToken);
+        // Assert
+        Assert.Equivalent(this._ingredients, result);
+    }
+
+    [Theory]
+    [MemberData(nameof(IngredientResult))]
+    public async Task FindAsync_WithProvidedIntAsId_Return_ExpectedResult(int id, int? expectedIndex)
+    {
+        // Arrange
+        IIngredientRepository repository = this.CreateNewRepository();
+        Ingredient? expected = expectedIndex.HasValue ? this._ingredients[expectedIndex.Value] : null;
         // Act
         Ingredient? result = await repository.FindAsync(id, TestContext.Current.CancellationToken);
         // Assert
-        Assert.True(expectedIngredient is not null ? result is not null : result is null);
-        Assert.Equal(expectedIngredient, result);
+        Assert.Equivalent(expected, result);
+    }
+
+    [Fact]
+    public async Task Add_WithValidIngredient_PersistsAndGeneratesId()
+    {
+        // Arrange
+        IIngredientRepository repository = this.CreateNewRepository();
+        Ingredient newIngredient = new Ingredient(
+            "Asiago",
+            this._quantityTypes[1]
+        );
+        // Act
+        repository.Add(newIngredient);
+        await this._ctx.SaveChangesAsync(TestContext.Current.CancellationToken);
+        // Assert
+        Assert.True(newIngredient.Id > 0);
     }
 }

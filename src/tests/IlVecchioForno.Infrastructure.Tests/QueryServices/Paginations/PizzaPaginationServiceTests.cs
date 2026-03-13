@@ -2,7 +2,6 @@
 
 using IlVecchioForno.Domain.Pizzas;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Paginations;
-using IlVecchioForno.Infrastructure.Tests.Utilities.Data;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -17,120 +16,65 @@ public sealed class PizzaPaginationServiceTests : SeededInfrastructureTestsBase
         this._paginationService = new PaginationService<Pizza>();
     }
 
-    public static TheoryData<int, int, List<Pizza>> PaginatedPizzas =>
-        new TheoryData<int, int, List<Pizza>>
+    public static TheoryData<int, int, List<int>> PaginatedPizzas =>
+        new TheoryData<int, int, List<int>>
         {
             {
-                1, 1, new List<Pizza>([
-                    DbMockedTestsData.TestsPizzas[0]
-                ])
+                1, 1, [0]
             },
             {
-                1, 4, new List<Pizza>([
-                    DbMockedTestsData.TestsPizzas[0],
-                    DbMockedTestsData.TestsPizzas[1],
-                    DbMockedTestsData.TestsPizzas[2],
-                    DbMockedTestsData.TestsPizzas[3]
-                ])
+                1, 4, [0, 1, 2, 3]
             },
             {
-                1, 15, new List<Pizza>(DbMockedTestsData.TestsPizzas)
+                1, 15, [..Enumerable.Range(0, 15)]
             },
             {
-                1, 100, new List<Pizza>(DbMockedTestsData.TestsPizzas)
+                1, 100, [..Enumerable.Range(0, 15)]
             },
             {
-                2, 4, new List<Pizza>([
-                    DbMockedTestsData.TestsPizzas[4],
-                    DbMockedTestsData.TestsPizzas[5],
-                    DbMockedTestsData.TestsPizzas[6],
-                    DbMockedTestsData.TestsPizzas[7]
-                ])
+                2, 4, [4, 5, 6, 7]
             },
             {
-                2, 5, new List<Pizza>([
-                    DbMockedTestsData.TestsPizzas[5],
-                    DbMockedTestsData.TestsPizzas[6],
-                    DbMockedTestsData.TestsPizzas[7],
-                    DbMockedTestsData.TestsPizzas[8],
-                    DbMockedTestsData.TestsPizzas[9]
-                ])
+                2, 5, [5, 6, 7, 8, 9]
             },
             {
-                3, 4, new List<Pizza>([
-                    DbMockedTestsData.TestsPizzas[8],
-                    DbMockedTestsData.TestsPizzas[9],
-                    DbMockedTestsData.TestsPizzas[10],
-                    DbMockedTestsData.TestsPizzas[11]
-                ])
+                3, 4, [8, 9, 10, 11]
             },
             {
-                2, 7, new List<Pizza>([
-                    DbMockedTestsData.TestsPizzas[7],
-                    DbMockedTestsData.TestsPizzas[8],
-                    DbMockedTestsData.TestsPizzas[9],
-                    DbMockedTestsData.TestsPizzas[10],
-                    DbMockedTestsData.TestsPizzas[11],
-                    DbMockedTestsData.TestsPizzas[12],
-                    DbMockedTestsData.TestsPizzas[13]
-                ])
+                2, 7, [7, 8, 9, 10, 11, 12, 13]
             },
             {
-                4, 4, new List<Pizza>([
-                    DbMockedTestsData.TestsPizzas[12],
-                    DbMockedTestsData.TestsPizzas[13],
-                    DbMockedTestsData.TestsPizzas[14]
-                ])
+                4, 4, [12, 13, 14]
             },
             {
-                3, 5, new List<Pizza>([
-                    DbMockedTestsData.TestsPizzas[10],
-                    DbMockedTestsData.TestsPizzas[11],
-                    DbMockedTestsData.TestsPizzas[12],
-                    DbMockedTestsData.TestsPizzas[13],
-                    DbMockedTestsData.TestsPizzas[14]
-                ])
+                3, 5, [10, 11, 12, 13, 14]
             },
             {
-                2, 8, new List<Pizza>([
-                    DbMockedTestsData.TestsPizzas[8],
-                    DbMockedTestsData.TestsPizzas[9],
-                    DbMockedTestsData.TestsPizzas[10],
-                    DbMockedTestsData.TestsPizzas[11],
-                    DbMockedTestsData.TestsPizzas[12],
-                    DbMockedTestsData.TestsPizzas[13],
-                    DbMockedTestsData.TestsPizzas[14]
-                ])
+                2, 8, [8, 9, 10, 11, 12, 13, 14]
             },
             {
-                3, 7, new List<Pizza>([
-                    DbMockedTestsData.TestsPizzas[14]
-                ])
+                3, 7, [14]
             },
             {
-                15, 1, new List<Pizza>([
-                    DbMockedTestsData.TestsPizzas[14]
-                ])
+                15, 1, [14]
             },
             {
-                8, 2, new List<Pizza>([
-                    DbMockedTestsData.TestsPizzas[14]
-                ])
+                8, 2, [14]
             },
             {
-                16, 1, new List<Pizza>()
+                16, 1, []
             },
             {
-                5, 4, new List<Pizza>()
+                5, 4, []
             },
             {
-                3, 8, new List<Pizza>()
+                3, 8, []
             },
             {
-                100, 10, new List<Pizza>()
+                100, 10, []
             },
             {
-                1, 0, new List<Pizza>()
+                1, 0, []
             }
         };
 
@@ -139,10 +83,11 @@ public sealed class PizzaPaginationServiceTests : SeededInfrastructureTestsBase
     public async Task Paginate_ForPizzas_Return_ExpectedPizzas(
         int page,
         int pageSize,
-        List<Pizza> expected
+        List<int> expectedIndexes
     )
     {
         // Arrange
+        List<Pizza> expected = expectedIndexes.Select(i => this._pizzas[i]).ToList();
         IQueryable<Pizza> queryable = this._ctx.Pizzas.AsQueryable();
         // Act
         IQueryable<Pizza> queryResult = this._paginationService.Paginate(queryable, page, pageSize);

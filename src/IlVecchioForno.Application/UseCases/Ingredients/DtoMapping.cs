@@ -1,7 +1,7 @@
 using IlVecchioForno.Domain.Ingredients;
 using Mapster;
 
-namespace IlVecchioForno.Application.UseCases.Ingredients.DTOs;
+namespace IlVecchioForno.Application.UseCases.Ingredients;
 
 internal sealed class DtoMapping : IRegister
 {

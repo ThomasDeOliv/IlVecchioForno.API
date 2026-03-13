@@ -2,7 +2,7 @@ using IlVecchioForno.Application.Common.Exceptions;
 using IlVecchioForno.Domain.Pizzas;
 using Mapster;
 
-namespace IlVecchioForno.Application.UseCases.Pizzas.DTOs;
+namespace IlVecchioForno.Application.UseCases.Pizzas;
 
 internal sealed class DtoMapping : IRegister
 {

@@ -19,7 +19,7 @@ internal sealed class ListActivePizzasQueryValidator : AbstractValidator<ListAct
             );
 
         this.RuleFor(q => q.Search)
-            .Must(search => search is null || (!string.IsNullOrWhiteSpace(search) && search == search.Trim()))
+            .Must(search => search is null || !string.IsNullOrWhiteSpace(search) && search == search.Trim())
             .WithMessage("Search must not be empty, whitespace, or contain leading/trailing whitespace.");
 
         this.RuleFor(q => q.MinPrice)

@@ -1,5 +1,5 @@
 using IlVecchioForno.API.Controllers;
-using IlVecchioForno.Application.UseCases.Ingredients.Presenters;
+using IlVecchioForno.Application.UseCases.Ingredients;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IlVecchioForno.API.Presenters.Ingredients;

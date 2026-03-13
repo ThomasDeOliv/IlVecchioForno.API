@@ -2,7 +2,6 @@ using IlVecchioForno.Application.Common.DTOs;
 using IlVecchioForno.Application.Gateways.Persistence;
 using IlVecchioForno.Application.Gateways.Persistence.Queries;
 using IlVecchioForno.Application.Gateways.Persistence.Queries.FilterTypes;
-using IlVecchioForno.Application.UseCases.Pizzas.Presenters;
 using MediatR;
 
 namespace IlVecchioForno.Application.UseCases.Pizzas.CountArchivedPizzas;

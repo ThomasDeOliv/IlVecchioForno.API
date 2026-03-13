@@ -1,7 +1,7 @@
 using IlVecchioForno.Domain.QuantityTypes;
 using Mapster;
 
-namespace IlVecchioForno.Application.UseCases.QuantityTypes.DTOs;
+namespace IlVecchioForno.Application.UseCases.QuantityTypes;
 
 internal sealed class DtoMapping : IRegister
 {

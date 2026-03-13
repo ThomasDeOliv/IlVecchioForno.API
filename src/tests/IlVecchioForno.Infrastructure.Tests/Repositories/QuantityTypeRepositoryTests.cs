@@ -7,7 +7,6 @@ using IlVecchioForno.Infrastructure.Persistence.QueryServices.Filters;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Paginations;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Sorters;
 using IlVecchioForno.Infrastructure.Persistence.Repositories;
-using IlVecchioForno.Infrastructure.Tests.Utilities.Data;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 
@@ -110,7 +109,7 @@ public sealed class QuantityTypeRepositoryTests : SeededInfrastructureTestsBase
     }
 
     [Fact]
-    public async Task TestExample()
+    public async Task FindAsync_WithExistingId_ReturnsExpectedQuantityType()
     {
         // Arrange
         IQuantityTypeRepository repository = this.CreateNewRepository();
@@ -118,6 +117,6 @@ public sealed class QuantityTypeRepositoryTests : SeededInfrastructureTestsBase
         QuantityType? result = await repository.FindAsync(1, TestContext.Current.CancellationToken);
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(DbMockedTestsData.TestsQuantityTypes[0], result);
+        Assert.Equivalent(this._quantityTypes[0], result);
     }
 }

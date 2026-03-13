@@ -1,5 +1,6 @@
+using FluentValidation;
+using FluentValidation.Results;
 using IlVecchioForno.Application.Gateways.Persistence;
-using IlVecchioForno.Application.UseCases.Pizzas.Presenters;
 using IlVecchioForno.Domain.Ingredients;
 using IlVecchioForno.Domain.PizzaIngredients;
 using IlVecchioForno.Domain.Pizzas;
@@ -13,18 +14,21 @@ internal sealed class ChangePizzaDetailsHandler : IRequestHandler<ChangePizzaDet
     private readonly IPizzaRepository _pizzaRepository;
     private readonly IPizzaPresenter _presenter;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IValidator<ChangePizzaDetailsCommand> _validator;
 
     public ChangePizzaDetailsHandler(
         IIngredientRepository ingredientRepository,
         IPizzaPresenter presenter,
         IPizzaRepository pizzaRepository,
-        IUnitOfWork unitOfWork
+        IUnitOfWork unitOfWork,
+        IValidator<ChangePizzaDetailsCommand> validator
     )
     {
         this._ingredientRepository = ingredientRepository;
         this._presenter = presenter;
         this._pizzaRepository = pizzaRepository;
         this._unitOfWork = unitOfWork;
+        this._validator = validator;
     }
 
     public async Task Handle(
@@ -32,6 +36,21 @@ internal sealed class ChangePizzaDetailsHandler : IRequestHandler<ChangePizzaDet
         CancellationToken cancellationToken
     )
     {
+        ValidationResult validationResult = await this._validator.ValidateAsync(command, cancellationToken);
+
+        if (!validationResult.IsValid)
+        {
+            this._presenter.ValidationErrors(
+                validationResult.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    )
+            );
+            return;
+        }
+
         Pizza? target = await this._pizzaRepository.FindAsync(command.Id, cancellationToken);
 
         if (target is null)
@@ -52,7 +71,7 @@ internal sealed class ChangePizzaDetailsHandler : IRequestHandler<ChangePizzaDet
         List<PizzaIngredient> pizzaIngredients = targetIngredients
             .Select(t =>
                 new PizzaIngredient(
-                    new PizzaIngredientQuantity(command.IngredientsAndQuantities[t.Id]),
+                    command.IngredientsAndQuantities[t.Id],
                     t
                 )
             )
@@ -64,7 +83,7 @@ internal sealed class ChangePizzaDetailsHandler : IRequestHandler<ChangePizzaDet
                 ? new PizzaDescription(command.Description)
                 : null
         );
-        target.UpdatePrice(new PizzaPrice(command.Price));
+        target.UpdatePrice(command.Price);
         await this._unitOfWork.SaveChangesAsync(cancellationToken);
 
         this._presenter.EntityUpdated();

@@ -1,6 +1,8 @@
 using IlVecchioForno.API.Presenters.QuantityTypes;
 using IlVecchioForno.Application.Common;
+using IlVecchioForno.Application.Common.DTOs;
 using IlVecchioForno.Application.Common.Queries.Sorters;
+using IlVecchioForno.Application.UseCases.QuantityTypes;
 using IlVecchioForno.Application.UseCases.QuantityTypes.CountQuantityTypes;
 using IlVecchioForno.Application.UseCases.QuantityTypes.GetQuantityType;
 using IlVecchioForno.Application.UseCases.QuantityTypes.ListQuantityTypes;
@@ -25,6 +27,8 @@ public sealed class QuantityTypesController : ApiControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType<IReadOnlyList<QuantityTypeDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> GetAsync(
         [FromQuery] int page = QueryDefaultValues.PageNumberMin,
         [FromQuery] int pageSize = QueryDefaultValues.PageSizeDefault,
@@ -46,6 +50,8 @@ public sealed class QuantityTypesController : ApiControllerBase
     }
 
     [HttpGet("{id:int}")]
+    [ProducesResponseType<QuantityTypeDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> GetByIdAsync(
         [FromRoute] short id,
         CancellationToken cancellationToken = default
@@ -57,6 +63,7 @@ public sealed class QuantityTypesController : ApiControllerBase
     }
 
     [HttpGet("count")]
+    [ProducesResponseType<EntitiesCountDto>(StatusCodes.Status200OK)]
     public async Task<ActionResult> CountAsync(
         [FromQuery] string? search = null,
         CancellationToken cancellationToken = default

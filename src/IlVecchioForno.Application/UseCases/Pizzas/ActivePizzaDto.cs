@@ -1,11 +1,10 @@
-namespace IlVecchioForno.Application.UseCases.Pizzas.DTOs;
+namespace IlVecchioForno.Application.UseCases.Pizzas;
 
-public sealed record ArchivedPizzaDto(
+public sealed record ActivePizzaDto(
     int Id,
     string Name,
     string? Description,
     decimal Price,
-    DateTimeOffset ArchivedAt,
     IReadOnlyList<PizzaIngredientDto> Ingredients
 ) : PizzaDtoBase(
     Id,

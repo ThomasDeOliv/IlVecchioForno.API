@@ -2,7 +2,6 @@
 
 using IlVecchioForno.Domain.QuantityTypes;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Paginations;
-using IlVecchioForno.Infrastructure.Tests.Utilities.Data;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -17,65 +16,56 @@ public sealed class QuantityTypePaginationServiceTests : SeededInfrastructureTes
         this._paginationService = new PaginationService<QuantityType>();
     }
 
-    public static TheoryData<int, int, List<QuantityType>> PaginatedQuantityTypes =>
-        new TheoryData<int, int, List<QuantityType>>
+    public static TheoryData<int, int, List<int>> PaginatedQuantityTypes =>
+        new TheoryData<int, int, List<int>>
         {
             {
-                1, 1, new List<QuantityType>([
-                    DbMockedTestsData.TestsQuantityTypes[0]
-                ])
+                1, 1, [0]
             },
             {
-                1, 2, new List<QuantityType>([DbMockedTestsData.TestsQuantityTypes[0], DbMockedTestsData.TestsQuantityTypes[1]])
+                1, 2, [0, 1]
             },
             {
-                1, 3, new List<QuantityType>([DbMockedTestsData.TestsQuantityTypes[0], DbMockedTestsData.TestsQuantityTypes[1], DbMockedTestsData.TestsQuantityTypes[2]])
+                1, 3, [0, 1, 2]
             },
             {
-                1, 6, new List<QuantityType>(DbMockedTestsData.TestsQuantityTypes)
+                1, 6, [..Enumerable.Range(0, 6)]
             },
             {
-                1, 100, new List<QuantityType>(DbMockedTestsData.TestsQuantityTypes)
+                1, 100, [..Enumerable.Range(0, 6)]
             },
             {
-                1, 10000, new List<QuantityType>(DbMockedTestsData.TestsQuantityTypes)
+                1, 10000, [..Enumerable.Range(0, 6)]
             },
             {
-                2, 2, new List<QuantityType>([DbMockedTestsData.TestsQuantityTypes[2], DbMockedTestsData.TestsQuantityTypes[3]])
+                2, 2, [2, 3]
             },
             {
-                2, 3, new List<QuantityType>([DbMockedTestsData.TestsQuantityTypes[3], DbMockedTestsData.TestsQuantityTypes[4], DbMockedTestsData.TestsQuantityTypes[5]])
+                2, 3, [3, 4, 5]
             },
             {
-                2, 4, new List<QuantityType>([DbMockedTestsData.TestsQuantityTypes[4], DbMockedTestsData.TestsQuantityTypes[5]])
+                2, 4, [4, 5]
             },
             {
-                3, 2, new List<QuantityType>([
-                    DbMockedTestsData.TestsQuantityTypes[4],
-                    DbMockedTestsData.TestsQuantityTypes[5]
-                ])
+                3, 2, [4, 5]
             },
             {
-                3, 3, new List<QuantityType>()
+                3, 3, []
             },
             {
-                5, 1, new List<QuantityType>([
-                    DbMockedTestsData.TestsQuantityTypes[4]
-                ])
+                5, 1, [4]
             },
             {
-                5, 1000, new List<QuantityType>()
+                5, 1000, []
             },
             {
-                6, 1, new List<QuantityType>([
-                    DbMockedTestsData.TestsQuantityTypes[5]
-                ])
+                6, 1, [5]
             },
             {
-                10, 1, new List<QuantityType>()
+                10, 1, []
             },
             {
-                1, 0, new List<QuantityType>()
+                1, 0, []
             }
         };
 
@@ -84,10 +74,11 @@ public sealed class QuantityTypePaginationServiceTests : SeededInfrastructureTes
     public async Task Paginate_ForQuantityTypes_Return_ExpectedQuantityTypes(
         int page,
         int pageSize,
-        List<QuantityType> expected
+        List<int> expectedIndexes
     )
     {
         // Arrange
+        List<QuantityType> expected = expectedIndexes.Select(i => this._quantityTypes[i]).ToList();
         IQueryable<QuantityType> queryable = this._ctx.QuantityTypes.AsQueryable();
         // Act
         IQueryable<QuantityType> queryResult = this._paginationService.Paginate(queryable, page, pageSize);

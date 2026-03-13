@@ -1,4 +1,4 @@
-namespace IlVecchioForno.Application.UseCases.Pizzas.DTOs;
+namespace IlVecchioForno.Application.UseCases.Pizzas;
 
 public sealed record PizzaIngredientDto(
     decimal Quantity,

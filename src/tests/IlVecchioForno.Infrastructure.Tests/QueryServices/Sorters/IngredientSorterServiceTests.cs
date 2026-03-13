@@ -1,7 +1,6 @@
 using IlVecchioForno.Application.Common.Queries.Sorters;
 using IlVecchioForno.Domain.Ingredients;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Sorters;
-using IlVecchioForno.Infrastructure.Tests.Utilities.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace IlVecchioForno.Infrastructure.Tests.QueryServices.Sorters;
@@ -15,72 +14,22 @@ public sealed class IngredientSorterServiceTests : SeededInfrastructureTestsBase
         this._sorterService = new IngredientSorterService();
     }
 
-    public static TheoryData<bool, IngredientsSorter, List<Ingredient>> SortedIngredients =>
-        new TheoryData<bool, IngredientsSorter, List<Ingredient>>
+    public static TheoryData<bool, IngredientsSorter, List<int>> SortedIngredients =>
+        new TheoryData<bool, IngredientsSorter, List<int>>
         {
             // Default
             {
-                false, IngredientsSorter.Id, DbMockedTestsData.TestsIngredients
+                false, IngredientsSorter.Id, [..Enumerable.Range(0, 23)]
             },
             {
-                true, IngredientsSorter.Id, DbMockedTestsData.TestsIngredients.AsEnumerable().Reverse().ToList()
+                true, IngredientsSorter.Id, [..Enumerable.Range(0, 23).Reverse()]
             },
             // Name
             {
-                false, IngredientsSorter.Name, new List<Ingredient>
-                {
-                    DbMockedTestsData.TestsIngredients[15],
-                    DbMockedTestsData.TestsIngredients[18],
-                    DbMockedTestsData.TestsIngredients[20],
-                    DbMockedTestsData.TestsIngredients[16],
-                    DbMockedTestsData.TestsIngredients[22],
-                    DbMockedTestsData.TestsIngredients[19],
-                    DbMockedTestsData.TestsIngredients[21],
-                    DbMockedTestsData.TestsIngredients[4],
-                    DbMockedTestsData.TestsIngredients[0],
-                    DbMockedTestsData.TestsIngredients[6],
-                    DbMockedTestsData.TestsIngredients[2],
-                    DbMockedTestsData.TestsIngredients[7],
-                    DbMockedTestsData.TestsIngredients[9],
-                    DbMockedTestsData.TestsIngredients[17],
-                    DbMockedTestsData.TestsIngredients[8],
-                    DbMockedTestsData.TestsIngredients[14],
-                    DbMockedTestsData.TestsIngredients[10],
-                    DbMockedTestsData.TestsIngredients[11],
-                    DbMockedTestsData.TestsIngredients[12],
-                    DbMockedTestsData.TestsIngredients[3],
-                    DbMockedTestsData.TestsIngredients[5],
-                    DbMockedTestsData.TestsIngredients[13],
-                    DbMockedTestsData.TestsIngredients[1]
-                }
+                false, IngredientsSorter.Name, [15, 18, 20, 16, 22, 19, 21, 4, 0, 6, 2, 7, 9, 17, 8, 14, 10, 11, 12, 3, 5, 13, 1]
             },
             {
-                true, IngredientsSorter.Name, new List<Ingredient>
-                {
-                    DbMockedTestsData.TestsIngredients[1],
-                    DbMockedTestsData.TestsIngredients[13],
-                    DbMockedTestsData.TestsIngredients[5],
-                    DbMockedTestsData.TestsIngredients[3],
-                    DbMockedTestsData.TestsIngredients[12],
-                    DbMockedTestsData.TestsIngredients[11],
-                    DbMockedTestsData.TestsIngredients[10],
-                    DbMockedTestsData.TestsIngredients[14],
-                    DbMockedTestsData.TestsIngredients[8],
-                    DbMockedTestsData.TestsIngredients[17],
-                    DbMockedTestsData.TestsIngredients[9],
-                    DbMockedTestsData.TestsIngredients[7],
-                    DbMockedTestsData.TestsIngredients[2],
-                    DbMockedTestsData.TestsIngredients[6],
-                    DbMockedTestsData.TestsIngredients[0],
-                    DbMockedTestsData.TestsIngredients[4],
-                    DbMockedTestsData.TestsIngredients[21],
-                    DbMockedTestsData.TestsIngredients[19],
-                    DbMockedTestsData.TestsIngredients[22],
-                    DbMockedTestsData.TestsIngredients[16],
-                    DbMockedTestsData.TestsIngredients[20],
-                    DbMockedTestsData.TestsIngredients[18],
-                    DbMockedTestsData.TestsIngredients[15]
-                }
+                true, IngredientsSorter.Name, [1, 13, 5, 3, 12, 11, 10, 14, 8, 17, 9, 7, 2, 6, 0, 4, 21, 19, 22, 16, 20, 18, 15]
             }
         };
 
@@ -89,10 +38,11 @@ public sealed class IngredientSorterServiceTests : SeededInfrastructureTestsBase
     public async Task Sorter_ForIngredients_Return_ExpectedSortedIngredients(
         bool descending,
         IngredientsSorter sorter,
-        List<Ingredient> expected
+        List<int> expectedIndexes
     )
     {
         // Arrange
+        List<Ingredient> expected = expectedIndexes.Select(i => this._ingredients[i]).ToList();
         IQueryable<Ingredient> queryable = this._ctx.Ingredients.AsQueryable();
         // Act
         IQueryable<Ingredient> queryResult = this._sorterService.OrderBy(queryable, sorter, descending);

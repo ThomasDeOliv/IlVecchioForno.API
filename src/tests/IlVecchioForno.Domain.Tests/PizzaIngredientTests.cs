@@ -42,12 +42,12 @@ public class PizzaIngredientTests
         const string quantityTypeNameBase = "Grams";
         const string quantityTypeUnitBase = "g";
         const string ingredientNameBase = "Basil";
-        QuantityTypeName quantityTypeName = new QuantityTypeName(quantityTypeNameBase);
-        QuantityTypeUnit quantityTypeUnit = new QuantityTypeUnit(quantityTypeUnitBase);
+        QuantityTypeName quantityTypeName = quantityTypeNameBase;
+        QuantityTypeUnit quantityTypeUnit = quantityTypeUnitBase;
         QuantityType quantityType = new QuantityType(quantityTypeName, quantityTypeUnit);
-        IngredientName ingredientName = new IngredientName(ingredientNameBase);
+        IngredientName ingredientName = ingredientNameBase;
         Ingredient ingredient = new Ingredient(ingredientName, quantityType);
-        PizzaIngredientQuantity pizzaIngredientQuantity = new PizzaIngredientQuantity(quantity);
+        PizzaIngredientQuantity pizzaIngredientQuantity = quantity;
         // Act
         PizzaIngredient pizzaIngredient = new PizzaIngredient(pizzaIngredientQuantity, ingredient);
         // Assert
@@ -60,12 +60,49 @@ public class PizzaIngredientTests
         decimal quantity)
     {
         // Arrange & Act
-        PizzaIngredientQuantityException exception =
-            Assert.Throws<PizzaIngredientQuantityException>(() => new PizzaIngredientQuantity(quantity));
+        PizzaIngredientQuantityException exception = Assert.Throws<PizzaIngredientQuantityException>(() => new PizzaIngredientQuantity(quantity));
         // Assert
         Assert.Equal(
             $"{nameof(PizzaIngredientQuantity)} is smaller than the minimum required value of {PizzaIngredientInvariant.MinQuantity}.",
             exception.Message
         );
+    }
+
+    [Fact]
+    public void PizzaIngredientQuantity_CanBeImplicitlyCastToDecimal()
+    {
+        // Arrange
+        const decimal rawValue = 15.0m;
+        PizzaIngredientQuantity valueObject = new PizzaIngredientQuantity(rawValue);
+        // Act
+        decimal result = valueObject;
+        // Assert
+        Assert.IsType<decimal>(result);
+        Assert.Equal(rawValue, result);
+    }
+
+    [Fact]
+    public void PizzaIngredientQuantity_CanBeImplicitlyCreatedFromDecimal()
+    {
+        // Arrange
+        const decimal rawValue = 15.0m;
+        // Act
+        PizzaIngredientQuantity result = rawValue;
+        // Assert
+        Assert.IsType<PizzaIngredientQuantity>(result);
+        Assert.Equal(rawValue, result.Value);
+    }
+
+    [Fact]
+    public void PizzaIngredientQuantity_CannotBeImplicitlyCreatedFromDecimalBelowMinQuantity()
+    {
+        // Arrange
+        const decimal rawValue = -15.0m;
+        // Act & Assert
+        PizzaIngredientQuantityException ex = Assert.Throws<PizzaIngredientQuantityException>(() =>
+        {
+            PizzaIngredientQuantity _ = rawValue;
+        });
+        Assert.Equal($"{nameof(PizzaIngredientQuantity)} is smaller than the minimum required value of {PizzaIngredientInvariant.MinQuantity}.", ex.Message);
     }
 }

@@ -13,19 +13,19 @@ public sealed class InfrastructureContextTests : EmptyInfrastructureTestsBase
     private static QuantityType GetTestQuantityType(string name, string unit)
     {
         return new QuantityType(
-            new QuantityTypeName(name),
-            new QuantityTypeUnit(unit)
+            name,
+            unit
         );
     }
 
     private static Pizza GetTestPizza(string name, string? description, decimal price, int id = 0)
     {
         return new Pizza(
-            new PizzaName(name),
+            name,
             !string.IsNullOrEmpty(description)
                 ? new PizzaDescription(description)
                 : null,
-            new PizzaPrice(price),
+            price,
             id
         );
     }

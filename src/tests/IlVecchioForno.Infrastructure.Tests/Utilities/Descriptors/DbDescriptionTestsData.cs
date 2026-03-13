@@ -3,7 +3,7 @@ using IlVecchioForno.Domain.Pizzas;
 using IlVecchioForno.Domain.QuantityTypes;
 using IlVecchioForno.Infrastructure.Tests.Utilities.Models;
 
-namespace IlVecchioForno.Infrastructure.Tests.Utilities.Data;
+namespace IlVecchioForno.Infrastructure.Tests.Utilities.Descriptors;
 
 public static class DbDescriptionTestsData
 {

@@ -1,4 +1,4 @@
-using IlVecchioForno.Infrastructure.Tests.Utilities.Data;
+using IlVecchioForno.Infrastructure.Tests.Utilities.Descriptors;
 using IlVecchioForno.Infrastructure.Tests.Utilities.Models;
 using Microsoft.EntityFrameworkCore;
 

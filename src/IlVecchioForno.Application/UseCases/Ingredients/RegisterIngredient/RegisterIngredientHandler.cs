@@ -1,8 +1,6 @@
 using FluentValidation;
 using FluentValidation.Results;
 using IlVecchioForno.Application.Gateways.Persistence;
-using IlVecchioForno.Application.UseCases.Ingredients.DTOs;
-using IlVecchioForno.Application.UseCases.Ingredients.Presenters;
 using IlVecchioForno.Domain.Ingredients;
 using IlVecchioForno.Domain.QuantityTypes;
 using MapsterMapper;
@@ -74,7 +72,7 @@ internal sealed class RegisterIngredientHandler : IRequestHandler<RegisterIngred
         }
 
         Ingredient newIngredient = new Ingredient(
-            new IngredientName(command.Name),
+            command.Name,
             targetQuantityType
         );
 

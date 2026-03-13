@@ -5,21 +5,6 @@ namespace IlVecchioForno.Domain.Tests;
 
 public class QuantityTypeTests
 {
-    [Fact]
-    public void QuantityType_CreateInstance_Succeeds_WhenProvidingNullUnit()
-    {
-        // Arrange
-        const string quantityTypeNameBase = "Grams";
-        const string quantityTypeUnitBase = "g";
-        QuantityTypeName quantityTypeName = new QuantityTypeName(quantityTypeNameBase);
-        QuantityTypeUnit quantityTypeUnit = new QuantityTypeUnit(quantityTypeUnitBase);
-        // Act
-        QuantityType quantityType = new QuantityType(quantityTypeName, quantityTypeUnit);
-        // Assert
-        Assert.Equal(quantityTypeNameBase, quantityType.Name);
-        Assert.Equal(quantityTypeUnitBase, quantityType.Unit);
-    }
-
     [Theory]
     [InlineData("Grams", "g")]
     [InlineData("Kilograms", "kg")]
@@ -28,8 +13,8 @@ public class QuantityTypeTests
     public void QuantityType_CreateInstance_Succeeds_WhenProvidingValidNameAndUnit(string name, string unit)
     {
         // Arrange
-        QuantityTypeName nameValueObject = new QuantityTypeName(name);
-        QuantityTypeUnit unitValueObject = new QuantityTypeUnit(unit);
+        QuantityTypeName nameValueObject = name;
+        QuantityTypeUnit unitValueObject = unit;
         // Act
         QuantityType quantityType = new QuantityType(nameValueObject, unitValueObject);
         // Assert
@@ -67,13 +52,89 @@ public class QuantityTypeTests
         // Arrange
         string name = new string('a', QuantityTypeInvariant.NameMaxLength + length);
         // Act
-        QuantityTypeNameException
-            exception = Assert.Throws<QuantityTypeNameException>(() => new QuantityTypeName(name));
+        QuantityTypeNameException exception = Assert.Throws<QuantityTypeNameException>(() => new QuantityTypeName(name));
         // Assert
         Assert.Equal(
             $"{nameof(QuantityTypeName)} exceeds maximum length of {QuantityTypeInvariant.NameMaxLength} characters.",
             exception.Message
         );
+    }
+
+    [Fact]
+    public void QuantityTypeName_CanBeImplicitlyCastToString()
+    {
+        // Arrange
+        const string rawValue = "A random name...";
+        QuantityTypeName valueObject = new QuantityTypeName(rawValue);
+        // Act
+        string result = valueObject;
+        // Assert
+        Assert.IsType<string>(result);
+        Assert.Equal(rawValue, result);
+    }
+
+    [Fact]
+    public void QuantityTypeName_CanBeImplicitlyCreatedFromValidString()
+    {
+        // Arrange
+        const string rawValue = "A random name...";
+        // Act
+        QuantityTypeName result = rawValue;
+        // Assert
+        Assert.IsType<QuantityTypeName>(result);
+        Assert.Equal(rawValue, result.Value);
+    }
+
+    [Fact]
+    public void QuantityTypeName_CannotBeImplicitlyCreatedFromNull()
+    {
+        // Arrange
+        const string? rawValue = null;
+        // Act & Assert
+        QuantityTypeNameException ex = Assert.Throws<QuantityTypeNameException>(() =>
+        {
+            QuantityTypeName _ = rawValue!;
+        });
+        Assert.Equal($"{nameof(QuantityTypeName)} cannot be instantiated from null, empty or whitespace value.", ex.Message);
+    }
+
+    [Fact]
+    public void QuantityTypeName_CannotBeImplicitlyCreatedFromEmptyString()
+    {
+        // Arrange
+        const string rawValue = "";
+        // Act & Assert
+        QuantityTypeNameException ex = Assert.Throws<QuantityTypeNameException>(() =>
+        {
+            QuantityTypeName _ = rawValue;
+        });
+        Assert.Equal($"{nameof(QuantityTypeName)} cannot be instantiated from null, empty or whitespace value.", ex.Message);
+    }
+
+    [Fact]
+    public void QuantityTypeName_CannotBeImplicitlyCreatedFromStringFilledWithWhiteSpaces()
+    {
+        // Arrange
+        const string rawValue = "                  ";
+        // Act & Assert
+        QuantityTypeNameException ex = Assert.Throws<QuantityTypeNameException>(() =>
+        {
+            QuantityTypeName _ = rawValue;
+        });
+        Assert.Equal($"{nameof(QuantityTypeName)} cannot be instantiated from null, empty or whitespace value.", ex.Message);
+    }
+
+    [Fact]
+    public void QuantityTypeName_CannotBeImplicitlyCreatedFromStringExceedingMaxLength()
+    {
+        // Arrange
+        string rawValue = new string('c', QuantityTypeInvariant.NameMaxLength + 1);
+        // Act & Assert
+        QuantityTypeNameException ex = Assert.Throws<QuantityTypeNameException>(() =>
+        {
+            QuantityTypeName _ = rawValue;
+        });
+        Assert.Equal($"{nameof(QuantityTypeName)} exceeds maximum length of {QuantityTypeInvariant.NameMaxLength} characters.", ex.Message);
     }
 
     [Theory]
@@ -113,5 +174,82 @@ public class QuantityTypeTests
             $"{nameof(QuantityTypeUnit)} exceeds maximum length of {QuantityTypeInvariant.UnitMaxLength} characters.",
             exception.Message
         );
+    }
+
+    [Fact]
+    public void QuantityTypeUnit_CanBeImplicitlyCastToString()
+    {
+        // Arrange
+        const string rawValue = "ARU"; // A Random Unit
+        QuantityTypeUnit valueObject = new QuantityTypeUnit(rawValue);
+        // Act
+        string result = valueObject;
+        // Assert
+        Assert.IsType<string>(result);
+        Assert.Equal(rawValue, result);
+    }
+
+    [Fact]
+    public void QuantityTypeUnit_CanBeImplicitlyCreatedFromValidString()
+    {
+        // Arrange
+        const string rawValue = "ARU"; // A Random Unit
+        // Act
+        QuantityTypeUnit result = rawValue;
+        // Assert
+        Assert.IsType<QuantityTypeUnit>(result);
+        Assert.Equal(rawValue, result.Value);
+    }
+
+    [Fact]
+    public void QuantityTypeUnit_CannotBeImplicitlyCreatedFromNull()
+    {
+        // Arrange
+        const string? rawValue = null;
+        // Act & Assert
+        QuantityTypeUnitException ex = Assert.Throws<QuantityTypeUnitException>(() =>
+        {
+            QuantityTypeUnit _ = rawValue!;
+        });
+        Assert.Equal($"{nameof(QuantityTypeUnit)} cannot be instantiated from null, empty or whitespace value.", ex.Message);
+    }
+
+    [Fact]
+    public void QuantityTypeUnit_CannotBeImplicitlyCreatedFromEmptyString()
+    {
+        // Arrange
+        const string rawValue = "";
+        // Act & Assert
+        QuantityTypeUnitException ex = Assert.Throws<QuantityTypeUnitException>(() =>
+        {
+            QuantityTypeUnit _ = rawValue;
+        });
+        Assert.Equal($"{nameof(QuantityTypeUnit)} cannot be instantiated from null, empty or whitespace value.", ex.Message);
+    }
+
+    [Fact]
+    public void QuantityTypeUnit_CannotBeImplicitlyCreatedFromStringFilledWithWhiteSpaces()
+    {
+        // Arrange
+        const string rawValue = "                  ";
+        // Act & Assert
+        QuantityTypeUnitException ex = Assert.Throws<QuantityTypeUnitException>(() =>
+        {
+            QuantityTypeUnit _ = rawValue;
+        });
+        Assert.Equal($"{nameof(QuantityTypeUnit)} cannot be instantiated from null, empty or whitespace value.", ex.Message);
+    }
+
+    [Fact]
+    public void QuantityTypeUnit_CannotBeImplicitlyCreatedFromStringExceedingMaxLength()
+    {
+        // Arrange
+        string rawValue = new string('c', QuantityTypeInvariant.UnitMaxLength + 1);
+        // Act & Assert
+        QuantityTypeUnitException ex = Assert.Throws<QuantityTypeUnitException>(() =>
+        {
+            QuantityTypeUnit _ = rawValue;
+        });
+        Assert.Equal($"{nameof(QuantityTypeUnit)} exceeds maximum length of {QuantityTypeInvariant.UnitMaxLength} characters.", ex.Message);
     }
 }

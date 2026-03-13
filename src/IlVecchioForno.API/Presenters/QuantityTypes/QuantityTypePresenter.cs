@@ -1,7 +1,7 @@
 using IlVecchioForno.API.Controllers;
 using IlVecchioForno.API.Exceptions;
 using IlVecchioForno.Application.Common.DTOs;
-using IlVecchioForno.Application.UseCases.QuantityTypes.DTOs;
+using IlVecchioForno.Application.UseCases.QuantityTypes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IlVecchioForno.API.Presenters.QuantityTypes;
@@ -26,7 +26,7 @@ public sealed class QuantityTypePresenter : IApiQuantityTypePresenter
         get
         {
             ActionResult result = this._result
-                    ?? throw new PresenterResultNotSetException();
+                                  ?? throw new PresenterResultNotSetException();
             this._result = null;
             return result;
         }

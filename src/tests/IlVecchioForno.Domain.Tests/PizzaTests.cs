@@ -19,39 +19,39 @@ public class PizzaTests
     {
         List<QuantityType> quantityTypes = new List<QuantityType>
         {
-            new QuantityType(new QuantityTypeName("Milligrams"), new QuantityTypeUnit("mg")),
-            new QuantityType(new QuantityTypeName("Grams"), new QuantityTypeUnit("g")),
-            new QuantityType(new QuantityTypeName("Kilograms"), new QuantityTypeUnit("kg")),
-            new QuantityType(new QuantityTypeName("Milliliters"), new QuantityTypeUnit("mL")),
-            new QuantityType(new QuantityTypeName("Centiliters"), new QuantityTypeUnit("cL")),
-            new QuantityType(new QuantityTypeName("Liters"), new QuantityTypeUnit("L"))
+            new QuantityType("Milligrams", "mg"),
+            new QuantityType("Grams", "g"),
+            new QuantityType("Kilograms", "kg"),
+            new QuantityType("Milliliters", "mL"),
+            new QuantityType("Centiliters", "cL"),
+            new QuantityType("Liters", "L")
         };
 
         this._ingredients = new List<Ingredient>
         {
-            new Ingredient(new IngredientName("Flour (00)"), quantityTypes[2]),
-            new Ingredient(new IngredientName("Water"), quantityTypes[4]),
-            new Ingredient(new IngredientName("Fresh yeast"), quantityTypes[2]),
-            new Ingredient(new IngredientName("Salt"), quantityTypes[2]),
-            new Ingredient(new IngredientName("Extra virgin olive oil"), quantityTypes[4]),
-            new Ingredient(new IngredientName("San Marzano tomato sauce"), quantityTypes[2]),
-            new Ingredient(new IngredientName("Fresh basil leaves"), quantityTypes[0]),
-            new Ingredient(new IngredientName("Garlic clove"), quantityTypes[0]),
-            new Ingredient(new IngredientName("Oregano"), quantityTypes[2]),
-            new Ingredient(new IngredientName("Mozzarella fior di latte"), quantityTypes[2]),
-            new Ingredient(new IngredientName("Parmigiano Reggiano"), quantityTypes[2]),
-            new Ingredient(new IngredientName("Pecorino Romano"), quantityTypes[2]),
-            new Ingredient(new IngredientName("Prosciutto crudo"), quantityTypes[2]),
-            new Ingredient(new IngredientName("Spianata calabra"), quantityTypes[2]),
-            new Ingredient(new IngredientName("Pancetta"), quantityTypes[2]),
-            new Ingredient(new IngredientName("'Nduja"), quantityTypes[2]),
-            new Ingredient(new IngredientName("Black olives"), quantityTypes[0]),
-            new Ingredient(new IngredientName("Mushrooms"), quantityTypes[2]),
-            new Ingredient(new IngredientName("Artichoke hearts"), quantityTypes[0]),
-            new Ingredient(new IngredientName("Capers"), quantityTypes[2]),
-            new Ingredient(new IngredientName("Arugula"), quantityTypes[2]),
-            new Ingredient(new IngredientName("Cherry tomatoes"), quantityTypes[2]),
-            new Ingredient(new IngredientName("Buffalo mozzarella"), quantityTypes[2])
+            new Ingredient("Flour (00)", quantityTypes[2]),
+            new Ingredient("Water", quantityTypes[4]),
+            new Ingredient("Fresh yeast", quantityTypes[2]),
+            new Ingredient("Salt", quantityTypes[2]),
+            new Ingredient("Extra virgin olive oil", quantityTypes[4]),
+            new Ingredient("San Marzano tomato sauce", quantityTypes[2]),
+            new Ingredient("Fresh basil leaves", quantityTypes[0]),
+            new Ingredient("Garlic clove", quantityTypes[0]),
+            new Ingredient("Oregano", quantityTypes[2]),
+            new Ingredient("Mozzarella fior di latte", quantityTypes[2]),
+            new Ingredient("Parmigiano Reggiano", quantityTypes[2]),
+            new Ingredient("Pecorino Romano", quantityTypes[2]),
+            new Ingredient("Prosciutto crudo", quantityTypes[2]),
+            new Ingredient("Spianata calabra", quantityTypes[2]),
+            new Ingredient("Pancetta", quantityTypes[2]),
+            new Ingredient("'Nduja", quantityTypes[2]),
+            new Ingredient("Black olives", quantityTypes[0]),
+            new Ingredient("Mushrooms", quantityTypes[2]),
+            new Ingredient("Artichoke hearts", quantityTypes[0]),
+            new Ingredient("Capers", quantityTypes[2]),
+            new Ingredient("Arugula", quantityTypes[2]),
+            new Ingredient("Cherry tomatoes", quantityTypes[2]),
+            new Ingredient("Buffalo mozzarella", quantityTypes[2])
         };
 
         this._quantities = new List<decimal>
@@ -149,12 +149,13 @@ public class PizzaTests
 
     private static Pizza CreatePizza(string name, string? description, decimal price)
     {
-        PizzaName pizzaName = new PizzaName(name);
-        PizzaDescription? pizzaDescription = !string.IsNullOrEmpty(description)
-            ? new PizzaDescription(description)
-            : null;
-        PizzaPrice pizzaPrice = new PizzaPrice(price);
-        return new Pizza(pizzaName, pizzaDescription, pizzaPrice);
+        return new Pizza(
+            name,
+            !string.IsNullOrEmpty(description)
+                ? new PizzaDescription(description)
+                : null,
+            price
+        );
     }
 
     [Theory]
@@ -197,9 +198,8 @@ public class PizzaTests
     {
         // Arrange
         Pizza pizza = CreatePizza(pizzaNameBase, pizzaDescriptionBase, pizzaPriceBase);
-        PizzaName pizzaName = new PizzaName(name);
         // Act
-        pizza.UpdateName(pizzaName);
+        pizza.UpdateName(name);
         // Assert
         Assert.Equal(name, pizza.Name);
         Assert.NotNull(pizza.Description);
@@ -209,15 +209,14 @@ public class PizzaTests
         Assert.Empty(pizza.PizzaIngredients);
     }
 
-    [Theory]
-    [InlineData("Seasonal vegetables, mozzarella and pecorino fioretto.")]
-    public void Pizza_UpdateDescription_Succeeds_WhenProvidingValidValue(string description)
+    [Fact]
+    public void Pizza_UpdateDescription_Succeeds_WhenProvidingValidValue()
     {
         // Arrange
+        string description = "Seasonal vegetables, mozzarella and pecorino fioretto.";
         Pizza pizza = CreatePizza(pizzaNameBase, pizzaDescriptionBase, pizzaPriceBase);
-        PizzaDescription pizzaDescription = new PizzaDescription(description);
         // Act
-        pizza.UpdateDescription(pizzaDescription);
+        pizza.UpdateDescription(description);
         // Assert
         Assert.Equal(pizzaNameBase, pizza.Name);
         Assert.NotNull(pizza.Description);
@@ -233,9 +232,8 @@ public class PizzaTests
     {
         // Arrange
         Pizza pizza = CreatePizza(pizzaNameBase, pizzaDescriptionBase, pizzaPriceBase);
-        PizzaPrice pizzaPrice = new PizzaPrice(price);
         // Act
-        pizza.UpdatePrice(pizzaPrice);
+        pizza.UpdatePrice(price);
         // Assert
         Assert.Equal(pizzaNameBase, pizza.Name);
         Assert.NotNull(pizza.Description);
@@ -311,6 +309,32 @@ public class PizzaTests
         Assert.All(newPizzaIngredients, element => Assert.Contains(element, pizza.PizzaIngredients));
     }
 
+    [Fact]
+    public void Pizza_UpdateIngredients_ThrowsException_WhenProvidingDuplicateIngredients()
+    {
+        // Arrange
+        Pizza pizza = CreatePizza(pizzaNameBase, pizzaDescriptionBase, pizzaPriceBase);
+        PizzaIngredientQuantity pizzaIngredientQuantity1 = new PizzaIngredientQuantity(this._quantities[0]);
+        PizzaIngredientQuantity pizzaIngredientQuantity2 = new PizzaIngredientQuantity(this._quantities[1]);
+        PizzaIngredientQuantity pizzaIngredientQuantity3 = new PizzaIngredientQuantity(this._quantities[0]);
+        PizzaIngredientQuantity pizzaIngredientQuantity4 = new PizzaIngredientQuantity(this._quantities[2]);
+        List<PizzaIngredient> newPizzaIngredients = new List<PizzaIngredient>
+        {
+            new PizzaIngredient(pizzaIngredientQuantity1, this._ingredients[0]),
+            new PizzaIngredient(pizzaIngredientQuantity2, this._ingredients[1]),
+            new PizzaIngredient(pizzaIngredientQuantity3, this._ingredients[1]),
+            new PizzaIngredient(pizzaIngredientQuantity4, this._ingredients[3])
+        };
+        // Act
+        PizzaAggregateBaseException exception =
+            Assert.Throws<PizzaAggregateBaseException>(() => pizza.UpdateIngredients(newPizzaIngredients));
+        // Assert
+        Assert.Equal(
+            "Provided ingredients must be unique.",
+            exception.Message
+        );
+    }
+
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -345,6 +369,83 @@ public class PizzaTests
             $"{nameof(PizzaName)} exceeds maximum length of {PizzaInvariant.NameMaxLength} characters.",
             exception.Message
         );
+    }
+
+    [Fact]
+    public void PizzaName_CanBeImplicitlyCastToString()
+    {
+        // Arrange
+        const string rawValue = "A random name...";
+        PizzaName valueObject = new PizzaName(rawValue);
+        // Act
+        string result = valueObject;
+        // Assert
+        Assert.IsType<string>(result);
+        Assert.Equal(rawValue, result);
+    }
+
+    [Fact]
+    public void PizzaName_CanBeImplicitlyCreatedFromValidString()
+    {
+        // Arrange
+        const string rawValue = "A random name...";
+        // Act
+        PizzaName result = rawValue;
+        // Assert
+        Assert.IsType<PizzaName>(result);
+        Assert.Equal(rawValue, result.Value);
+    }
+
+    [Fact]
+    public void PizzaName_CannotBeImplicitlyCreatedFromNull()
+    {
+        // Arrange
+        const string? rawValue = null;
+        // Act & Assert
+        PizzaNameException ex = Assert.Throws<PizzaNameException>(() =>
+        {
+            PizzaName _ = rawValue!;
+        });
+        Assert.Equal($"{nameof(PizzaName)} cannot be instantiated from null, empty or whitespace value.", ex.Message);
+    }
+
+    [Fact]
+    public void PizzaName_CannotBeImplicitlyCreatedFromEmptyString()
+    {
+        // Arrange
+        const string rawValue = "";
+        // Act & Assert
+        PizzaNameException ex = Assert.Throws<PizzaNameException>(() =>
+        {
+            PizzaName _ = rawValue;
+        });
+        Assert.Equal($"{nameof(PizzaName)} cannot be instantiated from null, empty or whitespace value.", ex.Message);
+    }
+
+    [Fact]
+    public void PizzaName_CannotBeImplicitlyCreatedFromStringFilledWithWhiteSpaces()
+    {
+        // Arrange
+        const string rawValue = "                  ";
+        // Act & Assert
+        PizzaNameException ex = Assert.Throws<PizzaNameException>(() =>
+        {
+            PizzaName _ = rawValue;
+        });
+        Assert.Equal($"{nameof(PizzaName)} cannot be instantiated from null, empty or whitespace value.", ex.Message);
+    }
+
+    [Fact]
+    public void PizzaName_CannotBeImplicitlyCreatedFromStringExceedingMaxLength()
+    {
+        // Arrange
+        string rawValue = new string('c', PizzaInvariant.NameMaxLength + 1);
+        // Act & Assert
+        PizzaNameException ex = Assert.Throws<PizzaNameException>(() =>
+        {
+            PizzaName _ = rawValue;
+        });
+        Assert.Equal($"{nameof(PizzaName)} exceeds maximum length of {PizzaInvariant.NameMaxLength} characters.", ex.Message);
     }
 
     [Theory]
@@ -385,6 +486,83 @@ public class PizzaTests
         );
     }
 
+    [Fact]
+    public void PizzaDescription_CanBeImplicitlyCastToString()
+    {
+        // Arrange
+        const string rawValue = "A random description...";
+        PizzaDescription valueObject = new PizzaDescription(rawValue);
+        // Act
+        string result = valueObject;
+        // Assert
+        Assert.IsType<string>(result);
+        Assert.Equal(rawValue, result);
+    }
+
+    [Fact]
+    public void PizzaDescription_CanBeImplicitlyCreatedFromValidString()
+    {
+        // Arrange
+        const string rawValue = "A random description...";
+        // Act
+        PizzaDescription result = rawValue;
+        // Assert
+        Assert.IsType<PizzaDescription>(result);
+        Assert.Equal(rawValue, result.Value);
+    }
+
+    [Fact]
+    public void PizzaDescription_CannotBeImplicitlyCreatedFromNull()
+    {
+        // Arrange
+        const string? rawValue = null;
+        // Act & Assert
+        PizzaDescriptionException ex = Assert.Throws<PizzaDescriptionException>(() =>
+        {
+            PizzaDescription _ = rawValue!;
+        });
+        Assert.Equal($"{nameof(PizzaDescription)} cannot be instantiated from null, empty or whitespace value.", ex.Message);
+    }
+
+    [Fact]
+    public void PizzaDescription_CannotBeImplicitlyCreatedFromEmptyString()
+    {
+        // Arrange
+        const string rawValue = "";
+        // Act & Assert
+        PizzaDescriptionException ex = Assert.Throws<PizzaDescriptionException>(() =>
+        {
+            PizzaDescription _ = rawValue;
+        });
+        Assert.Equal($"{nameof(PizzaDescription)} cannot be instantiated from null, empty or whitespace value.", ex.Message);
+    }
+
+    [Fact]
+    public void PizzaDescription_CannotBeImplicitlyCreatedFromStringFilledWithWhiteSpaces()
+    {
+        // Arrange
+        const string rawValue = "                  ";
+        // Act & Assert
+        PizzaDescriptionException ex = Assert.Throws<PizzaDescriptionException>(() =>
+        {
+            PizzaDescription _ = rawValue;
+        });
+        Assert.Equal($"{nameof(PizzaDescription)} cannot be instantiated from null, empty or whitespace value.", ex.Message);
+    }
+
+    [Fact]
+    public void PizzaDescription_CannotBeImplicitlyCreatedFromStringExceedingMaxLength()
+    {
+        // Arrange
+        string rawValue = new string('c', PizzaInvariant.DescriptionMaxLength + 1);
+        // Act & Assert
+        PizzaDescriptionException ex = Assert.Throws<PizzaDescriptionException>(() =>
+        {
+            PizzaDescription _ = rawValue;
+        });
+        Assert.Equal($"{nameof(PizzaDescription)} exceeds maximum length of {PizzaInvariant.DescriptionMaxLength} characters.", ex.Message);
+    }
+
     [Theory]
     [MemberData(nameof(InvalidPrices))]
     public void PizzaPrice_CreateInstance_ThrowsException_WhenProvidingNegativeValue(decimal price)
@@ -399,28 +577,40 @@ public class PizzaTests
     }
 
     [Fact]
-    public void Pizza_UpdateIngredients_ThrowsException_WhenProvidingDuplicateIngredients()
+    public void PizzaPrice_CanBeImplicitlyCastToDecimal()
     {
         // Arrange
-        Pizza pizza = CreatePizza(pizzaNameBase, pizzaDescriptionBase, pizzaPriceBase);
-        PizzaIngredientQuantity pizzaIngredientQuantity1 = new PizzaIngredientQuantity(this._quantities[0]);
-        PizzaIngredientQuantity pizzaIngredientQuantity2 = new PizzaIngredientQuantity(this._quantities[1]);
-        PizzaIngredientQuantity pizzaIngredientQuantity3 = new PizzaIngredientQuantity(this._quantities[0]);
-        PizzaIngredientQuantity pizzaIngredientQuantity4 = new PizzaIngredientQuantity(this._quantities[2]);
-        List<PizzaIngredient> newPizzaIngredients = new List<PizzaIngredient>
-        {
-            new PizzaIngredient(pizzaIngredientQuantity1, this._ingredients[0]),
-            new PizzaIngredient(pizzaIngredientQuantity2, this._ingredients[1]),
-            new PizzaIngredient(pizzaIngredientQuantity3, this._ingredients[1]),
-            new PizzaIngredient(pizzaIngredientQuantity4, this._ingredients[3])
-        };
+        const decimal rawValue = 15.0m;
+        PizzaPrice valueObject = new PizzaPrice(rawValue);
         // Act
-        PizzaAggregateBaseException exception =
-            Assert.Throws<PizzaAggregateBaseException>(() => pizza.UpdateIngredients(newPizzaIngredients));
+        decimal result = valueObject;
         // Assert
-        Assert.Equal(
-            "Provided ingredients must be unique.",
-            exception.Message
-        );
+        Assert.IsType<decimal>(result);
+        Assert.Equal(rawValue, result);
+    }
+
+    [Fact]
+    public void PizzaPrice_CanBeImplicitlyCreatedFromDecimal()
+    {
+        // Arrange
+        const decimal rawValue = 15.0m;
+        // Act
+        PizzaPrice result = rawValue;
+        // Assert
+        Assert.IsType<PizzaPrice>(result);
+        Assert.Equal(rawValue, result.Value);
+    }
+
+    [Fact]
+    public void PizzaPrice_CannotBeImplicitlyCreatedFromDecimalBelowMinPrice()
+    {
+        // Arrange
+        const decimal rawValue = -15.0m;
+        // Act & Assert
+        PizzaPriceException ex = Assert.Throws<PizzaPriceException>(() =>
+        {
+            PizzaPrice _ = rawValue;
+        });
+        Assert.Equal($"{nameof(PizzaPrice)} is smaller than the minimum required value of {PizzaInvariant.MinPrice}.", ex.Message);
     }
 }

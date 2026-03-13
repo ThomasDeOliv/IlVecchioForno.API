@@ -2,7 +2,6 @@ using IlVecchioForno.Application.Gateways.Persistence.Queries.FilterTypes;
 using IlVecchioForno.Domain.Ingredients;
 using IlVecchioForno.Infrastructure.Common.Exceptions;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Filters;
-using IlVecchioForno.Infrastructure.Tests.Utilities.Data;
 using IlVecchioForno.Infrastructure.Tests.Utilities.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,29 +16,29 @@ public sealed class IngredientFilterServiceTests : SeededInfrastructureTestsBase
         this._filterService = new IngredientFilterService();
     }
 
-    public static TheoryData<string, List<Ingredient>> FilteredIngredients =>
-        new TheoryData<string, List<Ingredient>>
+    public static TheoryData<string, List<int>> FilteredIngredients =>
+        new TheoryData<string, List<int>>
         {
             {
-                string.Empty, new List<Ingredient>(DbMockedTestsData.TestsIngredients)
+                string.Empty, [..Enumerable.Range(0, 23)]
             },
             {
-                "Sa", new List<Ingredient>([DbMockedTestsData.TestsIngredients[3], DbMockedTestsData.TestsIngredients[5]])
+                "Sa", [3, 5]
             },
             {
-                "sa", new List<Ingredient>([DbMockedTestsData.TestsIngredients[3], DbMockedTestsData.TestsIngredients[5]])
+                "sa", [3, 5]
             },
             {
-                "SA", new List<Ingredient>([DbMockedTestsData.TestsIngredients[3], DbMockedTestsData.TestsIngredients[5]])
+                "SA", [3, 5]
             },
             {
-                "sA", new List<Ingredient>([DbMockedTestsData.TestsIngredients[3], DbMockedTestsData.TestsIngredients[5]])
+                "sA", [3, 5]
             },
             {
-                "'Nduja", new List<Ingredient>([DbMockedTestsData.TestsIngredients[15]])
+                "'Nduja", [15]
             },
             {
-                "kl", new List<Ingredient>()
+                "kl", []
             }
         };
 
@@ -47,10 +46,11 @@ public sealed class IngredientFilterServiceTests : SeededInfrastructureTestsBase
     [MemberData(nameof(FilteredIngredients))]
     public async Task Filter_ForIngredients_Return_ExpectedFilteredIngredients(
         string search,
-        List<Ingredient> expected
+        List<int> expectedIndexes
     )
     {
         // Arrange
+        List<Ingredient> expected = expectedIndexes.Select(i => this._ingredients[i]).ToList();
         IQueryable<Ingredient> queryable = this._ctx.Ingredients.AsQueryable();
         // Act
         IQueryable<Ingredient> queryResult = this._filterService.Filter(

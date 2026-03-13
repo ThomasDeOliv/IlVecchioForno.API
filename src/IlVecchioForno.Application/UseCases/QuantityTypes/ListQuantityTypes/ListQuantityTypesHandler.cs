@@ -4,8 +4,6 @@ using IlVecchioForno.Application.Common.Queries.Sorters;
 using IlVecchioForno.Application.Gateways.Persistence;
 using IlVecchioForno.Application.Gateways.Persistence.Queries;
 using IlVecchioForno.Application.Gateways.Persistence.Queries.FilterTypes;
-using IlVecchioForno.Application.UseCases.QuantityTypes.DTOs;
-using IlVecchioForno.Application.UseCases.QuantityTypes.Presenters;
 using IlVecchioForno.Domain.QuantityTypes;
 using MapsterMapper;
 using MediatR;

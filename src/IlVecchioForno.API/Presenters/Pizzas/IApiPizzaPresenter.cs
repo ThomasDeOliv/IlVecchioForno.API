@@ -1,5 +1,5 @@
 using IlVecchioForno.API.Controllers;
-using IlVecchioForno.Application.UseCases.Pizzas.Presenters;
+using IlVecchioForno.Application.UseCases.Pizzas;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IlVecchioForno.API.Presenters.Pizzas;

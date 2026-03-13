@@ -1,7 +1,9 @@
 using IlVecchioForno.API.Presenters.Ingredients;
 using IlVecchioForno.API.Requests.Ingredients;
 using IlVecchioForno.Application.Common;
+using IlVecchioForno.Application.Common.DTOs;
 using IlVecchioForno.Application.Common.Queries.Sorters;
+using IlVecchioForno.Application.UseCases.Ingredients;
 using IlVecchioForno.Application.UseCases.Ingredients.CountIngredients;
 using IlVecchioForno.Application.UseCases.Ingredients.GetIngredient;
 using IlVecchioForno.Application.UseCases.Ingredients.ListIngredients;
@@ -27,6 +29,8 @@ public sealed class IngredientsController : ApiControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType<IReadOnlyList<IngredientDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> GetAllAsync(
         [FromQuery] int page = QueryDefaultValues.PageNumberMin,
         [FromQuery] int pageSize = QueryDefaultValues.PageSizeDefault,
@@ -48,6 +52,8 @@ public sealed class IngredientsController : ApiControllerBase
     }
 
     [HttpGet("{id:int}")]
+    [ProducesResponseType<IngredientDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> GetByIdAsync(
         [FromRoute] int id,
         CancellationToken cancellationToken = default
@@ -59,6 +65,7 @@ public sealed class IngredientsController : ApiControllerBase
     }
 
     [HttpGet("count")]
+    [ProducesResponseType<EntitiesCountDto>(StatusCodes.Status200OK)]
     public async Task<ActionResult> CountAsync(
         [FromQuery] string? search = null,
         CancellationToken cancellationToken = default
@@ -70,6 +77,9 @@ public sealed class IngredientsController : ApiControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType<IngredientDto>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<ActionResult> PostAsync(
         [FromBody] RegisterIngredientRequest request,
         CancellationToken cancellationToken = default

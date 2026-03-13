@@ -1,4 +1,4 @@
-namespace IlVecchioForno.Application.UseCases.Ingredients.DTOs;
+namespace IlVecchioForno.Application.UseCases.Ingredients;
 
 public sealed record IngredientDto(
     int Id,

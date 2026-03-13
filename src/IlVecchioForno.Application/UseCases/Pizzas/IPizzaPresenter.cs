@@ -1,7 +1,6 @@
 using IlVecchioForno.Application.Common.DTOs;
-using IlVecchioForno.Application.UseCases.Pizzas.DTOs;
 
-namespace IlVecchioForno.Application.UseCases.Pizzas.Presenters;
+namespace IlVecchioForno.Application.UseCases.Pizzas;
 
 public interface IPizzaPresenter
 {

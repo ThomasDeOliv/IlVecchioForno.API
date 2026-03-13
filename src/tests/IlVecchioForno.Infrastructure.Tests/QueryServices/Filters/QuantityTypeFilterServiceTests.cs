@@ -2,7 +2,6 @@ using IlVecchioForno.Application.Gateways.Persistence.Queries.FilterTypes;
 using IlVecchioForno.Domain.QuantityTypes;
 using IlVecchioForno.Infrastructure.Common.Exceptions;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Filters;
-using IlVecchioForno.Infrastructure.Tests.Utilities.Data;
 using IlVecchioForno.Infrastructure.Tests.Utilities.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,32 +16,32 @@ public sealed class QuantityTypeFilterServiceTests : SeededInfrastructureTestsBa
         this._filterService = new QuantityTypeFilterService();
     }
 
-    public static TheoryData<string, List<QuantityType>> FilteredQuantityTypes =>
-        new TheoryData<string, List<QuantityType>>
+    public static TheoryData<string, List<int>> FilteredQuantityTypes =>
+        new TheoryData<string, List<int>>
         {
             {
-                string.Empty, new List<QuantityType>(DbMockedTestsData.TestsQuantityTypes)
+                string.Empty, [..Enumerable.Range(0, 6)]
             },
             {
-                "Milligrams", new List<QuantityType>([DbMockedTestsData.TestsQuantityTypes[0]])
+                "Milligrams", [0]
             },
             {
-                "MillIGrAmS", new List<QuantityType>([DbMockedTestsData.TestsQuantityTypes[0]])
+                "MillIGrAmS", [0]
             },
             {
-                "cl", new List<QuantityType>([DbMockedTestsData.TestsQuantityTypes[4]])
+                "cl", [4]
             },
             {
-                "cL", new List<QuantityType>([DbMockedTestsData.TestsQuantityTypes[4]])
+                "cL", [4]
             },
             {
-                "CL", new List<QuantityType>([DbMockedTestsData.TestsQuantityTypes[4]])
+                "CL", [4]
             },
             {
-                "CL", new List<QuantityType>([DbMockedTestsData.TestsQuantityTypes[4]])
+                "CL", [4]
             },
             {
-                "CM", new List<QuantityType>()
+                "CM", []
             }
         };
 
@@ -50,10 +49,11 @@ public sealed class QuantityTypeFilterServiceTests : SeededInfrastructureTestsBa
     [MemberData(nameof(FilteredQuantityTypes))]
     public async Task Filter_ForQuantityTypes_Return_ExpectedFilteredQuantityTypes(
         string search,
-        List<QuantityType> expected
+        List<int> expectedIndexes
     )
     {
         // Arrange
+        List<QuantityType> expected = expectedIndexes.Select(i => this._quantityTypes[i]).ToList();
         IQueryable<QuantityType> queryable = this._ctx.QuantityTypes.AsQueryable();
         // Act
         IQueryable<QuantityType> queryResult = this._filterService.Filter(

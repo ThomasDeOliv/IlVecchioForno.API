@@ -1,7 +1,6 @@
 using IlVecchioForno.Application.Common.DTOs;
-using IlVecchioForno.Application.UseCases.QuantityTypes.DTOs;
 
-namespace IlVecchioForno.Application.UseCases.QuantityTypes.Presenters;
+namespace IlVecchioForno.Application.UseCases.QuantityTypes;
 
 public interface IQuantityTypePresenter
 {
