@@ -1,4 +1,5 @@
 using IlVecchioForno.Application.Common.Queries.Sorters;
+using IlVecchioForno.Application.Gateways.Persistence;
 using IlVecchioForno.Application.Gateways.Persistence.Queries.FilterTypes;
 using IlVecchioForno.Domain.QuantityTypes;
 using IlVecchioForno.Infrastructure.Common.Exceptions;
@@ -6,12 +7,13 @@ using IlVecchioForno.Infrastructure.Persistence.QueryServices.Filters;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Paginations;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Sorters;
 using IlVecchioForno.Infrastructure.Persistence.Repositories;
+using IlVecchioForno.Infrastructure.Tests.Utilities.Data;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 
 namespace IlVecchioForno.Infrastructure.Tests.Repositories;
 
-public sealed class QuantityTypeRepositoryTests : EmptyInfrastructureTestsBase
+public sealed class QuantityTypeRepositoryTests : SeededInfrastructureTestsBase
 {
     private readonly Mock<IFilterService<QuantityType>> _filterServiceMock;
     private readonly Mock<IPaginationService<QuantityType>> _paginationServiceMock;
@@ -105,5 +107,17 @@ public sealed class QuantityTypeRepositoryTests : EmptyInfrastructureTestsBase
             this._paginationServiceMock.Object,
             this._sorterServiceMock.Object
         );
+    }
+
+    [Fact]
+    public async Task TestExample()
+    {
+        // Arrange
+        IQuantityTypeRepository repository = this.CreateNewRepository();
+        // Act
+        QuantityType? result = await repository.FindAsync(1);
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(DbMockedTestsData.TestsQuantityTypes[0], result);
     }
 }

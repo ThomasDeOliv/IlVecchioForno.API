@@ -1,4 +1,5 @@
 using IlVecchioForno.Application.Common.Queries.Sorters;
+using IlVecchioForno.Application.Gateways.Persistence;
 using IlVecchioForno.Application.Gateways.Persistence.Queries.FilterTypes;
 using IlVecchioForno.Domain.Ingredients;
 using IlVecchioForno.Infrastructure.Common.Exceptions;
@@ -6,12 +7,13 @@ using IlVecchioForno.Infrastructure.Persistence.QueryServices.Filters;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Paginations;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Sorters;
 using IlVecchioForno.Infrastructure.Persistence.Repositories;
+using IlVecchioForno.Infrastructure.Tests.Utilities.Data;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 
 namespace IlVecchioForno.Infrastructure.Tests.Repositories;
 
-public sealed class IngredientRepositoryTests : EmptyInfrastructureTestsBase
+public sealed class IngredientRepositoryTests : SeededInfrastructureTestsBase
 {
     private readonly Mock<IFilterService<Ingredient>> _filterServiceMock;
     private readonly Mock<IPaginationService<Ingredient>> _paginationServiceMock;
@@ -96,5 +98,17 @@ public sealed class IngredientRepositoryTests : EmptyInfrastructureTestsBase
             this._paginationServiceMock.Object,
             this._sorterServiceMock.Object
         );
+    }
+
+    [Fact]
+    public async Task TestExample()
+    {
+        // Arrange
+        IIngredientRepository repository = this.CreateNewRepository();
+        // Act
+        Ingredient? result = await repository.FindAsync(1);
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(DbMockedTestsData.TestsIngredients[0], result);
     }
 }

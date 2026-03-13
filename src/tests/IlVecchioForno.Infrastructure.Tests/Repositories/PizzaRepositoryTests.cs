@@ -1,4 +1,5 @@
 using IlVecchioForno.Application.Common.Queries.Sorters;
+using IlVecchioForno.Application.Gateways.Persistence;
 using IlVecchioForno.Application.Gateways.Persistence.Queries.FilterTypes;
 using IlVecchioForno.Domain.Pizzas;
 using IlVecchioForno.Infrastructure.Common.Exceptions;
@@ -6,12 +7,13 @@ using IlVecchioForno.Infrastructure.Persistence.QueryServices.Filters;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Paginations;
 using IlVecchioForno.Infrastructure.Persistence.QueryServices.Sorters;
 using IlVecchioForno.Infrastructure.Persistence.Repositories;
+using IlVecchioForno.Infrastructure.Tests.Utilities.Data;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 
 namespace IlVecchioForno.Infrastructure.Tests.Repositories;
 
-public sealed class PizzaRepositoryTests : EmptyInfrastructureTestsBase
+public sealed class PizzaRepositoryTests : SeededInfrastructureTestsBase
 {
     private readonly Mock<IFilterService<Pizza>> _filterServiceMock;
     private readonly Mock<IPaginationService<Pizza>> _paginationServiceMock;
@@ -133,5 +135,17 @@ public sealed class PizzaRepositoryTests : EmptyInfrastructureTestsBase
             this._paginationServiceMock.Object,
             this._sorterServiceMock.Object
         );
+    }
+
+    [Fact]
+    public async Task TestExample()
+    {
+        // Arrange
+        IPizzaRepository repository = this.CreateNewRepository();
+        // Act
+        Pizza? result = await repository.FindAsync(1);
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(DbMockedTestsData.TestsPizzas[0], result);
     }
 }
