@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using IlVecchioForno.Domain.Ingredients;
 using IlVecchioForno.Domain.QuantityTypes;
 using Microsoft.AspNetCore.Builder;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace IlVecchioForno.Infrastructure.Persistence.Setup;
 
+[ExcludeFromCodeCoverage]
 public static class DbInitExtension
 {
     extension(IApplicationBuilder app)
