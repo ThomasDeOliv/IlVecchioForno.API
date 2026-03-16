@@ -1,14 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <UserSecretsId>a8183915-1d85-4064-b342-e1f6cedf2681</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
+        <!--Test project-->
         <InternalsVisibleTo Include="IlVecchioForno.API.Tests"/>
     </ItemGroup>
 

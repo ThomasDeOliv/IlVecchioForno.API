@@ -7,7 +7,7 @@ using Serilog;
 
 namespace IlVecchioForno.API;
 
-public static class Program
+internal static class Program
 {
     public static async Task Main(string[] args)
     {
@@ -46,7 +46,8 @@ public static class Program
             app.UseAuthorization();
             app.MapControllers();
 
-            await app.RunAsync();
+            await app.RunAsync()
+                .ConfigureAwait(false);
         }
         catch (Exception ex) when (ex is not HostAbortedException and not OperationCanceledException)
         {
@@ -55,7 +56,8 @@ public static class Program
         finally
         {
             Log.Information("Application shutting down.");
-            await Log.CloseAndFlushAsync();
+            await Log.CloseAndFlushAsync()
+                .ConfigureAwait(false);
         }
     }
 }

@@ -1,26 +1,27 @@
 <Solution>
     <Folder Name="/items/">
-        <File Path=".gitignore"/>
-        <File Path="compose.override.yaml"/>
-        <File Path="compose.staging.yaml"/>
-        <File Path="compose.yaml"/>
-        <File Path="development.env"/>
-        <File Path="Directory.Packages.props"/>
-        <File Path="example.env"/>
-        <File Path="LICENSE"/>
-        <File Path="README.md"/>
-        <File Path="staging.env"/>
+        <File Path=".gitignore" />
+        <File Path="compose.override.yaml" />
+        <File Path="compose.staging.yaml" />
+        <File Path="compose.yaml" />
+        <File Path="development.env" />
+        <File Path="Directory.Build.props" />
+        <File Path="Directory.Packages.props" />
+        <File Path="example.env" />
+        <File Path="LICENSE" />
+        <File Path="README.md" />
+        <File Path="staging.env" />
     </Folder>
     <Folder Name="/src/">
-        <Project Path="src/IlVecchioForno.API/IlVecchioForno.API.csproj"/>
-        <Project Path="src/IlVecchioForno.Application/IlVecchioForno.Application.csproj"/>
-        <Project Path="src/IlVecchioForno.Domain/IlVecchioForno.Domain.csproj"/>
-        <Project Path="src/IlVecchioForno.Infrastructure/IlVecchioForno.Infrastructure.csproj"/>
+        <Project Path="src/IlVecchioForno.API/IlVecchioForno.API.csproj" />
+        <Project Path="src/IlVecchioForno.Application/IlVecchioForno.Application.csproj" />
+        <Project Path="src/IlVecchioForno.Domain/IlVecchioForno.Domain.csproj" />
+        <Project Path="src/IlVecchioForno.Infrastructure/IlVecchioForno.Infrastructure.csproj" />
     </Folder>
     <Folder Name="/src/tests/">
-        <Project Path="src/tests/IlVecchioForno.API.Tests/IlVecchioForno.API.Tests.csproj"/>
-        <Project Path="src/tests/IlVecchioForno.Application.Tests/IlVecchioForno.Application.Tests.csproj"/>
-        <Project Path="src/tests/IlVecchioForno.Domain.Tests/IlVecchioForno.Domain.Tests.csproj"/>
-        <Project Path="src/tests/IlVecchioForno.Infrastructure.Tests/IlVecchioForno.Infrastructure.Tests.csproj"/>
+        <Project Path="src/tests/IlVecchioForno.API.Tests/IlVecchioForno.API.Tests.csproj" />
+        <Project Path="src/tests/IlVecchioForno.Application.Tests/IlVecchioForno.Application.Tests.csproj" />
+        <Project Path="src/tests/IlVecchioForno.Domain.Tests/IlVecchioForno.Domain.Tests.csproj" />
+        <Project Path="src/tests/IlVecchioForno.Infrastructure.Tests/IlVecchioForno.Infrastructure.Tests.csproj" />
     </Folder>
 </Solution>
